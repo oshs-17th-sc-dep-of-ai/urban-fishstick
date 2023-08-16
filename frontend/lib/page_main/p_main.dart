@@ -1,9 +1,7 @@
 import "package:flutter/material.dart";
 
 class MainPageWidget extends StatelessWidget {
-  const MainPageWidget({
-    super.key
-  });
+  const MainPageWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +12,10 @@ class MainPageWidget extends StatelessWidget {
         Center(
           child: Padding(
             padding: EdgeInsets.all(20),
-            child: Text("남은 대기 인원: nn", style: TextStyle(fontSize: 20),),
+            child: Text(
+              "남은 대기 인원: nn",
+              style: TextStyle(fontSize: 20),
+            ),
           ),
         ),
         Padding(
@@ -27,7 +28,7 @@ class MainPageWidget extends StatelessWidget {
             color: Colors.black38,
           ),
         ),
-        Expanded(child: Placeholder())
+        Expanded(child: Placeholder()) // ListView 사용해 식단 출력
       ],
     );
   }

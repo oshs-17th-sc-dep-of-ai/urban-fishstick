@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
 import "page_main/p_main.dart";
+import "page_apply/p_apply.dart";
 
 int currentPageIndex = 0;
 
@@ -54,9 +55,7 @@ class _MyAppState extends State<MyApp> {
         },
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person), label: "individual"),
-          BottomNavigationBarItem(icon: Icon(Icons.group), label: "group"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "apply"),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: "settings"),
         ]);
@@ -74,12 +73,7 @@ class _MyAppState extends State<MyApp> {
       },
       children: const [
         MainPageWidget(),
-        Center(
-          child: Text("Individual"),
-        ),
-        Center(
-          child: Text("Group"),
-        ),
+        ApplyPageWidget(),
         Center(
           child: Text("Settings"),
         ),
