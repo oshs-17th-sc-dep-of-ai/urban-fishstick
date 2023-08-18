@@ -1,10 +1,15 @@
 import "package:flutter/material.dart";
 
-List<String> _member = [];
+List<int> _member = [];
 
-class ApplyPageWidget extends StatelessWidget {
+class ApplyPageWidget extends StatefulWidget {
   const ApplyPageWidget({super.key});
 
+  @override
+  State<ApplyPageWidget> createState() => _ApplyPageWidgetState();
+}
+
+class _ApplyPageWidgetState extends State<ApplyPageWidget> {
   @override
   Widget build(BuildContext context) {
     final textController = TextEditingController();
@@ -19,8 +24,8 @@ class ApplyPageWidget extends StatelessWidget {
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               children: _member
-                  .map((m) => ListTile(
-                        title: Text(m),
+                  .map((member) => ListTile(
+                        title: Text(member.toString()),
                       ))
                   .toList(), // member 리스트 이용, 위젯 생성 필요
             ),
@@ -43,9 +48,11 @@ class ApplyPageWidget extends StatelessWidget {
                 ),
                 IconButton(
                     onPressed: () {
-                      if (textController.value.text != "") {
-                        _member.add(textController.value.toString());
-                      }
+                      setState(() {
+                        if (textController.value.text != "") {
+                          _member.add(textController.value.text as int);
+                        }
+                      });
                     },
                     icon: const Icon(Icons.add))
               ],
