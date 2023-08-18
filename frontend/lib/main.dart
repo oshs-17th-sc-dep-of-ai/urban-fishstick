@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 
 import "page_main/p_main.dart";
 import "page_apply/p_apply.dart";
+import "package:frontend/page_settings/p_settings.dart";
 
 int currentPageIndex = 0;
 
@@ -74,9 +75,7 @@ class _MyAppState extends State<MyApp> {
       children: const [
         MainPageWidget(),
         ApplyPageWidget(),
-        Center(
-          child: Text("Settings"),
-        ),
+        SettingsPageWidget()
       ],
     ));
   }
