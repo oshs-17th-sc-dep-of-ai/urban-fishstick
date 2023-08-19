@@ -49,8 +49,8 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        if (textController.value.text != "") {
-                          _member.add(textController.value.text as int);
+                        if (textController.value.text.isNotEmpty) {
+                          _member.add(int.parse(textController.value.text));
                         }
                       });
                     },

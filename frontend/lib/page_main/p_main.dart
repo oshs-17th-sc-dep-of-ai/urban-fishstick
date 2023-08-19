@@ -2,6 +2,9 @@ import "package:flutter/material.dart";
 
 import "package:frontend/util/diet.dart";
 
+List diet = [];
+List alrg = [];
+
 class MainPageWidget extends StatefulWidget {
   const MainPageWidget({super.key});
 
@@ -41,16 +44,18 @@ class _MainPageWidgetState extends State<MainPageWidget> {
             child: Padding(
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<Map>(
-            future: getDiet(),
+            future: diet.isEmpty
+                ? getDiet()
+                : Future(() => {"diet": diet, "alergy": alrg}),
             builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                debugPrint("[[[ $snapshot ]]]");
-
                 return ListView.builder(
                     itemCount: snapshot.data?["diet"].length,
                     itemBuilder: (context, index) {
-                      final diet = snapshot.data?["diet"];
-                      final alrg = snapshot.data?["alergy"];
+                      debugPrint("${snapshot.data?['diet'].toList()}");
+
+                      diet = snapshot.data?["diet"].toList();
+                      alrg = snapshot.data?["alergy"].toList();
 
                       return SizedBox(
                         width: deviceSize.width - 20,
