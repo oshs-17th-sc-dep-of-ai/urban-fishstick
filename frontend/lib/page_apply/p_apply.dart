@@ -20,14 +20,18 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
         children: [
           Padding(
             padding: const EdgeInsets.all(20),
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              children: _member
-                  .map((member) => ListTile(
-                        title: Text(member.toString()),
-                      ))
-                  .toList(), // member 리스트 이용, 위젯 생성 필요
+            child: SizedBox(
+              height: 200,
+              width: 400,
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: _member
+                    .map((member) => ListTile(
+                          title: Text(member.toString()),
+                        ))
+                    .toList(), // member 리스트 이용, 위젯 생성 필요
+              ),
             ),
           ),
           Padding(
