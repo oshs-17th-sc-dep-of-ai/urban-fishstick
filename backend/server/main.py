@@ -1,12 +1,16 @@
-from fastapi import FastAPI
+from flask import Blueprint, jsonify, Flask
 
-app = FastAPI()
+example_bp = Flask(__name__)
+profile = Blueprint("profile", __name__)
+example_bp.register_blueprint(profile, url_prefix='/profile')
 
-request_count = 0
-
-@app.get("/request/{client_id}")
-async def count(client_id):
-    global request_count
-    request_count += 1
-
-    return {"client_id": client_id, "request_count": request_count}
+@example_bp.route('/send', methods=['GET'])
+def example_route():
+    who = 'JSONdata'
+    apply = 'jsondata'
+    result = {
+        who : apply
+    }
+    return jsonify(result=result)
+if __name__ == '__main__':
+    example_bp.run()
