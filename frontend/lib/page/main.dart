@@ -52,8 +52,6 @@ class _MainPageWidgetState extends State<MainPageWidget> {
                 return ListView.builder(
                     itemCount: snapshot.data?["diet"].length,
                     itemBuilder: (context, index) {
-                      debugPrint("${snapshot.data?['diet'].toList()}");
-
                       diet = snapshot.data?["diet"].toList();
                       alrg = snapshot.data?["alergy"].toList();
 

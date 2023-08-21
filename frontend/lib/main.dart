@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
-import "page_main/p_main.dart";
-import "page_apply/p_apply.dart";
-import "package:frontend/page_settings/p_settings.dart";
+import 'page/main.dart';
+import 'page/apply.dart';
+import 'package:frontend/page/settings.dart';
 
 int currentPageIndex = 0;
 

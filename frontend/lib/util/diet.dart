@@ -4,8 +4,11 @@ Future<Map> getDiet() async {
   // N10 교육청 코드
   // 8140246 학교 코드
   // 97deea74959e4608a2c9d7255beb71c0 API 키
+  final _date = DateTime.now();
+  final date =
+      "${_date.year}${_date.month.toString().padLeft(2, '0')}${_date.day.toString().padLeft(2, '0')}";
   Map diet = await httpGet(
-      "https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=97deea74959e4608a2c9d7255beb71c0&Type=json&ATPT_OFCDC_SC_CODE=N10&SD_SCHUL_CODE=8140246&MLSV_YMD=20230818");
+      "https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=97deea74959e4608a2c9d7255beb71c0&Type=json&ATPT_OFCDC_SC_CODE=N10&SD_SCHUL_CODE=8140246&MLSV_YMD=$date"); // 날짜 수정 필요
 
   List<String> dietData;
   try {
