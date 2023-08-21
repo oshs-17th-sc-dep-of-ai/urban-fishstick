@@ -18,19 +18,21 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: SizedBox(
-              height: 200,
-              width: 400,
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: _member
-                    .map((member) => ListTile(
-                          title: Text(member.toString()),
-                        ))
-                    .toList(), // member 리스트 이용, 위젯 생성 필요
+          SizedBox(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: FractionallySizedBox(
+                widthFactor: 0.1,
+                heightFactor: 0.2,
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  children: _member
+                      .map((member) => ListTile(
+                            title: Text(member.toString()),
+                          ))
+                      .toList(), // member 리스트 이용, 위젯 생성 필요
+                ),
               ),
             ),
           ),
