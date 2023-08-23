@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import 'package:frontend/page/group_manage.dart';
 
 import 'page/main.dart';
 import 'page/apply.dart';
@@ -55,10 +56,10 @@ class _MyAppState extends State<MyApp> {
           update();
         },
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "apply"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: "settings"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "홈"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "신청"),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: "그룹 관리"),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
         ]);
   }
 
@@ -75,7 +76,8 @@ class _MyAppState extends State<MyApp> {
       children: const [
         MainPageWidget(),
         ApplyPageWidget(),
-        SettingsPageWidget()
+        GroupManagePageWidget(),
+        SettingsPageWidget(),
       ],
     ));
   }

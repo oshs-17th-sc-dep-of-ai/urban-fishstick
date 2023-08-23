@@ -1,9 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:frontend/page/group_select.dart";
 
 import "package:frontend/util/file.dart";
 
-import 'package:frontend/dialog/group.dart';
+import "package:frontend/page/group_manage.dart";
 
 List<int> _member = [];
 
@@ -20,6 +21,7 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
     final deviceSize = MediaQuery.of(context).size;
     final formKey = GlobalKey<FormState>();
     final textController = TextEditingController();
+    final scrollController = ScrollController();
     var inputDecorator = const InputDecoration(
       hintText: "학번 입력",
       counterText: '',
@@ -31,17 +33,21 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
         heightFactor: 0.8,
         child: Column(
           children: [
-            LimitedBox(
-              maxHeight: 300,
-              child: ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: _member
-                      .map((member) => ListTile(
-                            title: Text(member.toString()),
-                          ))
-                      .toList() // member 리스트 이용, 위젯 생성 필요
-                  ),
+            SizedBox(
+              height: 300,
+              child: LimitedBox(
+                maxHeight: 300,
+                child: ListView(
+                    controller: scrollController,
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: _member
+                        .map((member) => ListTile(
+                              title: Text(member.toString()),
+                            ))
+                        .toList() // member 리스트 이용, 위젯 생성 필요
+                    ),
+              ),
             ),
             Column(
               children: [
@@ -78,6 +84,10 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
 
                             _member.add(int.parse(textController.value.text));
                           });
+                          scrollController.animateTo(
+                              scrollController.position.extentTotal,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.fastOutSlowIn);
                         },
                         icon: const Icon(Icons.add))
                   ],
@@ -89,17 +99,16 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          showDialog(
-                              context: context,
-                              barrierDismissible: true,
-                              builder: ((context) {
-                                return const Dialog(
-                                  child: GroupActionDialogWidget(),
-                                );
-                              }));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const GroupSelectPageWidget()),
+                          );
                           setState(() {});
+                          // 그룹 리스트에서 하나 클릭하면 파일에서 읽고 불러오기
                         },
-                        child: const Text("그룹 메뉴"), // 다이얼로그로 넘어가서 그룹 불러오기/편집/삭제
+                        child: const Text("불러오기"),
                       ),
                     ),
                     const SizedBox(width: 10),

@@ -19,6 +19,18 @@ class FileUtil {
     return File("$localPath/$filePath");
   }
 
+  Future<bool> exists() async {
+    final file = await _getLocalFile();
+    return file.exists();
+  }
+
+  Future<File> createFile(String initialContent) async {
+    final file = await _getLocalFile();
+    file.create();
+    file.writeAsString(initialContent);
+    return file;
+  }
+
   Future<String> readFile() async {
     final file = await _getLocalFile();
     return file.readAsString();

@@ -9,14 +9,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="신청 페이지 UI 크기 조정">
-      <change afterPath="$PROJECT_DIR$/lib/dialog/group.dart" afterDir="false" />
+    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="신청 페이지 UI 개선">
+      <change afterPath="$PROJECT_DIR$/lib/page/group_manage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/page/group_select.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/dialog/group.dart" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/page_apply/p_apply.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/apply.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/page_main/p_main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/page_settings/p_settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/settings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/util/diet.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/util/diet.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/page/apply.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/apply.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/page_apply/p_apply.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/util/file.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/util/file.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,21 +46,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "cidr.known.project.marker": "true",
-    "com.android.tools.idea.devicemanager.tab": "Physical",
-    "dart.analysis.tool.window.visible": "false",
-    "io.flutter.reload.alreadyRun": "true",
-    "last_opened_file_path": "/home/Sharp/Workspace/urban-fishstick/frontend",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "show.migrate.to.gradle.popup": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.android.tools.idea.devicemanager.tab&quot;: &quot;Physical&quot;,
+    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/Sharp/Workspace/urban-fishstick/frontend&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/lib/dialog" />
@@ -128,7 +130,14 @@
       <option name="project" value="LOCAL" />
       <updated>1692460809083</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="신청 페이지 UI 개선">
+      <created>1692615130870</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1692615130870</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -187,7 +196,8 @@
     <MESSAGE value="급식 정보 받기 성공" />
     <MESSAGE value="급식 정보 저장 기능 추가" />
     <MESSAGE value="신청 페이지 UI 크기 조정" />
-    <option name="LAST_COMMIT_MESSAGE" value="신청 페이지 UI 크기 조정" />
+    <MESSAGE value="신청 페이지 UI 개선" />
+    <option name="LAST_COMMIT_MESSAGE" value="신청 페이지 UI 개선" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="home/Sharp/Workspace/urban-fishstick/frontend/coverage/lcov.info" NAME="tests in widget_test.dart Coverage Results" MODIFIED="1691902420207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="FlutterCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
