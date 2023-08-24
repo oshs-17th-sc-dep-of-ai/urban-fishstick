@@ -9,15 +9,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="신청 페이지 UI 개선">
-      <change afterPath="$PROJECT_DIR$/lib/page/group_manage.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/page/group_select.dart" afterDir="false" />
+    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="그룹 관리: 파일 생성 후 읽기 기능 추가">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/dialog/group.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/page/apply.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/apply.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/page_apply/p_apply.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/util/file.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/util/file.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/page/group_manage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/group_manage.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +34,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="2ThJ4ieRViC0HtVExfKgVp7v5Kl" />
   <component name="ProjectViewState">
@@ -58,7 +53,7 @@
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/Sharp/Workspace/urban-fishstick/frontend&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.general&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
@@ -137,7 +132,14 @@
       <option name="project" value="LOCAL" />
       <updated>1692615130870</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="그룹 관리: 파일 생성 후 읽기 기능 추가">
+      <created>1692794730181</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1692794730181</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -197,7 +199,8 @@
     <MESSAGE value="급식 정보 저장 기능 추가" />
     <MESSAGE value="신청 페이지 UI 크기 조정" />
     <MESSAGE value="신청 페이지 UI 개선" />
-    <option name="LAST_COMMIT_MESSAGE" value="신청 페이지 UI 개선" />
+    <MESSAGE value="그룹 관리: 파일 생성 후 읽기 기능 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="그룹 관리: 파일 생성 후 읽기 기능 추가" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="home/Sharp/Workspace/urban-fishstick/frontend/coverage/lcov.info" NAME="tests in widget_test.dart Coverage Results" MODIFIED="1691902420207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="FlutterCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

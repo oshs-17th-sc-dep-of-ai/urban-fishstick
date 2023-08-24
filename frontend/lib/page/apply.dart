@@ -67,10 +67,11 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
                         ],
                         validator: (value) {
                           if (value!.isEmpty) return "학번을 입력해주세요.";
-                          if ((value.length < 5) ||
-                              (int.parse(value) < 10000) ||
-                              (int.parse(value) > 39999)) {
-                            // FIXME: 범위 검사 안됨?
+                          if (value.length < 5) return "올바른 학번을 입력해주세요.";
+                          if (int.parse(value) < 10000) {
+                            return "올바른 학번을 입력해주세요.";
+                          }
+                          if (int.parse(value) > 39999) {
                             return "올바른 학번을 입력해주세요.";
                           }
                         },

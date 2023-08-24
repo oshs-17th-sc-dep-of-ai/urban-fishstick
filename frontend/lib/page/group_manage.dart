@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 
 import "package:frontend/util/file.dart";
 
@@ -13,12 +14,6 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
   @override
   Widget build(BuildContext context) {
     const fileUtil = FileUtil("./group.json");
-
-    fileUtil.exists().then((exists) {
-      if (!exists) {
-        fileUtil.createFile("{}");
-      }
-    });
 
     return FutureBuilder(
       future: fileUtil.exists(),
@@ -48,24 +43,13 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    content: const FractionallySizedBox(
-                                        widthFactor: 1,
-                                        heightFactor: 0.4,
-                                        child: Center(
-                                            child: Text("Hello, world!"))),
-                                    actions: [
-                                      ElevatedButton(
-                                          onPressed: () {},
-                                          child: const Text("확인")),
-                                      ElevatedButton(
-                                          onPressed: () {},
-                                          child: const Text("취소"))
-                                    ],
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0))),
-                                  );
+                                  final tempMemberList = <int>[];
+                                  final textController =
+                                      TextEditingController();
+                                  final scrollController = ScrollController();
+
+                                  return buildAlertDialog(tempMemberList,
+                                      textController, scrollController);
                                 });
                             setState(() {});
                           },
@@ -87,5 +71,69 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
         }
       },
     );
+  }
+
+  AlertDialog buildAlertDialog(List<int> tempMemberList,
+      TextEditingController textController, ScrollController scrollController) {
+    return AlertDialog(
+      content: SizedBox(
+        width: 500,
+        height: 300,
+        child: Column(
+          children: [
+            SizedBox(
+              width: 200,
+              height: 170,
+              child: ListView(
+                  scrollDirection: Axis.vertical,
+                  controller: scrollController,
+                  shrinkWrap: true,
+                  children: tempMemberList
+                      .map((e) => ListTile(title: Text(e.toString())))
+                      .toList()),
+            ),
+            Row(
+              children: [
+                SizedBox(
+                    width: 235,
+                    height: 10,
+                    child: TextField(
+                      controller: textController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      textInputAction: TextInputAction.go,
+                      onSubmitted: (value) {
+                        textFieldSubmitAction(tempMemberList, textController,
+                            scrollController); // 중복 검사 필요
+                      },
+                    )),
+                IconButton(
+                    onPressed: () {
+                      textFieldSubmitAction(
+                          tempMemberList, textController, scrollController);
+                    },
+                    icon: const Icon(Icons.add))
+              ],
+            )
+          ],
+        ),
+      ),
+      actions: [
+        ElevatedButton(onPressed: () {}, child: const Text("확인")),
+        ElevatedButton(onPressed: () {}, child: const Text("취소"))
+      ],
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+    );
+  }
+
+  void textFieldSubmitAction(List<int> tempMemberList,
+      TextEditingController textController, ScrollController scrollController) {
+    setState(() {
+      tempMemberList.add(int.parse(textController.value.text));
+    });
+    scrollController.animateTo(scrollController.position.extentTotal,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn);
   }
 }
