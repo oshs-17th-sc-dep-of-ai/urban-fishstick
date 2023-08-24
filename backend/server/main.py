@@ -21,7 +21,10 @@ def example_route():
     if check_value:
         apply = deque.apply_meal(user_id)
         index = deque.index(user_id)
-    response_data = {apply:index}
+    response_data = {
+                    "success" : True,
+                    "waiting" : index
+                     }
     return response_data
 if __name__ == '__main__':
     example_bp.run(debug=True)
