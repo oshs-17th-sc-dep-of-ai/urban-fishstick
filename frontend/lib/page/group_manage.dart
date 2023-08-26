@@ -11,6 +11,10 @@ class GroupManagePageWidget extends StatefulWidget {
 }
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
+  void refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     const fileUtil = FileUtil("./group.json");
@@ -51,7 +55,6 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                                   return buildAlertDialog(tempMemberList,
                                       textController, scrollController);
                                 });
-                            setState(() {});
                           },
                           icon: const Icon(Icons.add),
                         )
@@ -84,13 +87,23 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
             SizedBox(
               width: 200,
               height: 170,
-              child: ListView(
-                  scrollDirection: Axis.vertical,
-                  controller: scrollController,
-                  shrinkWrap: true,
-                  children: tempMemberList
-                      .map((e) => ListTile(title: Text(e.toString())))
-                      .toList()),
+              // child: ListView(
+              //     scrollDirection: Axis.vertical,
+              //     controller: scrollController,
+              //     shrinkWrap: true,
+              //     children: tempMemberList
+              //         .map((e) => ListTile(title: Text(e.toString())))
+              //         .toList()),
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: tempMemberList.length,
+                itemBuilder: (context, index) {
+                  // tempMemberList
+                  //     .map((e) => ListTile(title: Text(e.toString())))
+                  //     .toList();
+                  ListTile(title: Text(tempMemberList[index].toString()));
+                },
+              ),
             ),
             Row(
               children: [
@@ -105,12 +118,14 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                       onSubmitted: (value) {
                         textFieldSubmitAction(tempMemberList, textController,
                             scrollController); // 중복 검사 필요
+                        refresh();
                       },
                     )),
                 IconButton(
                     onPressed: () {
                       textFieldSubmitAction(
                           tempMemberList, textController, scrollController);
+                      refresh();
                     },
                     icon: const Icon(Icons.add))
               ],
