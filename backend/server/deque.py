@@ -8,8 +8,8 @@ def apply_meal(student):
     return student
 
 # 입장
-def enter():
-    if q:
+def enter(leave_person):
+    if leave_person == len(q[0]):
         return q.pop()
 
 # 인덱스 함수
