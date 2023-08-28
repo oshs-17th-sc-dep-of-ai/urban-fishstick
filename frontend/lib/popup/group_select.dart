@@ -10,8 +10,6 @@ class GroupSelectPageWidget extends StatefulWidget {
 class _GroupSelectPageWidgetState extends State<GroupSelectPageWidget> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Placeholder(),
-    );
+    return const Scaffold(body: Placeholder());
   }
 }

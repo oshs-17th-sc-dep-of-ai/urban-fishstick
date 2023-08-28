@@ -40,4 +40,14 @@ class FileUtil {
     final file = await _getLocalFile();
     return jsonDecode(await file.readAsString());
   }
+
+  Future<void> writeFile(String content) async {
+    final file = await _getLocalFile();
+    file.writeAsString(content);
+  }
+
+  Future<void> writeFileJSON(dynamic content) async {
+    final file = await _getLocalFile();
+    file.writeAsString(jsonEncode(content));
+  }
 }

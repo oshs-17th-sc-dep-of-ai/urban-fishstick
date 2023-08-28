@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
         },
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "홈"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "신청"),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: "신청"),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: "그룹 관리"),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
         ]);
