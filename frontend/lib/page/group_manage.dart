@@ -12,13 +12,12 @@ class GroupManagePageWidget extends StatefulWidget {
 }
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
-  void refresh() {
-    setState(() {});
-  }
+  final popupActions = <Dialog>[];
 
   @override
   Widget build(BuildContext context) {
     const fileUtil = FileUtil("./group.json");
+    final deviceSize = MediaQuery.of(context).size;
 
     return FutureBuilder(
       future: fileUtil.exists(),
@@ -42,7 +41,23 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                         ...(data as Map)
                             .keys
                             .map((e) => Card(
-                                child: ListTile(title: Text(e.toString()))))
+                                child: ListTile(
+                                    title: Text(e.toString()),
+                                    trailing: PopupMenuButton(
+                                      onSelected: (dynamic item) {
+                                        // TODO: 선택 시 동작 구현
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                item);
+                                      },
+                                      itemBuilder: (BuildContext context) {
+                                        return [
+                                          PopupMenuItem(child: Text("Edit")),
+                                          PopupMenuItem(child: Text("Delete")),
+                                        ];
+                                      },
+                                    ))))
                             .toList(),
                         IconButton.outlined(
                           onPressed: () {
