@@ -9,9 +9,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="그룹 추가 기능 구현 완료">
+    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="그룹 편집 기능 구현중">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/page/group_manage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/group_manage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/popup/group_create.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/popup/group_create.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +153,14 @@
       <option name="project" value="LOCAL" />
       <updated>1693230554237</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="그룹 편집 기능 구현중">
+      <created>1693401975359</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1693401975359</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -215,7 +223,8 @@
     <MESSAGE value="그룹 관리: 파일 생성 후 읽기 기능 추가" />
     <MESSAGE value="진행 상황 저장" />
     <MESSAGE value="그룹 추가 기능 구현 완료" />
-    <option name="LAST_COMMIT_MESSAGE" value="그룹 추가 기능 구현 완료" />
+    <MESSAGE value="그룹 편집 기능 구현중" />
+    <option name="LAST_COMMIT_MESSAGE" value="그룹 편집 기능 구현중" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="home/Sharp/Workspace/urban-fishstick/frontend/coverage/lcov.info" NAME="tests in widget_test.dart Coverage Results" MODIFIED="1691902420207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="FlutterCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

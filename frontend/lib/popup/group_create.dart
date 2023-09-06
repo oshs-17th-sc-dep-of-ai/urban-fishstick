@@ -12,6 +12,8 @@ class GroupCreatePageWidget extends StatefulWidget {
 }
 
 class _GroupCreatePageWidgetState extends State<GroupCreatePageWidget> {
+  void update() => setState(() {});
+
   @override
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
@@ -29,16 +31,14 @@ class _GroupCreatePageWidgetState extends State<GroupCreatePageWidget> {
             children: [
               SizedBox(
                 height: 150,
-                child: ListView(
+                child: ListView.builder(
+                    itemCount: tempMemberList.length,
                     controller: scrollController,
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    children: tempMemberList
-                        .map((member) => ListTile(
-                              title: Text(member.toString()),
-                            ))
-                        .toList() // member 리스트 이용, 위젯 생성 필요
-                    ),
+                    itemBuilder: (context, index) => ListTile(
+                          title: Text(tempMemberList[index].toString()),
+                        )),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -65,7 +65,6 @@ class _GroupCreatePageWidgetState extends State<GroupCreatePageWidget> {
                                   scrollController.position.extentTotal,
                                   duration: const Duration(milliseconds: 500),
                                   curve: Curves.fastOutSlowIn);
-                              // debugPrint("$tempMemberList");
                             });
                           }
                         },
@@ -102,7 +101,9 @@ class _GroupCreatePageWidgetState extends State<GroupCreatePageWidget> {
                           await fileUtil.writeFileJSON(fileData);
 
                           tempMemberList.clear();
-                          if (context.mounted) Navigator.pop(context);
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
                         },
                       ))
                 ],

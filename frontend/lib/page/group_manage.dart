@@ -12,8 +12,6 @@ class GroupManagePageWidget extends StatefulWidget {
 }
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
-  final popupActions = <Dialog>[];
-
   @override
   Widget build(BuildContext context) {
     const fileUtil = FileUtil("./group.json");
@@ -53,8 +51,25 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                                       },
                                       itemBuilder: (BuildContext context) {
                                         return [
-                                          PopupMenuItem(child: Text("Edit")),
-                                          PopupMenuItem(child: Text("Delete")),
+                                          PopupMenuItem(
+                                            child: Text("Edit"),
+                                            onTap: () {},
+                                          ),
+                                          PopupMenuItem(
+                                            child: Text("Delete"),
+                                            onTap: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return buildDeleteDialog(
+                                                        context,
+                                                        data,
+                                                        e,
+                                                        fileUtil);
+                                                  });
+                                            },
+                                          ),
                                         ];
                                       },
                                     ))))
@@ -62,10 +77,12 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                         IconButton.outlined(
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        GroupCreatePageWidget()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const GroupCreatePageWidget()))
+                                .whenComplete(() => setState(() {}));
+                            // setState(() {});
                           },
                           icon: const Icon(Icons.add),
                         )
@@ -84,6 +101,37 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
           );
         }
       },
+    );
+  }
+
+  AlertDialog buildDeleteDialog(
+      BuildContext context, Map<dynamic, dynamic> data, e, FileUtil fileUtil) {
+    return AlertDialog(
+      content: const SizedBox(
+        width: 75,
+        height: 50,
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text("삭제하시겠습니까?"),
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("아니오")),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              data.remove(e);
+              fileUtil.writeFileJSON(data);
+              Navigator.pop(context);
+            });
+          },
+          child: const Text("예"),
+        )
+      ],
     );
   }
 }
