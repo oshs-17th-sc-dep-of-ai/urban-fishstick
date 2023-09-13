@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:frontend/page/group_edit.dart";
 import "package:frontend/popup/group_create.dart";
 
 import "package:frontend/util/file.dart";
@@ -32,62 +33,7 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     final data = snapshot.data;
-                    return ListView(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: [
-                        ...(data as Map)
-                            .keys
-                            .map((e) => Card(
-                                child: ListTile(
-                                    title: Text(e.toString()),
-                                    trailing: PopupMenuButton(
-                                      onSelected: (dynamic item) {
-                                        // TODO: 선택 시 동작 구현
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                item);
-                                      },
-                                      itemBuilder: (BuildContext context) {
-                                        return [
-                                          PopupMenuItem(
-                                            child: Text("Edit"),
-                                            onTap: () {},
-                                          ),
-                                          PopupMenuItem(
-                                            child: Text("Delete"),
-                                            onTap: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return buildDeleteDialog(
-                                                        context,
-                                                        data,
-                                                        e,
-                                                        fileUtil);
-                                                  });
-                                            },
-                                          ),
-                                        ];
-                                      },
-                                    ))))
-                            .toList(),
-                        IconButton.outlined(
-                          onPressed: () {
-                            Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const GroupCreatePageWidget()))
-                                .whenComplete(() => setState(() {}));
-                            // setState(() {});
-                          },
-                          icon: const Icon(Icons.add),
-                        )
-                      ],
-                    );
+                    return buildGroupList(data, context, fileUtil);
                   } else {
                     return const Center(
                       child: Text("Loading group data file..."),
@@ -101,6 +47,65 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
           );
         }
       },
+    );
+  }
+
+  ListView buildGroupList(data, BuildContext context, FileUtil fileUtil) {
+    return ListView(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      children: [
+        ...(data as Map)
+            .keys
+            .map((e) => Card(
+                child: ListTile(
+                    title: Text(e.toString()),
+                    trailing: PopupMenuButton(
+                      onSelected: (dynamic item) {
+                        // TODO: 선택 시 동작 구현
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => item);
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem(
+                            child: const Text("편집"),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => GroupEditPageWidget(
+                                          selectedGroup: e.toString())));
+                            },
+                          ),
+                          PopupMenuItem(
+                            child: const Text("삭제"),
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return buildDeleteDialog(
+                                        context, data, e, fileUtil);
+                                  });
+                            },
+                          ),
+                        ];
+                      },
+                    ))))
+            .toList(),
+        IconButton.outlined(
+          onPressed: () {
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GroupCreatePageWidget()))
+                .whenComplete(() => setState(() {}));
+            // setState(() {});
+          },
+          icon: const Icon(Icons.add),
+        )
+      ],
     );
   }
 

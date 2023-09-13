@@ -77,7 +77,7 @@ class _GroupCreatePageWidgetState extends State<GroupCreatePageWidget> {
                   Flexible(
                       fit: FlexFit.tight,
                       child: IconButton.outlined(
-                        icon: const Icon(Icons.close),
+                        icon: const Icon(Icons.clear),
                         onPressed: () {
                           tempMemberList.clear();
                           Navigator.pop(context);
