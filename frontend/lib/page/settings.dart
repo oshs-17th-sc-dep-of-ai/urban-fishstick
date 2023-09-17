@@ -1,3 +1,5 @@
+import "dart:html";
+
 import "package:flutter/material.dart";
 
 class SettingsPageWidget extends StatelessWidget {
@@ -5,6 +7,7 @@ class SettingsPageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.grey,
@@ -14,8 +17,8 @@ class SettingsPageWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
-                width: 700,
-                height: 100,
+                width: deviceSize.width,
+                height: deviceSize.height * 0.09,
                 color: Colors.red,
                 child: const Text(
                   "알레르기",
@@ -23,8 +26,8 @@ class SettingsPageWidget extends StatelessWidget {
                 ),
               ),
               Container(
-                width: 700,
-                height: 100,
+                width: deviceSize.width,
+                height: deviceSize.height * 0.09,
                 color: Colors.blue,
                 child: const Text(
                   "건의/버그",
@@ -32,8 +35,8 @@ class SettingsPageWidget extends StatelessWidget {
                 ),
               ),
               Container(
-                width: 700,
-                height: 100,
+                width: deviceSize.width,
+                height: deviceSize.height * 0.09,
                 color: Colors.pink,
                 child: const Text(
                   "라이센스",
