@@ -1,5 +1,3 @@
-import "dart:html";
-
 import "package:flutter/material.dart";
 
 class SettingsPageWidget extends StatelessWidget {
@@ -20,27 +18,30 @@ class SettingsPageWidget extends StatelessWidget {
                 width: deviceSize.width,
                 height: deviceSize.height * 0.09,
                 color: Colors.red,
-                child: const Text(
-                  "알레르기",
-                  textAlign: TextAlign.center,
+                child: const Center(
+                  child: Text(
+                    "알레르기",
+                  ),
                 ),
               ),
               Container(
                 width: deviceSize.width,
                 height: deviceSize.height * 0.09,
                 color: Colors.blue,
-                child: const Text(
-                  "건의/버그",
-                  textAlign: TextAlign.center,
+                child: const Center(
+                  child: Text(
+                    "건의/버그",
+                  ),
                 ),
               ),
               Container(
                 width: deviceSize.width,
                 height: deviceSize.height * 0.09,
                 color: Colors.pink,
-                child: const Text(
-                  "라이센스",
-                  textAlign: TextAlign.center,
+                child: const Center(
+                  child: Text(
+                    "라이센스",
+                  ),
                 ),
               )
             ],
