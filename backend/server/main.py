@@ -8,8 +8,6 @@ def apply(num,apply):
     success = apply
 
 example_bp = Flask(__name__)
-profile = Blueprint("profile", __name__)
-example_bp.register_blueprint(profile, url_prefix='/profile')
 @example_bp.route('/', methods=["GET"])
 def example_route():
     req_time = datetime.datetime.now()
