@@ -24,6 +24,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    MediaQuery.of(context).viewInsets.bottom;
     final controller = PageController(initialPage: currentPageIndex);
 
     void update() {
@@ -33,6 +34,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         title: "오성고 급식 앱",
         home: Scaffold(
+          // resizeToAvoidBottomInset: false,
           body: Column(
             children: [buildPageView(controller, update)],
           ),

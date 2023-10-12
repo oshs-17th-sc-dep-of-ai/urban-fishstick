@@ -37,7 +37,8 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                     future: fileUtil.readFileJSON(),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
-                        Map<String, dynamic> data = snapshot.data;
+                        final data = snapshot.data;
+                        debugPrint("$data");
 
                         return Column(
                           children: [
@@ -52,9 +53,21 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                                     controller: titleTextController,
                                   ),
                                   children: [
-                                    ...(data[e] as List)
-                                        .map((c) => Text(c))
-                                        .toList(),
+                                    Row(
+                                      children: [
+                                        const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 25)),
+                                        SizedBox(
+                                          width: deviceSize.width - 50,
+                                          // height: deviceSize.height, // FIXME: 수정 필요
+                                          child: ListView(
+                                            children: buildGroupMember(
+                                                data, e, deviceSize),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                     Row(
                                       children: [
                                         const SizedBox(
@@ -93,7 +106,13 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                                 height: 50,
                                 width: deviceSize.width,
                                 child: IconButton.outlined(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const GroupCreatePageWidget()));
+                                    },
                                     icon: const Icon(Icons.add)),
                               ),
                             )
@@ -115,6 +134,22 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
         }
       },
     );
+  }
+
+  List<Widget> buildGroupMember(
+      Map<String, dynamic> data, dynamic e, Size deviceSize) {
+    return (data[e] as List)
+        .map((c) => SizedBox(
+            height: 50,
+            width: deviceSize.width - 66,
+            child: ListTile(
+              title: Text(c.toString()),
+              trailing: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {},
+              ),
+            )))
+        .toList();
   }
 }
 
@@ -151,8 +186,13 @@ class AddMemberDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            data.update(
-                dataKey, (value) => int.parse(addMemberTextController.text));
+            int member = int.parse(addMemberTextController.text);
+            debugPrint("$data");
+            if (!data[dataKey].contains(member)) {
+              data[dataKey].add(member);
+            }
+            debugPrint("$data");
+
             fileUtil.writeFileJSON(data);
             Navigator.pop(context);
           },

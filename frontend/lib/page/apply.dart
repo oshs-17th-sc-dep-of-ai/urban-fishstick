@@ -164,19 +164,16 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
   SizedBox buildMemberList(ScrollController scrollController) {
     return SizedBox(
       height: 300,
-      child: LimitedBox(
-        maxHeight: 300,
-        child: ListView(
-            controller: scrollController,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            children: _member
-                .map((member) => ListTile(
-                      title: Text(member.toString()),
-                    ))
-                .toList() // member 리스트 이용, 위젯 생성 필요
-            ),
-      ),
+      child: ListView(
+          controller: scrollController,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          children: _member
+              .map((member) => ListTile(
+                    title: Text(member.toString()),
+                  ))
+              .toList() // member 리스트 이용, 위젯 생성 필요
+          ),
     );
   }
 }
