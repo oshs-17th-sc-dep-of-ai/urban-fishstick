@@ -8,9 +8,9 @@ def apply_meal(student):
     return student
 
 # 입장
-def enter(leave_person):
-    if leave_person == len(q[0]):
-        return q.pop()
+def enter(group_leader): 
+  if group_leader in q[0]:
+    return q.pop()
 
 # 인덱스 함수
 def index(student_find):
