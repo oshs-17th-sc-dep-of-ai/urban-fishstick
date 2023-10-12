@@ -12,38 +12,44 @@ class SettingsPageWidget extends StatelessWidget {
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch, //우찬아 힘내
             children: <Widget>[
-              Container(
-                width: deviceSize.width,
-                height: deviceSize.height * 0.09,
-                color: Colors.red,
-                child: const Center(
-                  child: Text(
-                    "알레르기",
-                  ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                 ),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return const Placeholder();
+                  }));
+                },
+                child: const Text("알레르기"),
               ),
-              Container(
-                width: deviceSize.width,
-                height: deviceSize.height * 0.09,
-                color: Colors.blue,
-                child: const Center(
-                  child: Text(
-                    "건의/버그",
-                  ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                 ),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return const Placeholder();
+                  }));
+                },
+                child: const Text("건의/버그"),
               ),
-              Container(
-                width: deviceSize.width,
-                height: deviceSize.height * 0.09,
-                color: Colors.pink,
-                child: const Center(
-                  child: Text(
-                    "라이센스",
-                  ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                 ),
-              )
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return const Placeholder();
+                  }));
+                },
+                child: const Text("라이센스"),
+              ),
             ],
           ),
         ),
