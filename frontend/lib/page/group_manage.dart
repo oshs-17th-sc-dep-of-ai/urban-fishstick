@@ -26,20 +26,106 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
             fileUtil.createFile("{}");
           }
 
-          return Padding(
-            padding: const EdgeInsets.all(8),
-            child: FutureBuilder(
-                future: fileUtil.readFileJSON(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    final data = snapshot.data;
-                    return buildGroupList(data, context, fileUtil);
-                  } else {
-                    return const Center(
-                      child: Text("Loading group data file..."),
-                    );
-                  }
-                }),
+          return Column(
+            children: [
+              const SizedBox(
+                height: 25,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: FutureBuilder(
+                    future: fileUtil.readFileJSON(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final data = snapshot.data;
+                        debugPrint("$data");
+
+                        return Column(
+                          children: [
+                            ...(data.keys.map((e) {
+                              final titleTextController =
+                                  TextEditingController(text: e.toString());
+                              final addMemberTextController =
+                                  TextEditingController();
+
+                              return ExpansionTile(
+                                  title: TextField(
+                                    controller: titleTextController,
+                                  ),
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 25)),
+                                        SizedBox(
+                                          width: deviceSize.width - 50,
+                                          // height: deviceSize.height, // FIXME: 수정 필요
+                                          child: ListView(
+                                            children: buildGroupMember(
+                                                data, e, deviceSize),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 30,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: SizedBox(
+                                            height: 50,
+                                            width: deviceSize.width - 50,
+                                            child: IconButton.outlined(
+                                                onPressed: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AddMemberDialog(
+                                                          addMemberTextController:
+                                                              addMemberTextController,
+                                                          data: data,
+                                                          dataKey: e.toString(),
+                                                          fileUtil: fileUtil,
+                                                        );
+                                                      });
+                                                },
+                                                icon: const Icon(Icons.add)),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ]);
+                            }).toList()),
+                            Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: SizedBox(
+                                height: 50,
+                                width: deviceSize.width,
+                                child: IconButton.outlined(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const GroupCreatePageWidget()));
+                                    },
+                                    icon: const Icon(Icons.add)),
+                              ),
+                            )
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                          child: Text("Loading group data file..."),
+                        );
+                      }
+                    }),
+              ),
+            ],
           );
         } else {
           return const Center(
@@ -50,91 +136,67 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
     );
   }
 
-  ListView buildGroupList(data, BuildContext context, FileUtil fileUtil) {
-    return ListView(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      children: [
-        ...(data as Map)
-            .keys
-            .map((e) => Card(
-                child: ListTile(
-                    title: Text(e.toString()),
-                    trailing: PopupMenuButton(
-                      onSelected: (dynamic item) {
-                        // TODO: 선택 시 동작 구현
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => item);
-                      },
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem(
-                            child: const Text("편집"),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => GroupEditPageWidget(
-                                          selectedGroup: e.toString())));
-                            },
-                          ),
-                          PopupMenuItem(
-                            child: const Text("삭제"),
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return buildDeleteDialog(
-                                        context, data, e, fileUtil);
-                                  });
-                            },
-                          ),
-                        ];
-                      },
-                    ))))
-            .toList(),
-        IconButton.outlined(
-          onPressed: () {
-            Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const GroupCreatePageWidget()))
-                .whenComplete(() => setState(() {}));
-            // setState(() {});
-          },
-          icon: const Icon(Icons.add),
-        )
-      ],
-    );
+  List<Widget> buildGroupMember(
+      Map<String, dynamic> data, dynamic e, Size deviceSize) {
+    return (data[e] as List)
+        .map((c) => SizedBox(
+            height: 50,
+            width: deviceSize.width - 66,
+            child: ListTile(
+              title: Text(c.toString()),
+              trailing: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {},
+              ),
+            )))
+        .toList();
   }
+}
 
-  AlertDialog buildDeleteDialog(
-      BuildContext context, Map<dynamic, dynamic> data, e, FileUtil fileUtil) {
+class AddMemberDialog extends StatelessWidget {
+  const AddMemberDialog({
+    super.key,
+    required this.addMemberTextController,
+    required this.data,
+    required this.dataKey,
+    required this.fileUtil,
+  });
+
+  final TextEditingController addMemberTextController;
+  final Map<String, dynamic> data;
+  final String dataKey;
+  final FileUtil fileUtil;
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
-      content: const SizedBox(
-        width: 75,
-        height: 50,
-        child: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text("삭제하시겠습니까?"),
+      content: SizedBox(
+        width: 300,
+        height: 75,
+        child: TextField(
+          controller: addMemberTextController,
         ),
       ),
       actions: [
         TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text("아니오")),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("취소"),
+        ),
         TextButton(
           onPressed: () {
-            setState(() {
-              data.remove(e);
-              fileUtil.writeFileJSON(data);
-              Navigator.pop(context);
-            });
+            int member = int.parse(addMemberTextController.text);
+            debugPrint("$data");
+            if (!data[dataKey].contains(member)) {
+              data[dataKey].add(member);
+            }
+            debugPrint("$data");
+
+            fileUtil.writeFileJSON(data);
+            Navigator.pop(context);
           },
-          child: const Text("예"),
+          child: const Text("추가"),
         )
       ],
     );

@@ -18,6 +18,8 @@ class GroupEditPageWidget extends StatefulWidget {
 }
 
 class _GroupEditPageWidgetState extends State<GroupEditPageWidget> {
+  void update() => setState(() {});
+
   @override
   Widget build(BuildContext context) {
     const fileUtil = FileUtil("./group.json");
@@ -34,55 +36,11 @@ class _GroupEditPageWidgetState extends State<GroupEditPageWidget> {
                   future: fileUtil.readFileJSON(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      List data = snapshot.data[selectedGroup];
+                      tempMember = snapshot.data[selectedGroup];
 
-                      tempMember = data;
+                      debugPrint("$tempMember");
 
-                      return ListView(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          children: [
-                            ...data
-                                .map((e) => Card(
-                                      child: ListTile(
-                                        title: Text(e.toString()),
-                                        trailing: IconButton(
-                                          icon: const Icon(Icons.clear),
-                                          onPressed: () {
-                                            setState(() {
-                                              data.remove(e);
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ))
-                                .toList(),
-                            Card(
-                              // TODO: 배경 색 변경
-                              child: IconButton(
-                                icon: const Icon(Icons.add),
-                                onPressed: () {
-                                  final formKey = GlobalKey<FormState>();
-                                  final textController =
-                                      TextEditingController();
-                                  var inputDecorator = const InputDecoration(
-                                    hintText: "학번 입력",
-                                    counterText: '',
-                                  );
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AddMemberDialogWidget(
-                                          formKey: formKey,
-                                          textController: textController,
-                                          inputDecorator: inputDecorator,
-                                          fileUtil: fileUtil);
-                                    },
-                                  ).whenComplete(() => setState(() {}));
-                                },
-                              ),
-                            ),
-                          ]);
+                      return ExpansionTile(title: Text("Test"));
                     } else {
                       return const Text("Loading group data...");
                     }
@@ -157,6 +115,7 @@ class AddMemberDialogWidget extends StatelessWidget {
           child: const Text("추가"),
           onPressed: () {
             tempMember.add(int.parse(textController.text));
+            debugPrint("$tempMember");
             Navigator.pop(context);
           },
         )
