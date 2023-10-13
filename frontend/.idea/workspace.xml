@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="그룹 관리: 멤버 추가 시 팝업 창 표시">
+      <change afterPath="$PROJECT_DIR$/lib/page/gm.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/util/group.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/page/apply.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/apply.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/page/group_manage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/group_manage.dart" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DartProblemsView" auto-scroll-to-source="true" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectId" id="2ThJ4ieRViC0HtVExfKgVp7v5Kl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.android.tools.idea.devicemanager.tab&quot;: &quot;Physical&quot;,
+    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/skybl/Desktop/school/lunch/urban-fishstick/frontend&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Workspace\StdCouncil\urban-fishstick\frontend\lib\popup" />
+      <recent name="$PROJECT_DIR$/lib/dialog" />
+      <recent name="$PROJECT_DIR$/lib/page" />
+      <recent name="E:\Workspace\StdCouncil\urban-fishstick\frontend\test" />
+      <recent name="E:\Workspace\StdCouncil\urban-fishstick\frontend\lib\util" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Flutter.main.dart">
+    <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
+      <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tests in network_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/network_test.dart" />
+      <option name="useRegexp" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tests in widget_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/widget_test.dart" />
+      <option name="useRegexp" value="false" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Flutter Test.tests in network_test.dart" />
+        <item itemvalue="Flutter Test.tests in widget_test.dart" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="" />
+      <created>1691489190273</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1691489190273</updated>
+    </task>
+    <task id="LOCAL-00001" summary="페이지뷰/네비게이션 바 상태 동기화 함수 필요">
+      <created>1691675681262</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1691675681262</updated>
+    </task>
+    <task id="LOCAL-00002" summary="급식 정보 받기 성공">
+      <created>1692371698392</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1692371698392</updated>
+    </task>
+    <task id="LOCAL-00003" summary="급식 정보 저장 기능 추가">
+      <created>1692420882771</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1692420882771</updated>
+    </task>
+    <task id="LOCAL-00004" summary="신청 페이지 UI 크기 조정">
+      <created>1692460809083</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1692460809083</updated>
+    </task>
+    <task id="LOCAL-00005" summary="신청 페이지 UI 개선">
+      <created>1692615130870</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1692615130870</updated>
+    </task>
+    <task id="LOCAL-00006" summary="그룹 관리: 파일 생성 후 읽기 기능 추가">
+      <created>1692794730181</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1692794730181</updated>
+    </task>
+    <task id="LOCAL-00007" summary="진행 상황 저장">
+      <created>1692882781706</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1692882781706</updated>
+    </task>
+    <task id="LOCAL-00008" summary="그룹 추가 기능 구현 완료">
+      <created>1693230554237</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1693230554237</updated>
+    </task>
+    <task id="LOCAL-00009" summary="그룹 편집 기능 구현중">
+      <created>1693401975359</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1693401975359</updated>
+    </task>
+    <task id="LOCAL-00010" summary="그룹 편집 페이지: 멤버 제거 / 추가 시 화면에 적용 안됨">
+      <created>1694788507392</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1694788507392</updated>
+    </task>
+    <task id="LOCAL-00011" summary="그룹 관리: 멤버 추가 시 팝업 창 표시">
+      <created>1695047990835</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1695047990835</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_WIDTH">
+      <map>
+        <entry key="Table.Default.Date.ColumnIdWidth" value="86" />
+      </map>
+    </option>
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="5b03f84d-725e-4a20-88f6-dbaa44a815d5">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="페이지뷰/네비게이션 바 상태 동기화 함수 필요" />
+    <MESSAGE value="급식 정보 받기 성공" />
+    <MESSAGE value="급식 정보 저장 기능 추가" />
+    <MESSAGE value="신청 페이지 UI 크기 조정" />
+    <MESSAGE value="신청 페이지 UI 개선" />
+    <MESSAGE value="그룹 관리: 파일 생성 후 읽기 기능 추가" />
+    <MESSAGE value="진행 상황 저장" />
+    <MESSAGE value="그룹 추가 기능 구현 완료" />
+    <MESSAGE value="그룹 편집 기능 구현중" />
+    <MESSAGE value="그룹 편집 페이지 개발중" />
+    <MESSAGE value="그룹 편집 페이지: 멤버 제거 / 추가 시 화면에 적용 안됨" />
+    <MESSAGE value="그룹 관리: 멤버 추가 시 팝업 창 표시" />
+    <option name="LAST_COMMIT_MESSAGE" value="그룹 관리: 멤버 추가 시 팝업 창 표시" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="home/Sharp/Workspace/urban-fishstick/frontend/coverage/lcov.info" NAME="tests in widget_test.dart Coverage Results" MODIFIED="1691902420207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="FlutterCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
