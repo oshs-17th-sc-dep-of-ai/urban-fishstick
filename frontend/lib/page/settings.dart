@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
+import "package:frontend/page/allergy.dart";
+import "package:frontend/page/license.dart";
 
 class SettingsPageWidget extends StatelessWidget {
   const SettingsPageWidget({super.key});
-
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -19,10 +20,13 @@ class SettingsPageWidget extends StatelessWidget {
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                 ),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return const Placeholder();
-                  }));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const AllergyPageWidget(),
+                    ),
+                  );
                 },
                 child: const Text("알레르기"),
               ),
@@ -31,10 +35,12 @@ class SettingsPageWidget extends StatelessWidget {
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                 ),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return const Placeholder();
-                  }));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AllergyPageWidget(),
+                    ),
+                  );
                 },
                 child: const Text("건의/버그"),
               ),
