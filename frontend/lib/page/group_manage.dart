@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+
 import "package:frontend/popup/group_create.dart";
 
 import "package:frontend/util/file.dart";
@@ -12,8 +13,6 @@ class GroupManagePageWidget extends StatefulWidget {
 }
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
-  final popupActions = <Dialog>[];
-
   @override
   Widget build(BuildContext context) {
     const fileUtil = FileUtil("./group.json");
@@ -27,49 +26,40 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
             fileUtil.createFile("{}");
           }
 
+          fileUtil.writeFileJSON({
+            "TestGroup1": [
+              10001,
+              10002,
+              10003
+            ],
+            "TestGroup2": [
+              20001,
+              20002,
+              20003
+            ]
+          }); // for test
+
           return Padding(
             padding: const EdgeInsets.all(8),
             child: FutureBuilder(
                 future: fileUtil.readFileJSON(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    final data = snapshot.data;
-                    return ListView(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: [
-                        ...(data as Map)
-                            .keys
-                            .map((e) => Card(
-                                child: ListTile(
-                                    title: Text(e.toString()),
-                                    trailing: PopupMenuButton(
-                                      onSelected: (dynamic item) {
-                                        // TODO: 선택 시 동작 구현
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                item);
-                                      },
-                                      itemBuilder: (BuildContext context) {
-                                        return [
-                                          PopupMenuItem(child: Text("Edit")),
-                                          PopupMenuItem(child: Text("Delete")),
-                                        ];
-                                      },
-                                    ))))
-                            .toList(),
-                        IconButton.outlined(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        GroupCreatePageWidget()));
-                          },
-                          icon: const Icon(Icons.add),
-                        )
-                      ],
+                    Map<String, dynamic> data = snapshot.data;
+
+                    debugPrint("$data");
+
+                    return Center(
+                      child: FractionallySizedBox(
+                        widthFactor: 0.9,
+                        heightFactor: 0.9,
+                        child: Column(
+                          children: [
+                            GroupWidget(data: data,),
+                            IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+                          ],
+                        ),
+                      ),
                     );
                   } else {
                     return const Center(
@@ -85,5 +75,40 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
         }
       },
     );
+  }
+}
+
+class GroupWidget extends StatelessWidget {
+  const GroupWidget({
+    super.key,
+    required this.data,
+  });
+
+  final Map<String, dynamic> data;
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> groupList = [];
+
+    data.forEach((key, value) {
+      groupList.add(buildGroup(key, value));
+    });
+
+    return Column(children: groupList);
+  }
+
+  Widget buildGroup(String groupName, List<dynamic> memberList) {
+    return ExpansionTile(
+      title: Text(groupName),
+      children: [
+        Column(children: [
+          ...memberList.map((member) =>
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ListTile(title: Text(member.toString())),
+              )).toList(),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.add))
+        ],)
+      ],);
   }
 }
