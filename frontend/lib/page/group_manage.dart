@@ -1,8 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
-
-import "package:frontend/popup/group_create.dart";
-
 import "package:frontend/util/file.dart";
 
 class GroupManagePageWidget extends StatefulWidget {
@@ -13,9 +9,36 @@ class GroupManagePageWidget extends StatefulWidget {
 }
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
+  FileUtil fileUtil = const FileUtil("./group.json");
+
+  TextButton resetGroupData() {
+    return TextButton(
+        onPressed: () {
+          setState(() {
+            fileUtil.writeFileJSON({
+              "TestGroup1": [10001, 10002, 10003],
+              "TestGroup2": [20001, 20002, 20003],
+              "EmptyGroup": []
+            });
+          }); // for test
+        },
+        child: const Text("리셋"));
+  }
+
+  IconButton createNewGroup(Map<String, dynamic> data) {
+    return IconButton(
+        onPressed: () {
+          setState(() {
+            data["새 그룹 ${data.length + 1}"] = [];
+
+            fileUtil.writeFileJSON(data);
+          });
+        },
+        icon: const Icon(Icons.add));
+  }
+
   @override
   Widget build(BuildContext context) {
-    const fileUtil = FileUtil("./group.json");
     final deviceSize = MediaQuery.of(context).size;
 
     return FutureBuilder(
@@ -25,19 +48,6 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
           if (!(snapshot.data!)) {
             fileUtil.createFile("{}");
           }
-
-          fileUtil.writeFileJSON({
-            "TestGroup1": [
-              10001,
-              10002,
-              10003
-            ],
-            "TestGroup2": [
-              20001,
-              20002,
-              20003
-            ]
-          }); // for test
 
           return Padding(
             padding: const EdgeInsets.all(8),
@@ -51,13 +61,18 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
 
                     return Center(
                       child: FractionallySizedBox(
-                        widthFactor: 0.9,
-                        heightFactor: 0.9,
-                        child: Column(
-                          children: [
-                            GroupWidget(data: data,),
-                            IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
-                          ],
+                        widthFactor: 1,
+                        heightFactor: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              GroupWidget(data: data),
+                              createNewGroup(data),
+                              resetGroupData(), // NOTE: 완성 시 제거
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -78,7 +93,7 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
   }
 }
 
-class GroupWidget extends StatelessWidget {
+class GroupWidget extends StatefulWidget {
   const GroupWidget({
     super.key,
     required this.data,
@@ -87,10 +102,17 @@ class GroupWidget extends StatelessWidget {
   final Map<String, dynamic> data;
 
   @override
+  State<GroupWidget> createState() => _GroupWidgetState();
+}
+
+class _GroupWidgetState extends State<GroupWidget> {
+  FileUtil fileUtil = const FileUtil("./group.json");
+
+  @override
   Widget build(BuildContext context) {
     List<Widget> groupList = [];
 
-    data.forEach((key, value) {
+    widget.data.forEach((key, value) {
       groupList.add(buildGroup(key, value));
     });
 
@@ -99,16 +121,141 @@ class GroupWidget extends StatelessWidget {
 
   Widget buildGroup(String groupName, List<dynamic> memberList) {
     return ExpansionTile(
-      title: Text(groupName),
+      title: Row(
+        children: [
+          Text(groupName),
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      TextEditingController renameTextController =
+                          TextEditingController(text: groupName);
+
+                      return AlertDialog(
+                        content: SizedBox(
+                          width: 300,
+                          height: 75,
+                          child: TextField(
+                            controller: renameTextController,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text("취소"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                widget.data[renameTextController.text] = widget.data[groupName];
+                                widget.data.remove(groupName);
+
+                                debugPrint("${widget.data}");
+
+                                fileUtil.writeFileJSON(widget.data);
+
+                                Navigator.pop(context);
+                              });
+                            },
+                            child: const Text("변경"),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(
+                Icons.edit,
+                size: 15,
+              ))
+        ],
+      ),
       children: [
-        Column(children: [
-          ...memberList.map((member) =>
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListTile(title: Text(member.toString())),
-              )).toList(),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.add))
-        ],)
-      ],);
+        Column(
+          children: [
+            ...memberList
+                .map((member) => Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: ListTile(
+                        title: Text(member.toString()),
+                        trailing: IconButton(
+                          onPressed: () {
+                            buildRemoveMemberDialog(groupName, member);
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                    ))
+                .toList(),
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        TextEditingController textController =
+                            TextEditingController();
+
+                        return AlertDialog(
+                          content: SizedBox(
+                            width: 300,
+                            height: 75,
+                            child: Center(
+                                child: TextField(
+                              controller: textController,
+                            )),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("취소"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                if (textController.text.isNotEmpty) {
+                                  setState(() {
+                                    widget.data[groupName]
+                                        .add(int.parse(textController.text));
+                                    fileUtil.writeFileJSON(widget.data);
+                                    Navigator.pop(context);
+                                  });
+                                }
+                              },
+                              child: const Text("추가"),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                icon: const Icon(Icons.add))
+          ],
+        )
+      ],
+    );
+  }
+
+  Future<dynamic> buildRemoveMemberDialog(String groupName, int member) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              content: const SizedBox(
+                width: 200,
+                height: 75,
+                child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("취소")),
+                TextButton(
+                  onPressed: () => setState(() {
+                    // 멤버 제거
+                    widget.data[groupName].remove(member);
+                    fileUtil.writeFileJSON(widget.data);
+                    Navigator.pop(context);
+                  }),
+                  child: const Text("제거"),
+                ),
+              ],
+            ));
   }
 }
