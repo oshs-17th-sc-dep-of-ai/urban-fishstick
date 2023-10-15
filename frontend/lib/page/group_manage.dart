@@ -1,8 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
-import "package:frontend/page/group_edit.dart";
-import "package:frontend/popup/group_create.dart";
-
 import "package:frontend/util/file.dart";
 
 class GroupManagePageWidget extends StatefulWidget {
@@ -13,9 +9,36 @@ class GroupManagePageWidget extends StatefulWidget {
 }
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
+  FileUtil fileUtil = const FileUtil("./group.json");
+
+  TextButton resetGroupData() {
+    return TextButton(
+        onPressed: () {
+          setState(() {
+            fileUtil.writeFileJSON({
+              "TestGroup1": [10001, 10002, 10003],
+              "TestGroup2": [20001, 20002, 20003],
+              "EmptyGroup": []
+            });
+          }); // for test
+        },
+        child: const Text("리셋"));
+  }
+
+  IconButton createNewGroup(Map<String, dynamic> data) {
+    return IconButton(
+        onPressed: () {
+          setState(() {
+            data["새 그룹 ${data.length + 1}"] = [];
+
+            fileUtil.writeFileJSON(data);
+          });
+        },
+        icon: const Icon(Icons.add));
+  }
+
   @override
   Widget build(BuildContext context) {
-    const fileUtil = FileUtil("./group.json");
     final deviceSize = MediaQuery.of(context).size;
 
     return FutureBuilder(
@@ -26,106 +49,39 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
             fileUtil.createFile("{}");
           }
 
-          return Column(
-            children: [
-              const SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: FutureBuilder(
-                    future: fileUtil.readFileJSON(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        final data = snapshot.data;
-                        debugPrint("$data");
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: FutureBuilder(
+                future: fileUtil.readFileJSON(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    Map<String, dynamic> data = snapshot.data;
 
-                        return Column(
-                          children: [
-                            ...(data.keys.map((e) {
-                              final titleTextController =
-                                  TextEditingController(text: e.toString());
-                              final addMemberTextController =
-                                  TextEditingController();
+                    debugPrint("$data");
 
-                              return ExpansionTile(
-                                  title: TextField(
-                                    controller: titleTextController,
-                                  ),
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 25)),
-                                        SizedBox(
-                                          width: deviceSize.width - 50,
-                                          // height: deviceSize.height, // FIXME: 수정 필요
-                                          child: ListView(
-                                            children: buildGroupMember(
-                                                data, e, deviceSize),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 30,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(2),
-                                          child: SizedBox(
-                                            height: 50,
-                                            width: deviceSize.width - 50,
-                                            child: IconButton.outlined(
-                                                onPressed: () {
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return AddMemberDialog(
-                                                          addMemberTextController:
-                                                              addMemberTextController,
-                                                          data: data,
-                                                          dataKey: e.toString(),
-                                                          fileUtil: fileUtil,
-                                                        );
-                                                      });
-                                                },
-                                                icon: const Icon(Icons.add)),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ]);
-                            }).toList()),
-                            Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: SizedBox(
-                                height: 50,
-                                width: deviceSize.width,
-                                child: IconButton.outlined(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const GroupCreatePageWidget()));
-                                    },
-                                    icon: const Icon(Icons.add)),
-                              ),
-                            )
-                          ],
-                        );
-                      } else {
-                        return const Center(
-                          child: Text("Loading group data file..."),
-                        );
-                      }
-                    }),
-              ),
-            ],
+                    return Center(
+                      child: FractionallySizedBox(
+                        widthFactor: 1,
+                        heightFactor: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              GroupWidget(data: data),
+                              createNewGroup(data),
+                              resetGroupData(), // NOTE: 완성 시 제거
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                      child: Text("Loading group data file..."),
+                    );
+                  }
+                }),
           );
         } else {
           return const Center(
@@ -135,70 +91,171 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
       },
     );
   }
-
-  List<Widget> buildGroupMember(
-      Map<String, dynamic> data, dynamic e, Size deviceSize) {
-    return (data[e] as List)
-        .map((c) => SizedBox(
-            height: 50,
-            width: deviceSize.width - 66,
-            child: ListTile(
-              title: Text(c.toString()),
-              trailing: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {},
-              ),
-            )))
-        .toList();
-  }
 }
 
-class AddMemberDialog extends StatelessWidget {
-  const AddMemberDialog({
+class GroupWidget extends StatefulWidget {
+  const GroupWidget({
     super.key,
-    required this.addMemberTextController,
     required this.data,
-    required this.dataKey,
-    required this.fileUtil,
   });
 
-  final TextEditingController addMemberTextController;
   final Map<String, dynamic> data;
-  final String dataKey;
-  final FileUtil fileUtil;
+
+  @override
+  State<GroupWidget> createState() => _GroupWidgetState();
+}
+
+class _GroupWidgetState extends State<GroupWidget> {
+  FileUtil fileUtil = const FileUtil("./group.json");
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: SizedBox(
-        width: 300,
-        height: 75,
-        child: TextField(
-          controller: addMemberTextController,
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text("취소"),
-        ),
-        TextButton(
-          onPressed: () {
-            int member = int.parse(addMemberTextController.text);
-            debugPrint("$data");
-            if (!data[dataKey].contains(member)) {
-              data[dataKey].add(member);
-            }
-            debugPrint("$data");
+    List<Widget> groupList = [];
 
-            fileUtil.writeFileJSON(data);
-            Navigator.pop(context);
-          },
-          child: const Text("추가"),
+    widget.data.forEach((key, value) {
+      groupList.add(buildGroup(key, value));
+    });
+
+    return Column(children: groupList);
+  }
+
+  Widget buildGroup(String groupName, List<dynamic> memberList) {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Text(groupName),
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      TextEditingController renameTextController =
+                          TextEditingController(text: groupName);
+
+                      return AlertDialog(
+                        content: SizedBox(
+                          width: 300,
+                          height: 75,
+                          child: TextField(
+                            controller: renameTextController,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text("취소"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                widget.data[renameTextController.text] = widget.data[groupName];
+                                widget.data.remove(groupName);
+
+                                debugPrint("${widget.data}");
+
+                                fileUtil.writeFileJSON(widget.data);
+
+                                Navigator.pop(context);
+                              });
+                            },
+                            child: const Text("변경"),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(
+                Icons.edit,
+                size: 15,
+              ))
+        ],
+      ),
+      children: [
+        Column(
+          children: [
+            ...memberList
+                .map((member) => Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: ListTile(
+                        title: Text(member.toString()),
+                        trailing: IconButton(
+                          onPressed: () {
+                            buildRemoveMemberDialog(groupName, member);
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                    ))
+                .toList(),
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        TextEditingController textController =
+                            TextEditingController();
+
+                        return AlertDialog(
+                          content: SizedBox(
+                            width: 300,
+                            height: 75,
+                            child: Center(
+                                child: TextField(
+                              controller: textController,
+                            )),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("취소"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                if (textController.text.isNotEmpty) {
+                                  setState(() {
+                                    widget.data[groupName]
+                                        .add(int.parse(textController.text));
+                                    fileUtil.writeFileJSON(widget.data);
+                                    Navigator.pop(context);
+                                  });
+                                }
+                              },
+                              child: const Text("추가"),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                icon: const Icon(Icons.add))
+          ],
         )
       ],
     );
+  }
+
+  Future<dynamic> buildRemoveMemberDialog(String groupName, int member) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              content: const SizedBox(
+                width: 200,
+                height: 75,
+                child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("취소")),
+                TextButton(
+                  onPressed: () => setState(() {
+                    // 멤버 제거
+                    widget.data[groupName].remove(member);
+                    fileUtil.writeFileJSON(widget.data);
+                    Navigator.pop(context);
+                  }),
+                  child: const Text("제거"),
+                ),
+              ],
+            ));
   }
 }
