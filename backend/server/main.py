@@ -25,9 +25,11 @@ def example_route():
         "grade" : "Cannot enter", # 10분 전 3학년 이하
         "input" : "Input error" # 입력 오류
     }
+
+    # 입력 오류 아닐시, 요청 여부와 학번, 
     if not success:    
         response_data = { 
-            "successs" : False,
+            "success" : False,
             "reason" : reason["input"]
             }
     else:

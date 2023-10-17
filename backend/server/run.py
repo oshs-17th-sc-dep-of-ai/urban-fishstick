@@ -8,7 +8,7 @@
 # #     returned_value = deque.enter([12312])
 # #     alarm.example_bp.run(debug=True)
 
-import alarm,deque,main
+import alarm,deque,main,priority
 main.apply([7],True)
 if __name__ == '__main__':
-    main.example_bp.run(debug=True)
+    priority.app.run(debug=True)
