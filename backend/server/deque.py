@@ -18,3 +18,7 @@ def index(student_find):
     큐에서 찾지 못할 경우 -1 반환
     """
     return q.index(student_find) if student_find in q else -1 
+
+# 대기 인원
+def waiting():
+    return len(q)
