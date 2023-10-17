@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:frontend/page/allergy.dart";
 import "package:frontend/page/license.dart";
+import "package:frontend/page/bug.dart";
 
 class SettingsPageWidget extends StatelessWidget {
   const SettingsPageWidget({super.key});
@@ -38,7 +39,7 @@ class SettingsPageWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const AllergyPageWidget(),
+                      builder: (BuildContext context) => const BugPageWidget(),
                     ),
                   );
                 },
@@ -49,10 +50,13 @@ class SettingsPageWidget extends StatelessWidget {
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                 ),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return const Placeholder();
-                  }));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const LicensePageWidget(),
+                    ),
+                  );
                 },
                 child: const Text("라이센스"),
               ),
