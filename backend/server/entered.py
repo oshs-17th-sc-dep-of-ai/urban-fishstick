@@ -1,12 +1,15 @@
 from collections import deque
-from flask import Flask, request, jsonify
+from flask import Flask, Blueprint, request, jsonify
 from datetime import datetime, time
 
 app = Flask(__name__)
 
 q = deque()
 
+entered_blueprint = Blueprint("entered", __name__)
+
 REM_TABLE = 200
+
 
 # 급식 신청 시간 범위(11시 30분 ~ 11시 40분)
 lunch_start_time = time(11, 30)  
@@ -22,7 +25,7 @@ def check_lunch_time():
 def remaining_table(REM_TABLE, entered):
     return REM_TABLE - entered
 
-@app.route("/apply", methods=["POST"])
+@entered_blueprint.route("/apply", methods=["POST"])
 def push_applicant():
     body = request.get_json()
 
@@ -49,6 +52,9 @@ def push_applicant():
     
     # 신청 성공!
     return jsonify({'message': f'현재 남은 좌석 수: {updated_rem_table}'})
+
+# 블루프린트 등록
+app.register_blueprint(entered_blueprint)
 
 # 실행
 if __name__ == "__main__":
