@@ -1,25 +1,24 @@
 from collections import deque
-from flask import Flask, request, jsonify
+from flask import Blueprint, Flask, request, jsonify
 
 app = Flask(__name__)
 
 q = deque()
 
-rem_table = 200
+REM_TABLE = 200
+
+exit_blueprint = Blueprint("exit", __name__)
+
 
 # 남은 테이블 수 확인
 def remaining_tables():
-    global rem_table
-    return rem_table
+    return REM_TABLE
 
 # 다음 그룹 입장
-def next_group(rem_table, next_group):
-    if rem_table >= len(next_group):
-        return True
-    else:
-        return False
-    
-@app.route("/exit", methods=["POST"])
+def next_group(REM_TABLE, next_group):
+    return REM_TABLE >= next_group
+
+@exit_blueprint.route("/exit", methods=["POST"])
 def exit_group():  # 퇴장 시
 
     # 그룹의 대표 학번을 전송받음
@@ -36,13 +35,15 @@ def exit_group():  # 퇴장 시
 
     if next_group(updated_rem_table, next_group):
         # 다음 그룹을 입장 허용
-        return jsonify({'message': '그룹이 퇴장함. 현재 남은 좌석 수: {}. 다음 그룹 입장'.format(updated_rem_table)})
+        return jsonify({'message': f'현재 남은 좌석 수: {updated_rem_table}. 다음 그룹 입장'})
     else:
         # 다음 그룹을 입장 거부
-        return jsonify({'message': '그룹이 퇴장함. 현재 남은 좌석 수: {}. 다음 그룹 입장 불가'.format(updated_rem_table)})
+        return jsonify({'message': f'현재 남은 좌석 수: {updated_rem_table}. 다음 그룹 입장 불가'})
 
+
+# blueprint를 flaks에 등록하는??
+app.register_blueprint(exit_blueprint)
     
-
 
 # 실행
 if __name__ == "__main__":
