@@ -29,8 +29,8 @@ def remaining_table(REM_TABLE, entered):
 def push_applicant():
     body = request.get_json()
 
-    # 3학년 급식 시간에 신청했을 경우 신청 거부
-    if body.get('grade') == 3 and check_lunch_time():
+    # 3학년 급식 시간에 3학년이 아닌 학년이 신청했을 경우 신청 거부
+    if body["grade"] != 3 and check_lunch_time():
         return jsonify({'message': '지금은 3학년만 급식 신청이 가능한 시간입니다.'}), 403
     
     # 그룹 정보 큐에 추가
