@@ -7,6 +7,9 @@ def apply_meal(student):
     q.append(student)
     return student
 
+def get_deque():
+   return q
+
 # 입장
 def enter(group_leader): 
   if group_leader in q[0]:
