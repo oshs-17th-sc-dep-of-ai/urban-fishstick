@@ -36,7 +36,7 @@ class FileUtil {
     return file.readAsString();
   }
 
-  Future<Map> readFileJSON() async {
+  Future<dynamic> readFileJSON() async {
     final file = await _getLocalFile();
     return jsonDecode(await file.readAsString());
   }

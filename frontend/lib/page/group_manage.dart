@@ -57,8 +57,6 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     Map<String, dynamic> data = snapshot.data;
 
-                    debugPrint("$data");
-
                     return Center(
                       child: FractionallySizedBox(
                         widthFactor: 1,
@@ -148,7 +146,8 @@ class _GroupWidgetState extends State<GroupWidget> {
                           TextButton(
                             onPressed: () {
                               setState(() {
-                                widget.data[renameTextController.text] = widget.data[groupName];
+                                widget.data[renameTextController.text] =
+                                    widget.data[groupName];
                                 widget.data.remove(groupName);
 
                                 debugPrint("${widget.data}");

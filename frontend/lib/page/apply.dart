@@ -1,12 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
-import 'package:frontend/popup/group_select.dart';
-
 import "package:frontend/util/file.dart";
-
-import "package:frontend/page/group_manage.dart";
-
-List<int> _member = [];
 
 class ApplyPageWidget extends StatefulWidget {
   const ApplyPageWidget({super.key});
@@ -16,164 +9,175 @@ class ApplyPageWidget extends StatefulWidget {
 }
 
 class _ApplyPageWidgetState extends State<ApplyPageWidget> {
+  FileUtil fileUtil = const FileUtil("./group.json");
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    final formKey = GlobalKey<FormState>();
-    final textController = TextEditingController();
-    final scrollController = ScrollController();
-    var inputDecorator = const InputDecoration(
-      hintText: "학번 입력",
-      counterText: '',
-    );
 
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: 0.6,
-        heightFactor: 0.8,
-        child: Column(
-          children: [
-            buildMemberList(scrollController),
-            Column(
-              children: [
-                buildForm(
-                    formKey, textController, inputDecorator, scrollController),
-                const SizedBox(height: 10),
-                buildButtons(context),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    return FutureBuilder(
+      future: fileUtil.exists(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (!(snapshot.data!)) {
+            fileUtil.createFile("{}");
+          }
 
-  Row buildButtons(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) =>
-              //           const GroupSelectPageWidget()),
-              // );
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    const fileUtil = FileUtil("./group.json");
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: FutureBuilder(
+                future: fileUtil.readFileJSON(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    Map<String, dynamic> data = snapshot.data;
 
-                    return AlertDialog(
-                      content: SizedBox(
-                        // TODO: 위젯 추가로 크기 조절 필요?
-                        width: 50,
-                        height: 100,
-                        child: FutureBuilder(
-                          future: fileUtil.readFileJSON(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
-                            if (snapshot.connectionState !=
-                                ConnectionState.done) {
-                              return const Center(
-                                  child: Text("Loading group file..."));
-                            }
-                            final keys = snapshot.data?.keys.toList();
-
-                            return ListView.builder(
-                                itemCount: keys?.length,
-                                itemBuilder: (context, index) {
-                                  debugPrint("$keys, $index");
-                                  return ListTile(
-                                    subtitle: Text(keys?[index]),
-                                  );
-                                });
-                          },
+                    return Center(
+                      child: FractionallySizedBox(
+                        widthFactor: 1,
+                        heightFactor: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              GroupWidget(data: data),
+                            ],
+                          ),
                         ),
                       ),
-                      actions: [
-                        TextButton(
-                          child: const Text("취소"),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        )
-                      ],
                     );
-                  }); // 그룹 리스트에서 하나 클릭하면 파일에서 읽고 불러오기
-            },
-            child: const Text("불러오기"),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: ElevatedButton(
-              onPressed: () {
-                setState(() {});
-              },
-              child: const Text("신청")),
-        ),
-      ],
+                  } else {
+                    return const Center(
+                      child: Text("Loading group data file..."),
+                    );
+                  }
+                }),
+          );
+        } else {
+          return const Center(
+            child: Text("Loading group data file..."),
+          );
+        }
+      },
     );
   }
+}
 
-  Row buildForm(
-      GlobalKey<FormState> formKey,
-      TextEditingController textController,
-      InputDecoration inputDecorator,
-      ScrollController scrollController) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+class GroupWidget extends StatefulWidget {
+  const GroupWidget({
+    super.key,
+    required this.data,
+  });
+
+  final Map<String, dynamic> data;
+
+  @override
+  State<GroupWidget> createState() => _GroupWidgetState();
+}
+
+class _GroupWidgetState extends State<GroupWidget> {
+  FileUtil fileUtil = const FileUtil("./group.json");
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> groupList = [];
+
+    widget.data.forEach((key, value) {
+      groupList.add(buildGroup(key, value));
+    });
+
+    return Column(children: groupList);
+  }
+
+  Widget buildGroup(String groupName, List<dynamic> memberList) {
+    return ExpansionTile(
+      title: const Text("신청 인원 목록"),
       children: [
-        Expanded(
-            child: Form(
-          key: formKey,
-          child: TextFormField(
-            controller: textController,
-            maxLength: 5,
-            decoration: inputDecorator,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            validator: (value) {
-              if (value!.isEmpty) return "학번을 입력해주세요.";
-              if (value.length < 5) return "올바른 학번을 입력해주세요.";
-              if (int.parse(value) < 10000) return "올바른 학번을 입력해주세요.";
-              if (int.parse(value) > 39999) return "올바른 학번을 입력해주세요.";
-            },
-          ),
-        )),
-        IconButton(
-            onPressed: () {
-              setState(() {
-                final formKeyState = formKey.currentState!;
-                if (formKeyState.validate()) formKeyState.save();
+        Column(
+          children: [
+            ...memberList
+                .map((member) => Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: ListTile(
+                        title: Text(member.toString()),
+                        trailing: IconButton(
+                          onPressed: () {
+                            buildRemoveMemberDialog(groupName, member);
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                    ))
+                .toList(),
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        TextEditingController textController =
+                            TextEditingController();
 
-                _member.add(int.parse(textController.value.text));
-              });
-              scrollController.animateTo(scrollController.position.extentTotal,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.fastOutSlowIn);
-            },
-            icon: const Icon(Icons.add))
+                        return AlertDialog(
+                          content: SizedBox(
+                            width: 300,
+                            height: 75,
+                            child: Center(
+                                child: TextField(
+                              controller: textController,
+                            )),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("취소"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                if (textController.text.isNotEmpty) {
+                                  setState(() {
+                                    widget.data[groupName]
+                                        .add(int.parse(textController.text));
+                                    fileUtil.writeFileJSON(widget.data);
+                                    Navigator.pop(context);
+                                  });
+                                }
+                              },
+                              child: const Text("추가"),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                icon: const Icon(Icons.add))
+          ],
+        )
       ],
     );
   }
 
-  SizedBox buildMemberList(ScrollController scrollController) {
-    return SizedBox(
-      height: 300,
-      child: ListView(
-          controller: scrollController,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          children: _member
-              .map((member) => ListTile(
-                    title: Text(member.toString()),
-                  ))
-              .toList() // member 리스트 이용, 위젯 생성 필요
-          ),
-    );
+  Future<dynamic> buildRemoveMemberDialog(String groupName, int member) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              content: const SizedBox(
+                width: 200,
+                height: 75,
+                child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("취소")),
+                TextButton(
+                  onPressed: () => setState(() {
+                    // 멤버 제거
+                    widget.data[groupName].remove(member);
+                    fileUtil.writeFileJSON(widget.data);
+                    Navigator.pop(context);
+                  }),
+                  child: const Text("제거"),
+                ),
+              ],
+            ));
   }
 }
