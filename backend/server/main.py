@@ -1,5 +1,6 @@
 from flask import Blueprint, Flask,jsonify
-import deque,entered,alarm,exit,priority,suggestion
+import routes import alarm, entered, exit, priority, suggestion
+import util import deque
 
 def apply(num,apply):
     global school_number,success
@@ -15,8 +16,13 @@ def enter_alarm():
 
 #줄에 추가
 def append_line():
-    entered.push_applicant()
+    deque.apply_meal(school_number)
 
+#3학년 확인
+def third_grade():
+    if (entered.check_lunch_time):
+        entered.push_applicant()
+        
 #입장 (줄에서 제거)
 def enter():
     deque.enter(school_number)
@@ -24,10 +30,38 @@ def enter():
 #인덱스 (/index서버에 저장)
 @main_bp.route('/index',methods=["POST"])
 def index():
-    return deque.index(school_number)
+    line = { deque.waiting : deque.index } # 대기인원중 자신이 몇번째인지
+    return jsonify(line)
 
+#건의사항 저장
+def suggestion_add():
+    suggestion.add_suggestion()
 
-    
+#건의사항 받아오기
+def suggestion_get():
+    return suggestion.get_suggestion()
+#   나갈때 함수 (이후 구현)
+#   def exit():
+    # if not success:    
+    #     response_data = { 
+    #         "success" : False,
+    #         "reason" : reason["input"]
+    #         }
+    # else:
+    #     response_data = {
+    #         "success" : True,
+    #         # "waiting" : deque.waiting,
+    #         "school_number" : school_number,
+    #         "come in" : deque.enter(1)
+    #     }
+    # return (response_data,alarm.alarm()
+'''
+example_bp = Flask(__name__)
+@example_bp.route('/', methods=["GET"])
+def example_route():
+    data = {
+        "ID" : school_number
+    }
 
     user_id = data['ID']
 
@@ -54,5 +88,4 @@ def index():
             "school_number" : school_number,
             "come in" : deque.enter(1)
         }
-    return (response_data,alarm.alarm())
-
+    return (response_data,alarm.alarm())'''
