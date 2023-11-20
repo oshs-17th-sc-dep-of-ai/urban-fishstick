@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:frontend/util/file.dart";
 
+Set<int> currentGroupMembers = {};
+
 class ApplyPageWidget extends StatefulWidget {
   const ApplyPageWidget({super.key});
 
@@ -36,14 +38,14 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
                         widthFactor: 1,
                         heightFactor: 1,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView(
-                            shrinkWrap: true,
-                            children: [
-                              GroupWidget(data: data),
-                            ],
-                          ),
-                        ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView(
+                              children: [
+                                ...buildCurrentGroupMember(),
+                                buildAddMemberButton(),
+                                buildLoadGroupButton(),
+                              ],
+                            )),
                       ),
                     );
                   } else {
@@ -60,6 +62,93 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
         }
       },
     );
+  }
+
+  TextButton buildLoadGroupButton() {
+    return TextButton(
+      child: const Text("그룹 불러오기"),
+      onPressed: () {},
+    );
+  }
+
+  IconButton buildAddMemberButton() {
+    return IconButton(
+      icon: const Icon(Icons.add),
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              TextEditingController textController = TextEditingController();
+
+              return AlertDialog(
+                content: SizedBox(
+                  width: 300,
+                  height: 75,
+                  child: Center(
+                      child: TextField(
+                    controller: textController,
+                  )),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("취소"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (textController.text.isNotEmpty) {
+                        setState(() {
+                          currentGroupMembers
+                              .add(int.parse(textController.text));
+                          Navigator.pop(context);
+                        });
+                      }
+                    },
+                    child: const Text("추가"),
+                  ),
+                ],
+              );
+            });
+      },
+    );
+  }
+
+  List<ListTile> buildCurrentGroupMember() {
+    return currentGroupMembers
+        .map((member) => ListTile(
+              title: Text(member.toString()),
+              trailing: IconButton(
+                onPressed: () {
+                  buildRemoveMemberDialog(member);
+                },
+                icon: const Icon(Icons.close),
+              ),
+            ))
+        .toList();
+  }
+
+  dynamic buildRemoveMemberDialog(int member) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              content: const SizedBox(
+                width: 200,
+                height: 75,
+                child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("취소")),
+                TextButton(
+                  onPressed: () => setState(() {
+                    currentGroupMembers.remove(member);
+                    Navigator.pop(context);
+                  }),
+                  child: const Text("제거"),
+                ),
+              ],
+            ));
   }
 }
 
