@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-
+import 'package:frontend/page/apply.dart';
 import 'package:frontend/page/group_manage.dart';
 import 'package:frontend/page/main.dart';
-import 'package:frontend/page/apply.dart';
 import 'package:frontend/page/settings.dart';
 
 int currentPageIndex = 0;

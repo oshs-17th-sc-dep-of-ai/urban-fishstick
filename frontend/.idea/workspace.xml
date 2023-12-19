@@ -9,7 +9,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="개발중" />
+    <list default="true" id="f954c229-192a-4e0b-8645-a3196c4ebed9" name="Changes" comment="lib/main.dart import 문 정리, 그룹 관리 기능 구현 완료">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/page/apply.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/page/apply.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,28 +37,29 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2ThJ4ieRViC0HtVExfKgVp7v5Kl" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/skybl/Desktop/school/lunch/urban-fishstick/frontend&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cidr.known.project.marker": "true",
+    "com.android.tools.idea.devicemanager.tab": "Physical",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "io.flutter.reload.alreadyRun": "true",
+    "last_opened_file_path": "/home/Sharp/Workspace/ContestCamp/paper",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "flutter.settings",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Workspace\StdCouncil\urban-fishstick\frontend\lib\popup" />
@@ -60,11 +68,6 @@
       <recent name="E:\Workspace\StdCouncil\urban-fishstick\frontend\test" />
       <recent name="E:\Workspace\StdCouncil\urban-fishstick\frontend\lib\util" />
     </key>
-  </component>
-  <component name="RunAnythingCache">
-    <option name="myCommands">
-      <command value="adb" />
-    </option>
   </component>
   <component name="RunManager" selected="Flutter.main.dart">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
@@ -153,49 +156,21 @@
       <option name="project" value="LOCAL" />
       <updated>1693230554237</updated>
     </task>
-    <task id="LOCAL-00009" summary="그룹 편집 기능 구현중">
-      <created>1693401975359</created>
+    <task id="LOCAL-00009" summary="코드 정리, 기능 구현 중">
+      <created>1697349786067</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1693401975359</updated>
+      <updated>1697349786067</updated>
     </task>
-    <task id="LOCAL-00010" summary="그룹 편집 페이지: 멤버 제거 / 추가 시 화면에 적용 안됨">
-      <created>1694788507392</created>
+    <task id="LOCAL-00010" summary="lib/main.dart import 문 정리, 그룹 관리 기능 구현 완료">
+      <created>1697358239934</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1694788507392</updated>
+      <updated>1697358239934</updated>
     </task>
-    <task id="LOCAL-00011" summary="그룹 관리: 멤버 추가 시 팝업 창 표시">
-      <created>1695047990835</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1695047990835</updated>
-    </task>
-    <task id="LOCAL-00012" summary="그룹 멤버 표시, 멤버 삭제 버튼 추가">
-      <created>1697120840284</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1697120840284</updated>
-    </task>
-    <task id="LOCAL-00013" summary="반환 타입 변경">
-      <created>1699181128588</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1699181128588</updated>
-    </task>
-    <task id="LOCAL-00014" summary="개발중">
-      <created>1699454967905</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1699454967905</updated>
-    </task>
-    <option name="localTasksCounter" value="15" />
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -258,14 +233,9 @@
     <MESSAGE value="그룹 관리: 파일 생성 후 읽기 기능 추가" />
     <MESSAGE value="진행 상황 저장" />
     <MESSAGE value="그룹 추가 기능 구현 완료" />
-    <MESSAGE value="그룹 편집 기능 구현중" />
-    <MESSAGE value="그룹 편집 페이지 개발중" />
-    <MESSAGE value="그룹 편집 페이지: 멤버 제거 / 추가 시 화면에 적용 안됨" />
-    <MESSAGE value="그룹 관리: 멤버 추가 시 팝업 창 표시" />
-    <MESSAGE value="그룹 멤버 표시, 멤버 삭제 버튼 추가" />
-    <MESSAGE value="반환 타입 변경" />
-    <MESSAGE value="개발중" />
-    <option name="LAST_COMMIT_MESSAGE" value="개발중" />
+    <MESSAGE value="코드 정리, 기능 구현 중" />
+    <MESSAGE value="lib/main.dart import 문 정리, 그룹 관리 기능 구현 완료" />
+    <option name="LAST_COMMIT_MESSAGE" value="lib/main.dart import 문 정리, 그룹 관리 기능 구현 완료" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="home/Sharp/Workspace/urban-fishstick/frontend/coverage/lcov.info" NAME="tests in widget_test.dart Coverage Results" MODIFIED="1691902420207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="FlutterCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
