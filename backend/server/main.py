@@ -24,7 +24,7 @@ def third_grade():
         entered.push_applicant()
         
 #입장 (줄에서 제거)
-def enter():
+def enter(school_number):
     deque.enter(school_number)
 
 #인덱스 (/index서버에 저장)
@@ -40,52 +40,3 @@ def suggestion_add():
 #건의사항 받아오기
 def suggestion_get():
     return suggestion.get_suggestion()
-#   나갈때 함수 (이후 구현)
-#   def exit():
-    # if not success:    
-    #     response_data = { 
-    #         "success" : False,
-    #         "reason" : reason["input"]
-    #         }
-    # else:
-    #     response_data = {
-    #         "success" : True,
-    #         # "waiting" : deque.waiting,
-    #         "school_number" : school_number,
-    #         "come in" : deque.enter(1)
-    #     }
-    # return (response_data,alarm.alarm()
-'''
-example_bp = Flask(__name__)
-@example_bp.route('/', methods=["GET"])
-def example_route():
-    data = {
-        "ID" : school_number
-    }
-
-    user_id = data['ID']
-
-    deque.apply_meal(user_id)
-
-    # apply = deque.apply_meal(user_id)
-    # index = deque.index(user_id)
-
-    reason = {
-        "grade" : "Cannot enter", # 10분 전 3학년 이하
-        "input" : "Input error" # 입력 오류
-    }
-
-    # 입력 오류 아닐시, 요청 여부와 학번, 
-    if not success:    
-        response_data = { 
-            "success" : False,
-            "reason" : reason["input"]
-            }
-    else:
-        response_data = {
-            "success" : True,
-            # "waiting" : deque.waiting,
-            "school_number" : school_number,
-            "come in" : deque.enter(1)
-        }
-    return (response_data,alarm.alarm())'''
