@@ -1,7 +1,19 @@
 from flask import Blueprint, Flask,jsonify
-import routes import alarm, entered, exit, priority, suggestion
-import util import deque
+from routes.alarm      import blueprint as alarm_bp
+from routes.entered    import blueprint as enter_bp
+from routes.priority   import blueprint as prior_bp
+from routes.exit       import blueprint as exit_bp
+from routes.suggestion import blueprint as sugg_bp
 
+app = Flask(__name__)
+
+app.register_blueprint(alarm_bp)
+app.register_blueprint(enter_bp)
+app.register_blueprint(prior_bp)
+app.register_blueprint(exit_bp)
+app.register_blueprint(sugg_bp)
+
+"""
 def apply(num,apply):
     global school_number,success
     school_number = num
@@ -89,3 +101,4 @@ def example_route():
             "come in" : deque.enter(1)
         }
     return (response_data,alarm.alarm())'''
+"""

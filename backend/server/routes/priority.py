@@ -2,7 +2,7 @@
 from flask import Flask, jsonify
 import apply
 
-app = Flask(__name__)
+blueprint = Blueprint(__name__)
 
 space_available = 5  # 초기 공간 상태 (예시로 5로 설정)
 
@@ -21,7 +21,7 @@ def check_space():
         space_available -= 1
         apply.q.pop(0)  # 첫 번째 그룹 입장
 
-@app.route('/', methods=["GET"])
+@blueprint.route('/', methods=["GET"])
 def example_route():
     result = {
         "space_available": space_available,

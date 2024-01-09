@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 import pymysql
 
-app = Flask(__name__)
+blueprint = Blueprint(__name__)
 
 # MySQL 연결 설정
 db = pymysql.connect(
@@ -12,7 +12,7 @@ db = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor
 )
 
-@app.route('/add_suggestion', methods=['POST'])
+@blueprint.route('/add_suggestion', methods=['POST'])
 def add_suggestion():
         data = request.get_json() # 전송된 JSON 데이터
         title = data['title']
@@ -23,7 +23,7 @@ def add_suggestion():
         db.commit()
         return jsonify({'message': '건의사항이 성공적으로 수렴되었습니다.'})
 
-@app.route('/get_suggestion', methods=['GET'])
+@blueprint.route('/get_suggestion', methods=['GET'])
 def get_suggestion():
         cursor = db.cursor()
         cursor.execute("SELECT title FROM some_table")
@@ -32,6 +32,3 @@ def get_suggestion():
             return jsonify(result)
         else:
             return jsonify({'message': '건의사항 없음'})
-
-if __name__ == '__main__':
-    app.run(debug=True)

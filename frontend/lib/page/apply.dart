@@ -67,7 +67,13 @@ class _ApplyPageWidgetState extends State<ApplyPageWidget> {
   TextButton buildLoadGroupButton() {
     return TextButton(
       child: const Text("그룹 불러오기"),
-      onPressed: () {},
+      onPressed: () {
+        const fileUtil = FileUtil("./group.json");
+
+        fileUtil
+            .readFileJSON()
+            .then((value) => {currentGroupMembers.addAll(value)});
+      },
     );
   }
 

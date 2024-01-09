@@ -1,7 +1,7 @@
 from collections import deque
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 
-app = Flask(__name__)
+blueprint = Blueprint(__name__)
 
 q = deque()
 
@@ -19,7 +19,7 @@ def next_group(rem_table, next_group):
     else:
         return False
     
-@app.route("/exit", methods=["POST"])
+@blueprint.route("/exit", methods=["POST"])
 def exit_group():  # 퇴장 시
 
     # 그룹의 대표 학번을 전송받음
@@ -40,10 +40,3 @@ def exit_group():  # 퇴장 시
     else:
         # 다음 그룹을 입장 거부
         return jsonify({'message': '그룹이 퇴장함. 현재 남은 좌석 수: {}. 다음 그룹 입장 불가'.format(updated_rem_table)})
-
-    
-
-
-# 실행
-if __name__ == "__main__":
-    app.run()

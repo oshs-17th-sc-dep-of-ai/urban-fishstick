@@ -1,14 +1,14 @@
 from collections import deque
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 from datetime import datetime, time
 
-app = Flask(__name__)
+blueprint = Blueprint("entered", __name__)
 
 q = deque()
 
 rem_table = 200
 
-@app.route("/apply", methods=["POST"])
+@blueprint.route("/apply", methods=["POST"])
 def push_applicant():
     body = request.get_json()
 
@@ -50,6 +50,3 @@ def check_lunch_time():
 def remaining_table(rem_table, entered):
     return rem_table - entered
 
-# 실행
-if __name__ == "__main__":
-    app.run()
