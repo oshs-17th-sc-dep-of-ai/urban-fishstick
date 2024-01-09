@@ -36,7 +36,7 @@ def third_grade():
         entered.push_applicant()
         
 #입장 (줄에서 제거)
-def enter():
+def enter(school_number):
     deque.enter(school_number)
 
 #인덱스 (/index서버에 저장)
