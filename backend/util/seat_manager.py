@@ -1,0 +1,2 @@
+class SeatManager:
+    pass
