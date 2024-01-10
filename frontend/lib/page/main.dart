@@ -5,6 +5,8 @@ import "package:frontend/util/diet.dart";
 List diet = [];
 List alrg = [];
 
+const int _seq = 10;
+
 class MainPageWidget extends StatefulWidget {
   const MainPageWidget({super.key});
 
@@ -25,7 +27,7 @@ class _MainPageWidgetState extends State<MainPageWidget> {
           child: Padding(
             padding: EdgeInsets.all(20),
             child: Text(
-              "남은 대기 인원: nn",
+              '남은 대기 인원 : $_seq',
               style: TextStyle(fontSize: 20),
             ),
           ),
