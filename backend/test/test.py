@@ -6,7 +6,7 @@
 #     global school_number,success
 #     school_number = num
 #     success = apply
-
+# asdfasdf
 # example_bp = Flask(__name__)
 # profile = Blueprint("profile", __name__)
 # example_bp.register_blueprint(profile, url_prefix='/profile')
