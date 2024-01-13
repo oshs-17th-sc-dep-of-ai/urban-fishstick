@@ -5,8 +5,8 @@ from seat import bp as seat_bp
 from group import bp as group_bp
 from feedback import bp as feedback_bp
 
-from ..util.json_util import read_json, write_json
-from ..util.seat_manager import SeatManager
+from .util.json_util import read_json, write_json
+from .util.seat_manager import SeatManager
 
 __db_config = read_json("../config/database.json")
 
