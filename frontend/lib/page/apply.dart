@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:frontend/util/file.dart";
 
 List currentMemberList = [];
 
@@ -31,12 +32,12 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
 
         fileUtil
             .readFileJSON()
-            .then((value) => {currentGroupMembers.addAll(value)});
+            .then((value) => {currentMemberList.addAll(value)});
       },
     );
   }
 
-  IconButton buildAddMemberButton() {
+  IconButton buildApplyButton() {
     return IconButton(
       icon: const Icon(Icons.check),
       onPressed: () {
