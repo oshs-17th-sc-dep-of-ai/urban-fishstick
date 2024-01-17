@@ -10,21 +10,6 @@ class GroupManagePageWidget extends StatefulWidget {
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
   FileUtil fileUtil = const FileUtil("./group.json");
-
-  TextButton resetGroupData() {
-    return TextButton(
-        onPressed: () {
-          setState(() {
-            fileUtil.writeFileJSON({
-              "TestGroup1": [10001, 10002, 10003],
-              "TestGroup2": [20001, 20002, 20003],
-              "EmptyGroup": []
-            });
-          }); // for test
-        },
-        child: const Text("리셋"));
-  }
-
   IconButton createNewGroup(Map<String, dynamic> data) {
     return IconButton(
         onPressed: () {
@@ -68,7 +53,6 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                             children: [
                               GroupWidget(data: data),
                               createNewGroup(data),
-                              resetGroupData(), // NOTE: 완성 시 제거
                             ],
                           ),
                         ),
