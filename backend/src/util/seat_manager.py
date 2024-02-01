@@ -4,6 +4,7 @@ class SeatManager:
         self.next_enter  = 0       # 다음 입장 그룹
         self.seat_remain = 0       # 남은 좌석 수
         self.group = []            # 그룹 리스트 (인원 저장됨)
+        self.group_ids = []        # 각 그룹의 고유 ID
 
     def enter_next_group(self) -> None:
         """
@@ -19,6 +20,13 @@ class SeatManager:
         """
         self.group.append(len(r_group))
         self.registered_group += 1
+
+    def id(self, group_id: int) -> None:
+        """
+        그룹 고유 ID 추가\n
+        `group_id`: 그룹의 고유 ID
+        """
+        self.group_ids.append(group_id)
 
     def enter_prior_group(self, p_group: list) -> None:
         """
