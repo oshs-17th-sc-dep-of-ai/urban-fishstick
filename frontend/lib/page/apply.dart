@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "package:frontend/util/file.dart";
+import "package:frontend/util/network.dart";
+import "package:frontend/util/notification.dart";
 
 List currentMemberList = [];
 
@@ -13,8 +15,6 @@ class ApplyPageWidget extends StatefulWidget {
 class ApplyPageWidgetState extends State<ApplyPageWidget> {
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-
     return Scaffold(
       body: const Padding(
         padding: EdgeInsets.all(12),
@@ -30,9 +30,8 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
       onPressed: () {
         const fileUtil = FileUtil("./group.json");
 
-        fileUtil
-            .readFileJSON()
-            .then((value) => {currentMemberList.addAll(value)});
+        fileUtil.readFileJSON().then((value) => {
+          currentMemberList.addAll(value)});
       },
     );
   }
@@ -55,21 +54,35 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      // httpGet("http://ohsung.hs.kr/") // HTTP? HTTPS?
-                      //     .then((value) {
-                      //   Fluttertoast.showToast(msg: "신청되었습니다.");
-                      // }).onError((error, stackTrace) {
-                      //   debugPrint(error.toString());
-                      //   debugPrintStack(stackTrace: stackTrace);
-                      // });
+                      String message = "";
+
+                      httpGet("").then((value) => {  // FIXME: 서버 주소 입력
+                        message = "신청되었습니다."
+                      }).onError((error, stackTrace) => {
+                        message = "요청을 보내는 중 오류가 발생하였습니다."
+                      }).whenComplete(() =>
+                          AlertDialog(
+                            content: SizedBox(
+                              width: 300,
+                              height: 75,
+                              child: Center(child: Text(message)),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text("확인"),
+                              )
+                            ],
+                          )
+                        );
+
                       Navigator.pop(context);
                     },
                     child: const Text("예")),
                 TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("아니오"))
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("취소"),
+                ),
               ],
             );
           },
@@ -137,6 +150,15 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
                       ],
                     );
                   });
+            },
+          ),
+          TextButton(
+            child: const Text("알림"),
+            onPressed: () {
+              Future.delayed(const Duration(seconds: 5), () {
+                FNotification.init();
+                FNotification.showNotification();
+              });
             },
           )
         ],

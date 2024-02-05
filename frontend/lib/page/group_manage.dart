@@ -60,14 +60,14 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                     );
                   } else {
                     return const Center(
-                      child: Text("Loading group data file..."),
+                      child: Text("로딩중..."),
                     );
                   }
                 }),
           );
         } else {
           return const Center(
-            child: Text("Loading group data file..."),
+            child: Text("로딩중..."),
           );
         }
       },

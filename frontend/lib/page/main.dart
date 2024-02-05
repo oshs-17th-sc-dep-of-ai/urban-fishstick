@@ -65,7 +65,7 @@ class _MainPageWidgetState extends State<MainPageWidget> {
                     });
               } else {
                 return const Center(
-                  child: Text("Fetching Data..."),
+                  child: Text("받는 중..."),
                 );
               }
             },
