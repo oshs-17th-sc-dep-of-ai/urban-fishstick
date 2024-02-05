@@ -1,4 +1,6 @@
-from quart import Blueprint, request, jsonify
+import random
+import string
+from quart import Blueprint, request, jsonify, Quart
 from util.seat_manager import SeatManager
 
 bp = Blueprint('group', __name__)
@@ -10,22 +12,28 @@ students_db = {
     10003: {'group_state': None},
 }
 
+def create_group_id() -> int:
+    return int(''.join(random.choices(string.digits, k=6)))
+
 @bp.route('/register', methods=['POST'])
 async def group_register():
     try:
         data = await request.json
         group_members = data.get('group_members', [])
+        group_id = create_group_id()
 
         for student_id in group_members:
             if student_id not in students_db:
-                return jsonify({'error': f'ID가 {student_id}인 학생을 찾을 수 없습니다'}), 404
+                return jsonify({'error': f'ID {student_id} not found'}), 404
 
             if students_db[student_id]['group_state'] is not None:
-                return jsonify({'error': f'ID가 {student_id}인 학생은 이미 그룹에 속해 있습니다'}), 403
+                return jsonify({'error': f'ID {student_id} already belongs to group'}), 403
+
+            students_db[student_id]['group_state'] = group_id
 
         seat_manager.register_group(group_members)
-
-        return jsonify({'message': '그룹 등록이 성공적으로 처리되었습니다'}), 200
+        seat_manager.id(group_id)
+        return jsonify({'message': f' {group_members} register success'}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -37,12 +45,12 @@ async def group_index():
         student_group_state = students_db[student_id]['group_state']
 
         if student_id not in students_db or student_group_state is None:
-            return jsonify({'error': f'ID가 {student_id}인 학생은 그룹에 속해 있지 않습니다'}), 404
+            return jsonify({'error': f'ID {student_id} does not belong to any group.'}), 404
 
-        if student_group_state not in seat_manager.group:
-            return jsonify({'error': f'ID가 {student_id}인 학생은 미신청 학생입니다'}), 404
+        if student_group_state not in seat_manager.group_ids:
+            return jsonify({'error': f'ID {student_id} unapplied student'}), 404
         
-        return jsonify({'group_index': seat_manager.group.index(student_group_state)}), 200
+        return jsonify({'group_index': seat_manager.group_ids.index(student_group_state)}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -56,10 +64,15 @@ async def group_check():
         duplicate = [student_id for student_id in group_members if student_id in seat_manager.group]
 
         if duplicate:
-            return jsonify({'error': f'중복되는 학생이 있습니다: {duplicate}'}), 403
+            return jsonify({'error': f'Duplicate Student ID : {duplicate}'}), 403
         
-        return jsonify({'message': '중복되는 학생이 없습니다'}), 200
+        return jsonify({'message': 'No duplicates'}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+if __name__ == '__main__':
+    app = Quart(__name__)
+    app.register_blueprint(bp)
+    
+    app.run(port=5000)
