@@ -1,4 +1,4 @@
-from quart import Blueprint, request, jsonify
+from quart import Blueprint, request, jsonify, Quart
 from util.seat_manager import SeatManager  # SeatManager 클래스 import
 
 bp = Blueprint('seat', __name__)
@@ -19,8 +19,9 @@ async def seat_enter():
         non_existing_students = [student_id for student_id in group_members if student_id not in students_db]
 
         if non_existing_students:
-            return jsonify({'error': f'ID가 {non_existing_students}인 학생을 찾을 수 없습니다'}), 404
+            return jsonify({'error': f'ID {non_existing_students} not found'}), 404
 
+        seat_manager.seat_remain -= len(group_members)
         return jsonify(group_members), 200
 
     except Exception as e:
@@ -50,9 +51,14 @@ async def seat_enter_prior():
         key = "some"
 
         if auth_key != key:
-            return jsonify({'error': '인증 키가 올바르지 않습니다'}), 403
+            return jsonify({'error': 'Incorrect authentication key'}), 403
 
         return jsonify({'key': auth_key, 'group_members': group_members}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app = Quart(__name__)
+    app.register_blueprint(bp)
+    app.run(port=5001)

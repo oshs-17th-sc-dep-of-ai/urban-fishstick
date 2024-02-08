@@ -10,6 +10,7 @@ students_db = {
     10001: {'group_state': None},
     10002: {'group_state': None},
     10003: {'group_state': None},
+    10004: {'group_state': None},
 }
 
 def create_group_id() -> int:
