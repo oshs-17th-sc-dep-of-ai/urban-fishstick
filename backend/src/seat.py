@@ -27,16 +27,18 @@ async def seat_enter():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
 @bp.route('/exit', methods=['POST'])
 async def seat_exit():
     try:
-        student_id = int(await request.data)
-        return jsonify(student_id), 200
+        student_id = int(request.data.decode("utf-8"))
 
+        if student_id in seat_manager.group:
+            seat_manager.seat_remain += 1
+            return jsonify({"message": "퇴장 처리 완료"}), 200
+        else:
+            return jsonify({"message": "해당 학생이 그룹에 존재하지 않습니다."}), 404
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
+        return jsonify({"error": str(e)}), 500
 
 @bp.route('/remain', methods=['GET'])
 async def seat_remain():
