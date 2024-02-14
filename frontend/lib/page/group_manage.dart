@@ -15,7 +15,18 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
     return TextButton(
         onPressed: () {
           setState(() {
-            data["새 그룹 ${data.length + 1}"] = [];
+            if (!data.containsKey("새 그룹 ${data.length + 1}")) {
+              data["새 그룹 ${data.length + 1}"] = [];
+            } else {
+              List<String> newGroups = data.keys
+                  .where((element) => element.startsWith("새 그룹 "))
+                  .toList();
+              newGroups.sort((a, b) => int.parse(a.replaceRange(0, 5, ""))
+                  .compareTo(int.parse(b.replaceRange(0, 5, ""))));
+
+              data["새 그룹 ${int.parse(newGroups.last.replaceRange(0, 5, "")) + 1}"] =
+                  [];
+            }
 
             fileUtil.writeFileJSON(data);
           });
