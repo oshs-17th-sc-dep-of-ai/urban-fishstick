@@ -37,20 +37,29 @@ class _MyWidgetState extends State<AllergyPageWidget> {
   Widget buildCheckbox(int index) {
     return Row(
       children: [
-        Text(
-          text[index],
-          style: TextStyle(color: Colors.black),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              text[index],
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+          ),
         ),
         Checkbox(
-          activeColor: Colors.white,
-          checkColor: Colors.red,
-          value: allergy[index],
-          onChanged: (value) {
-            setState(() {
-              allergy[index] = !allergy[index];
-            });
-          },
-        ),
+            activeColor: Colors.blue,
+            checkColor: Colors.white,
+            value: allergy[index],
+            onChanged: (value) {
+              setState(() {
+                allergy[index] = !allergy[index];
+              });
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: CircleBorder()),
       ],
     );
   }
@@ -67,12 +76,32 @@ class _MyWidgetState extends State<AllergyPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          buildColumn(0, 8),
-          buildColumn(9, 18),
-        ],
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 236, 236, 236),
+        title: Text(
+          '알레르기 설정',
+          style: TextStyle(fontSize: 30),
+        ),
+        centerTitle: true,
+        toolbarHeight: 75,
+        leadingWidth: 70,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: buildColumn(0, 8),
+            ),
+            const SizedBox(width: 16),
+            const VerticalDivider(
+                color: Color.fromARGB(255, 209, 209, 209), width: 1),
+            const SizedBox(width: 16),
+            Expanded(
+              child: buildColumn(9, 18),
+            ),
+          ],
+        ),
       ),
     );
   }
