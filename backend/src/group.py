@@ -10,6 +10,7 @@ students_db = {
     10001: {'group_state': None},
     10002: {'group_state': None},
     10003: {'group_state': None},
+    10004: {'group_state': None},
 }
 
 def create_group_id() -> int:
@@ -70,9 +71,3 @@ async def group_check():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-if __name__ == '__main__':
-    app = Quart(__name__)
-    app.register_blueprint(bp)
-    
-    app.run(port=5000)

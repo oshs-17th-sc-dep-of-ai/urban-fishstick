@@ -2,7 +2,7 @@ class SeatManager:
     def __init__(self) -> None:
         self.registered_group = 0  # 신청한 그룹 수
         self.next_enter  = 0       # 다음 입장 그룹
-        self.seat_remain = 0       # 남은 좌석 수
+        self.seat_remain = 10      # 남은 좌석 수
         self.group = []            # 그룹 리스트 (인원 저장됨)
         self.group_ids = []        # 각 그룹의 고유 ID
 
