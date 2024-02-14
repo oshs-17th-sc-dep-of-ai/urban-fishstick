@@ -24,18 +24,6 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
     );
   }
 
-  TextButton buildLoadGroupButton() {
-    return TextButton(
-      child: const Text("그룹 불러오기"),
-      onPressed: () {
-        const fileUtil = FileUtil("./group.json");
-
-        fileUtil.readFileJSON().then((value) => {
-          currentMemberList.addAll(value)});
-      },
-    );
-  }
-
   IconButton buildApplyButton() {
     return IconButton(
       icon: const Icon(Icons.check),
@@ -56,25 +44,26 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
                     onPressed: () {
                       String message = "";
 
-                      httpGet("").then((value) => {  // FIXME: 서버 주소 입력
-                        message = "신청되었습니다."
-                      }).onError((error, stackTrace) => {
-                        message = "요청을 보내는 중 오류가 발생하였습니다."
-                      }).whenComplete(() =>
-                          AlertDialog(
-                            content: SizedBox(
-                              width: 300,
-                              height: 75,
-                              child: Center(child: Text(message)),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text("확인"),
-                              )
-                            ],
-                          )
-                        );
+                      httpPost("", currentMemberList.toString())
+                          .then((value) => {
+                                // TODO: 서버 주소 입력
+                                message = "신청되었습니다." // FIXME: 신청되었습니다 메세지 출력 안됨
+                              })
+                          .onError((error, stackTrace) =>
+                              {message = "요청을 보내는 중 오류가 발생하였습니다."})
+                          .whenComplete(() => AlertDialog(
+                                content: SizedBox(
+                                  width: 300,
+                                  height: 75,
+                                  child: Center(child: Text(message)),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("확인"),
+                                  )
+                                ],
+                              ));
 
                       Navigator.pop(context);
                     },
@@ -107,63 +96,163 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
     return SizedBox(
       width: deviceSize.width,
       height: deviceSize.height,
-      child: ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(8),
-        children: [
-          ...buildMemberList(),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    TextEditingController textController =
-                        TextEditingController();
-
-                    return AlertDialog(
-                      content: SizedBox(
-                        width: 300,
-                        height: 75,
-                        child: Center(
-                            child: TextField(
-                          controller: textController,
-                        )),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("취소"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            if (textController.text.isNotEmpty) {
-                              setState(() {
-                                currentMemberList
-                                    .add(int.parse(textController.text));
-                                Navigator.pop(context);
-                              });
-                            }
-                          },
-                          child: const Text("추가"),
-                        ),
-                      ],
-                    );
-                  });
-            },
-          ),
-          TextButton(
-            child: const Text("알림"),
-            onPressed: () {
-              Future.delayed(const Duration(seconds: 5), () {
-                FNotification.init();
-                FNotification.showNotification();
-              });
-            },
-          )
-        ],
-      ),
+      child: currentMemberList.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("목록이 비어있습니다."),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      buildLoadGroupButton(),
+                      buildStudentIDInput(context),
+                    ],
+                  )
+                ],
+              ),
+            )
+          : ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(8),
+              children: [
+                ...buildMemberList(),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  buildLoadGroupButton(),
+                  buildStudentIDInput(context),
+                ]),
+              ],
+            ),
     );
+  }
+
+  FutureBuilder buildLoadGroupButton() {
+    const fileUtil = FileUtil("./group.json");
+    return FutureBuilder(
+        future: fileUtil.readFileJSON(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            Map<String, dynamic> groups = snapshot.data;
+
+            return TextButton(
+              child: const Text("그룹 불러오기"),
+              onPressed: () {
+                String selectedGroup = "";
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      if (groups.keys.isEmpty) {
+                        return AlertDialog(
+                          content: const SizedBox(
+                            width: 300,
+                            height: 75,
+                            child: Center(
+                              child: Text("생성된 그룹이 없습니다."),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: const Text("확인"),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            return AlertDialog(
+                              title: Text("선택된 그룹: ${selectedGroup.isEmpty ? "없음" : selectedGroup}"),
+                              titleTextStyle: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 17.0,
+                              ),
+                              content: SizedBox(
+                                width: 300,
+                                height: 200,
+                                child: ListView(
+                                  children: groups.keys
+                                      .map((key) =>
+                                      ListTile(
+                                        title: Text(key),
+                                        onTap: () {
+                                          setState(() {
+                                            selectedGroup = key;
+                                          });
+                                        },
+                                      ))
+                                      .toList(),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: const Text("취소"),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      currentMemberList = groups[selectedGroup];
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("불러오기"),
+                                )
+                              ],
+                            );
+                          }
+                        );
+                      }
+                    });
+              },
+            );
+          } else {
+            return const Text("그룹 정보를 불러오는 중입니다...");
+          }
+        });
+  }
+
+  TextButton buildStudentIDInput(BuildContext context) {
+    return TextButton(
+        child: const Text("학번 추가"),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                TextEditingController textController = TextEditingController();
+
+                return AlertDialog(
+                  content: SizedBox(
+                    width: 300,
+                    height: 75,
+                    child: Center(
+                        child: TextField(
+                      controller: textController,
+                    )),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("취소"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (textController.text.isNotEmpty) {
+                          setState(() {
+                            currentMemberList
+                                .add(int.parse(textController.text));
+                            Navigator.pop(context);
+                          });
+                        }
+                      },
+                      child: const Text("추가"),
+                    ),
+                  ],
+                );
+              });
+        });
   }
 
   List<ListTile> buildMemberList() {
@@ -172,7 +261,11 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
               title: Text(e.toString()),
               trailing: IconButton(
                 icon: const Icon(Icons.close),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    currentMemberList.remove(e);
+                  });
+                },
               ),
             ))
         .toList();

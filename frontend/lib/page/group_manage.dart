@@ -10,8 +10,9 @@ class GroupManagePageWidget extends StatefulWidget {
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
   FileUtil fileUtil = const FileUtil("./group.json");
-  IconButton createNewGroup(Map<String, dynamic> data) {
-    return IconButton(
+
+  TextButton createNewGroup(Map<String, dynamic> data) {
+    return TextButton(
         onPressed: () {
           setState(() {
             data["새 그룹 ${data.length + 1}"] = [];
@@ -19,7 +20,7 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
             fileUtil.writeFileJSON(data);
           });
         },
-        icon: const Icon(Icons.add));
+        child: const Text("새 그룹 추가"));
   }
 
   @override
@@ -48,13 +49,23 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                         heightFactor: 1,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: ListView(
-                            shrinkWrap: true,
-                            children: [
-                              GroupWidget(data: data),
-                              createNewGroup(data),
-                            ],
-                          ),
+                          child: data.isEmpty
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text("생성된 그룹이 없습니다."),
+                                      createNewGroup(data)
+                                    ],
+                                  ),
+                                )
+                              : ListView(
+                                  shrinkWrap: true,
+                                  children: [
+                                    GroupWidget(data: data),
+                                    createNewGroup(data),
+                                  ],
+                                ),
                         ),
                       ),
                     );
@@ -124,6 +135,19 @@ class _GroupWidgetState extends State<GroupWidget> {
                         ),
                         actions: [
                           TextButton(
+                            child: const Text("삭제"),
+                            onPressed: () {
+                              setState(() {
+                                widget.data.remove(groupName);
+                                fileUtil.writeFileJSON(widget.data);
+                                Navigator.pop(context);
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            width: 50,
+                          ),
+                          TextButton(
                             onPressed: () => Navigator.pop(context),
                             child: const Text("취소"),
                           ),
@@ -170,7 +194,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                       ),
                     ))
                 .toList(),
-            IconButton(
+            TextButton(
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -209,7 +233,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                         );
                       });
                 },
-                icon: const Icon(Icons.add))
+                child: const Text("멤버 추가"))
           ],
         )
       ],
