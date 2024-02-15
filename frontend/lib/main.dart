@@ -37,7 +37,16 @@ class _MyAppState extends State<MyApp> {
           body: Column(
             children: [buildPageView(controller, update)],
           ),
-          bottomNavigationBar: buildBottomNavigationBar(controller, update),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Divider(
+                height: 0.1,
+                color: Colors.grey,
+              ),
+              buildBottomNavigationBar(controller, update),
+            ],
+          ),
         ));
   }
 
@@ -45,10 +54,15 @@ class _MyAppState extends State<MyApp> {
       PageController controller, void Function() update) {
     return BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.white,
         currentIndex: currentPageIndex,
-        selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.white12,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.black,
+        elevation: 0,
+        selectedIconTheme: IconThemeData(size: 30),
+        unselectedIconTheme: IconThemeData(size: 24),
+        selectedFontSize: 13,
+        unselectedFontSize: 12,
         onTap: (index) {
           setState(() {
             currentPageIndex = index;
