@@ -8,17 +8,40 @@ class SettingsPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.grey,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: GestureDetector(
+            onTap: () {},
+            child: Icon(
+              Icons.settings,
+              color: Colors.black,
+            ),
+          ),
+          title: Text(
+            '설정',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch, //우찬아 힘내
+            crossAxisAlignment: CrossAxisAlignment.stretch, //우찬아 힘?내
             children: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -29,11 +52,28 @@ class SettingsPageWidget extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("알레르기"),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "알레르기",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right),
+                  ],
+                ),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -43,11 +83,28 @@ class SettingsPageWidget extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("건의/버그"),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "건의/버그",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right),
+                  ],
+                ),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -58,7 +115,20 @@ class SettingsPageWidget extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("라이센스"),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "라이센스",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(Icons.keyboard_arrow_right),
+                  ],
+                ),
               ),
             ],
           ),
