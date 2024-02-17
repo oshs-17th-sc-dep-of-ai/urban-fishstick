@@ -13,15 +13,12 @@ students_db = {
     10004: {'group_state': None},
 }
 
-def create_group_id() -> int:
-    return int(''.join(random.choices(string.digits, k=6)))
-
 @bp.route('/register', methods=['POST'])
 async def group_register():
     try:
         data = await request.json
         group_members = data.get('group_members', [])
-        group_id = create_group_id()
+        group_id = group_members[0]
 
         for student_id in group_members:
             if student_id not in students_db:
