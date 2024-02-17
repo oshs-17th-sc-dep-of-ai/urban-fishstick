@@ -42,7 +42,8 @@ class _MyWidgetState extends State<AllergyPageWidget> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               text[index],
-              style: TextStyle(
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
                 color: Colors.black,
                 fontSize: 20,
               ),
@@ -59,7 +60,7 @@ class _MyWidgetState extends State<AllergyPageWidget> {
               });
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: CircleBorder()),
+            shape: const CircleBorder()),
       ],
     );
   }
@@ -77,10 +78,13 @@ class _MyWidgetState extends State<AllergyPageWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 236, 236, 236),
-        title: Text(
+        backgroundColor: const Color.fromARGB(255, 236, 236, 236),
+        title: const Text(
           '알레르기 설정',
-          style: TextStyle(fontSize: 30),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
         ),
         centerTitle: true,
         toolbarHeight: 75,

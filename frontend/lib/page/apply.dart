@@ -15,11 +15,30 @@ class ApplyPageWidget extends StatefulWidget {
 class ApplyPageWidgetState extends State<ApplyPageWidget> {
   @override
   Widget build(BuildContext context) {
+    const fileUtil = FileUtil("./group.json");
+
     return Scaffold(
-      body: const Padding(
-        padding: EdgeInsets.all(12),
-        child: ApplyPageWidgetBody(),
-      ),
+      body: FutureBuilder(
+          future: fileUtil.exists(),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              bool exists = snapshot.data!;
+
+              if (!exists) {
+                fileUtil.createFile("{}").whenComplete(() {
+                  exists = true;
+                });
+              }
+              return const Padding(
+                padding: EdgeInsets.all(12),
+                child: ApplyPageWidgetBody(),
+              );
+            } else {
+              return const Center(
+                child: Text("그룹 데이터 확인중..."),
+              );
+            }
+          }),
       floatingActionButton: buildApplyButton(),
     );
   }
@@ -159,51 +178,49 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
                           ],
                         );
                       } else {
-                        return StatefulBuilder(
-                          builder: (context, setState) {
-                            return AlertDialog(
-                              title: Text("선택된 그룹: ${selectedGroup.isEmpty ? "없음" : selectedGroup}"),
-                              titleTextStyle: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 17.0,
+                        return StatefulBuilder(builder: (context, setState) {
+                          return AlertDialog(
+                            title: Text(
+                                "선택된 그룹: ${selectedGroup.isEmpty ? "없음" : selectedGroup}"),
+                            titleTextStyle: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 17.0,
+                            ),
+                            content: SizedBox(
+                              width: 300,
+                              height: 200,
+                              child: ListView(
+                                children: groups.keys
+                                    .map((key) => ListTile(
+                                          title: Text(key),
+                                          onTap: () {
+                                            setState(() {
+                                              selectedGroup = key;
+                                            });
+                                          },
+                                        ))
+                                    .toList(),
                               ),
-                              content: SizedBox(
-                                width: 300,
-                                height: 200,
-                                child: ListView(
-                                  children: groups.keys
-                                      .map((key) =>
-                                      ListTile(
-                                        title: Text(key),
-                                        onTap: () {
-                                          setState(() {
-                                            selectedGroup = key;
-                                          });
-                                        },
-                                      ))
-                                      .toList(),
-                                ),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text("취소"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
                               ),
-                              actions: [
-                                TextButton(
-                                  child: const Text("취소"),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      currentMemberList = groups[selectedGroup];
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("불러오기"),
-                                )
-                              ],
-                            );
-                          }
-                        );
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    currentMemberList = groups[selectedGroup];
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("불러오기"),
+                              )
+                            ],
+                          );
+                        });
                       }
                     });
               },
