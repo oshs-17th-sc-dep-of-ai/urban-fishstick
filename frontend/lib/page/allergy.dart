@@ -2,6 +2,7 @@ import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:frontend/page/settings.dart";
+import "package:frontend/util/file.dart";
 
 class AllergyPageWidget extends StatefulWidget {
   const AllergyPageWidget({super.key});
@@ -11,7 +12,10 @@ class AllergyPageWidget extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<AllergyPageWidget> {
-  List<bool> allergy = List.filled(19, false);
+  final fileUtil = const FileUtil("./allergy.json");
+
+  // List<bool> allergy = List.filled(19, false);
+  List? allergy;
   List<String> text = [
     "난류",
     "우유",
@@ -53,10 +57,10 @@ class _MyWidgetState extends State<AllergyPageWidget> {
         Checkbox(
             activeColor: Colors.blue,
             checkColor: Colors.white,
-            value: allergy[index],
+            value: allergy![index],
             onChanged: (value) {
               setState(() {
-                allergy[index] = !allergy[index];
+                allergy![index] = !allergy![index];
               });
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -76,6 +80,28 @@ class _MyWidgetState extends State<AllergyPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (allergy == null) {
+      return FutureBuilder(
+          future: allergyListInitilize(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              allergy = snapshot.data;
+
+              return buildAllergyPage();
+            } else {
+              return const Scaffold(
+                body: Center(
+                  child: Text("알레르기 정보 로딩중..."),
+                ),
+              );
+            }
+          });
+    } else {
+      return buildAllergyPage();
+    }
+  }
+
+  Scaffold buildAllergyPage() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 236, 236, 236),
@@ -94,19 +120,29 @@ class _MyWidgetState extends State<AllergyPageWidget> {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Expanded(
-              child: buildColumn(0, 8),
-            ),
+            Expanded(child: buildColumn(0, 9)),
             const SizedBox(width: 16),
             const VerticalDivider(
-                color: Color.fromARGB(255, 209, 209, 209), width: 1),
-            const SizedBox(width: 16),
-            Expanded(
-              child: buildColumn(9, 18),
+              color: Color.fromARGB(255, 209, 209, 209),
+              width: 1,
             ),
+            const SizedBox(width: 16),
+            Expanded(child: buildColumn(10, 18)),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    fileUtil.writeFileJSON(allergy);
+  }
+
+  Future<List> allergyListInitilize() async {
+    return await fileUtil.exists()
+        ? await fileUtil.readFileJSON()
+        : List.filled(19, false);
   }
 }
