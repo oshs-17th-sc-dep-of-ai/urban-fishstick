@@ -14,7 +14,7 @@ class _LicensePageWidgetState extends State<LicensePageWidget> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 236, 236, 236),
         title: const Text(
-          '라이센스',
+          'Open Source Licenses',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize:30,
@@ -23,6 +23,12 @@ class _LicensePageWidgetState extends State<LicensePageWidget> {
         centerTitle: true,
         toolbarHeight: 75,
         leadingWidth: 70,
+      ),
+      body: const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Text(
+          'Text',
+        ),
       ),
     );
   }
