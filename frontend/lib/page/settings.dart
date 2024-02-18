@@ -15,12 +15,12 @@ class SettingsPageWidget extends StatelessWidget {
           backgroundColor: Colors.white,
           leading: GestureDetector(
             onTap: () {},
-            child: Icon(
+            child: const Icon(
               Icons.settings,
               color: Colors.black,
             ),
           ),
-          title: Text(
+          title: const Text(
             '설정',
             style: TextStyle(
               color: Colors.black,
@@ -37,7 +37,7 @@ class SettingsPageWidget extends StatelessWidget {
             children: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
+                  backgroundColor: Colors.white,
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -52,7 +52,7 @@ class SettingsPageWidget extends StatelessWidget {
                     ),
                   );
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -69,7 +69,7 @@ class SettingsPageWidget extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
+                  backgroundColor: Colors.white,
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -83,7 +83,7 @@ class SettingsPageWidget extends StatelessWidget {
                     ),
                   );
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -100,7 +100,7 @@ class SettingsPageWidget extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
+                  backgroundColor: Colors.white,
                   minimumSize: Size(deviceSize.width, deviceSize.height * 0.09),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -115,7 +115,7 @@ class SettingsPageWidget extends StatelessWidget {
                     ),
                   );
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
