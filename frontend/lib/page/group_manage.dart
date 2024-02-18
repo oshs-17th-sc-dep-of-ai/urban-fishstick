@@ -46,9 +46,23 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
             fileUtil.createFile("{}");
           }
 
-          return Padding(
-            padding: const EdgeInsets.all(8),
-            child: FutureBuilder(
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              leading: const Icon(
+                Icons.group,
+                color: Colors.black,
+              ),
+              title: const Text(
+                "그룹 관리",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            body: FutureBuilder(
                 future: fileUtil.readFileJSON(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {

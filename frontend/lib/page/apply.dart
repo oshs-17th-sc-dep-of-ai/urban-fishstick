@@ -18,6 +18,21 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
     const fileUtil = FileUtil("./group.json");
 
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: const Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
+          title: const Text(
+            '신청',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       body: FutureBuilder(
           future: fileUtil.exists(),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
