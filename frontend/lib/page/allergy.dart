@@ -85,7 +85,7 @@ class _MyWidgetState extends State<AllergyPageWidget> {
           future: allergyListInitilize(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              allergy = snapshot.data;
+              allergy = snapshot.data ?? List.filled(19, false);
 
               return buildAllergyPage();
             } else {
@@ -131,6 +131,29 @@ class _MyWidgetState extends State<AllergyPageWidget> {
           ],
         ),
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: FloatingActionButton(
+                onPressed: () {
+                  // 이후 추가 예정
+                },
+                backgroundColor: const Color.fromARGB(255, 0, 120, 215),
+                child: const Text(
+                  '적용',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
