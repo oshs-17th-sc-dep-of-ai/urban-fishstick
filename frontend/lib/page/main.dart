@@ -124,16 +124,3 @@ class _MainPageWidgetState extends State<MainPageWidget>
     super.dispose();
   }
 }
-
-class YourApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MainPageWidget(),
-    );
-  }
-}
-
-void main() {
-  runApp(YourApp());
-}
