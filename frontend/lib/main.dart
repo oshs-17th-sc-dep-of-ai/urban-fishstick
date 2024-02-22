@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
           bottomNavigationBar: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Divider(
+              const Divider(
                 height: 0.1,
                 color: Colors.grey,
               ),
@@ -59,8 +59,8 @@ class _MyAppState extends State<MyApp> {
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.black,
         elevation: 0,
-        selectedIconTheme: IconThemeData(size: 30),
-        unselectedIconTheme: IconThemeData(size: 24),
+        selectedIconTheme: const IconThemeData(size: 30),
+        unselectedIconTheme: const IconThemeData(size: 24),
         selectedFontSize: 13,
         unselectedFontSize: 12,
         onTap: (index) {
