@@ -13,37 +13,82 @@ class MainPageWidget extends StatefulWidget {
   State<MainPageWidget> createState() => _MainPageWidgetState();
 }
 
-class _MainPageWidgetState extends State<MainPageWidget> {
+class _MainPageWidgetState extends State<MainPageWidget>
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed ||
+          status == AnimationStatus.dismissed) {
+        _controller.reset();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: const Icon(
-          Icons.home,
-          color: Colors.black,
-        ),
-        title: const Text(
-          "홈",
-          style: TextStyle(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: const Icon(
+            Icons.home,
             color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+          ),
+          title: const Text(
+            "홈",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // const Padding(padding: EdgeInsets.all(50)),
-          buildHeader(),
-          buildHorizontalDivider(),
-          buildDietPanel(deviceSize)
-        ],
-      ),
-    );
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // const Padding(padding: EdgeInsets.all(50)),
+            buildHeader(),
+            buildHorizontalDivider(),
+            buildDietPanel(deviceSize)
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // 클릭시 새로고침
+            if (_controller.isAnimating) {
+              return;
+            }
+
+            _controller.forward();
+          },
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+            child: const Icon(
+              Icons.refresh,
+              color: Colors.white,
+            ),
+          ),
+        ));
   }
 
   FutureBuilder buildDietPanel(Size deviceSize) {

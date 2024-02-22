@@ -1,5 +1,3 @@
-// https://velog.io/@osung/Flutter-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84Event-Loop%EC%99%80-isolate
-
 import "dart:isolate";
 
 import "package:frontend/util/network.dart";
