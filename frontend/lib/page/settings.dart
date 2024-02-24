@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:frontend/page/allergy.dart";
 import "package:frontend/page/license.dart";
 import "package:frontend/page/bug.dart";
+import "package:frontend/page/beacon_test.dart";
 
 class SettingsPageWidget extends StatelessWidget {
   const SettingsPageWidget({super.key});
@@ -41,6 +42,7 @@ class SettingsPageWidget extends StatelessWidget {
               buildSettingMenuButton("건의/버그", const BugPageWidget(), context),
               buildSettingMenuButton(
                   "라이센스", const LicensePageWidget(), context),
+              buildSettingMenuButton("비콘 테스트", const BeaconTestPageWidget(), context),
             ],
           ),
         ),
