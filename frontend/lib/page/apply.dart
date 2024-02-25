@@ -123,6 +123,8 @@ class ApplyPageWidgetBody extends StatefulWidget {
 }
 
 class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
+  void update() => setState(() {});
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -230,6 +232,7 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
                                     currentMemberList = groups[selectedGroup];
                                   });
                                   Navigator.pop(context);
+                                  update();
                                 },
                                 child: const Text("불러오기"),
                               )
