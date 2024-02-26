@@ -47,15 +47,18 @@ async def seat_remain():
 @bp.route('/enter/prior', methods=['POST'])
 async def seat_enter_prior():
     try:
-        data = await request.json
+        data = await request.get_json()
+
         group_members = data.get('group_members', [])
         auth_key = data.get('key', None)
         key = "some"
-
-        if auth_key != key:
-            return jsonify({'error': 'Incorrect authentication key'}), 403
-
-        return jsonify({'key': auth_key, 'group_members': group_members}), 200
+        if auth_key in data:
+            if auth_key != key:
+                return jsonify({'error': 'Incorrect authentication key'}), 403
+            else:
+                return jsonify({'key': auth_key, 'group_members': group_members}), 200
+        else:
+            return jsonify("test"), 204  # TODO: 교사일경우 그룹인원수 측정후 전체에서 뺴주는 기능 필요.
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
