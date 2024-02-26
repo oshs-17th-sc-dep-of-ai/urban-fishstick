@@ -21,7 +21,7 @@ async def seat_enter():
         if non_existing_students:
             return jsonify({'error': f'ID {non_existing_students} not found'}), 404
 
-        seat_manager.seat_remain -= len(group_members)
+        seat_manager.enter_next_group(group_members)
         return jsonify(group_members), 200
 
     except Exception as e:
@@ -33,7 +33,7 @@ async def seat_exit():
         student_id = int(request.data.decode("utf-8"))
 
         if student_id in seat_manager.group:
-            seat_manager.seat_remain += 1
+            seat_manager.exit(student_id)
             return jsonify({"message": "퇴장 처리 완료"}), 200
         else:
             return jsonify({"message": "해당 학생이 그룹에 존재하지 않습니다."}), 404

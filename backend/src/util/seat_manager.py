@@ -5,11 +5,13 @@ class SeatManager:
         self.seat_remain = 10      # 남은 좌석 수
         self.group = []            # 그룹 리스트 (인원 저장됨)
         self.group_ids = []        # 각 그룹의 고유 ID
+        self.entered_students = [] # 입장한 학생
 
-    def enter_next_group(self) -> None:
+    def enter_next_group(self, group_members: list) -> None:
         """
         다음 그룹 입장
         """
+        self.entered_students.extend(group_members)
         self.next_enter  += 1
         self.seat_remain -= self.group.pop(0)
 
@@ -34,3 +36,10 @@ class SeatManager:
         `p_group`: 우선 급식 그룹, 학번으로 구성된 리스트
         """
         self.seat_remain -= len(p_group)
+
+    def exit(self, student_id: int) -> None:
+        """
+        퇴장
+        """
+        self.seat_remain += 1
+        self.entered_students.remove(student_id)
