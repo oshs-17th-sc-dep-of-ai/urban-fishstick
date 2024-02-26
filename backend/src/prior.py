@@ -26,3 +26,22 @@ async def prior_check():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@bp.route('/enter', methods=['POST'])
+async def prior_enter():
+    try:
+        data = await request.get_json()
+
+        group_members = data.get('group_members', [])
+        auth_key = data.get('key', None)
+        key = "some"
+        if auth_key in data:
+            if auth_key != key:
+                return jsonify({'error': 'Incorrect authentication key'}), 403
+            else:
+                return jsonify({'key': auth_key, 'group_members': group_members}), 200
+        else:
+            return jsonify("test"), 204  # TODO: 교사일경우 그룹인원수 측정후 전체에서 뺴주는 기능 필요.
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
