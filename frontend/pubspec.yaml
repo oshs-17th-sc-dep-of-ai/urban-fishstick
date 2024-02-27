@@ -36,6 +36,7 @@ dependencies:
   beacon_scanner: ^0.0.4
   flutter_local_notifications: ^16.3.2
   permission_handler: ^11.0.1
+  flutter_client_sse: ^2.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
+import "package:flutter_client_sse/constants/sse_request_type_enum.dart";
 import "package:frontend/util/file.dart";
 import "package:frontend/util/network.dart";
 import "package:frontend/util/notification.dart";
+import "package:flutter_client_sse/flutter_client_sse.dart";
 
 List currentMemberList = [];
 
@@ -19,20 +21,20 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: const Icon(
-            Icons.add,
+        backgroundColor: Colors.white,
+        leading: const Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+        title: const Text(
+          '신청',
+          style: TextStyle(
             color: Colors.black,
-          ),
-          title: const Text(
-            '신청',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
+      ),
       body: FutureBuilder(
           future: fileUtil.exists(),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -65,6 +67,8 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
         showDialog(
           context: context,
           builder: (BuildContext context) {
+            String message = "";
+
             return AlertDialog(
               content: const SizedBox(
                 width: 200,
@@ -75,31 +79,25 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
               ),
               actions: [
                 TextButton(
-                    onPressed: () {
-                      String message = "";
+                    onPressed: () async {
+                      // await httpPost("", currentMemberList.toString());
+                      // Connection Refused 발생 시 adb reverse tcp:8720 tcp:8720 실행
 
-                      httpPost("", currentMemberList.toString())
-                          .then((value) => {
-                                // TODO: 서버 주소 입력
-                                message = "신청되었습니다." // FIXME: 신청되었습니다 메세지 출력 안됨
-                              })
-                          .onError((error, stackTrace) =>
-                              {message = "요청을 보내는 중 오류가 발생하였습니다."})
-                          .whenComplete(() => AlertDialog(
-                                content: SizedBox(
-                                  width: 300,
-                                  height: 75,
-                                  child: Center(child: Text(message)),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text("확인"),
-                                  )
-                                ],
-                              ));
-
-                      Navigator.pop(context);
+                      SSEClient.subscribeToSSE(
+                        method: SSERequestType.GET,
+                        url: "http://localhost:8720/group/index/sse",
+                        header: {
+                          "Accept": "text/event-stream",
+                          "Cache-Control": "no-cache"
+                        },
+                      ).listen((event) {
+                        debugPrint("id: ${event.id}");
+                        debugPrint("event: ${event.event}");
+                        debugPrint("data: ${event.data}");
+                      });
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     },
                     child: const Text("예")),
                 TextButton(

@@ -4,7 +4,7 @@ from util.seat_manager import SeatManager
 bp = Blueprint('prior', __name__)
 seat_manager = SeatManager()
 
-teacher_ids = set(["tid1", "tid2"])
+teacher_ids = { "tid1", "tid2" }
 
 @bp.route('/exit', methods=['POST'])
 async def prior_exit():
