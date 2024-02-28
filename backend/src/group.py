@@ -60,15 +60,15 @@ async def group_index():
 
 
 @bp.route('/index/sse', methods=['GET'])
-async def group_index_sse():
+async def group_index_sse(student_id):
     if "text/event-stream" not in request.accept_mimetypes:
         return jsonify({ "error": "this route requires event stream" }), 400
 
     async def send_events():
-        for _ in range(5):  # FIXME: 조건 변경 (클라이언트 그룹의 입장 순서가 다가올 때 까지)
-            data = "Test"  # FIXME: 데이터 소스 지정 (매 그룹 입장 시)
+        while seat_manager.group_ids.index(students_db[student_id]['group_state']) > 5:
+            data = seat_manager.group_ids.index(students_db[student_id]['group_state'])
             event = ServerSentEvent(data)
-            await asyncio.sleep(3)  # 30초 대기
+            await asyncio.sleep(30)  # 30초 대기
 
             yield event.encode()
 
