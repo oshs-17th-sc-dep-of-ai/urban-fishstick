@@ -1,59 +1,63 @@
 from quart import Blueprint, request, jsonify, make_response
 
-import sseclient
 import asyncio
 
+from main import db_conn as db
 from util.sse_helper import ServerSentEvent
 from util.seat_manager import SeatManager
 
 bp = Blueprint('group', __name__)
 seat_manager = SeatManager()
 
-students_db = {
-    10001: { 'group_state': None },
-    10002: { 'group_state': None },
-    10003: { 'group_state': None },
-    10004: { 'group_state': None },
-}
-
 
 @bp.route('/register', methods=['POST'])
 async def group_register():
+    """
+    그룹을 입장 큐에 추가
+
+    요청 본문:
+    * 정수 리스트 (학번으로 구성됨)
+
+    성공 시 응답 본문:
+    * message: 응답 성공 메세지
+    * affected_students_count: 등록에 성공한 학생 수
+    * group_id: 큐 내에서의 그룹 아이디
+
+    실패 시 응답 본문:
+    * error: 서버 오류
+    """
     try:
+        cursor = db.cursor()
+
         data = await request.json
         group_members = data.get('group_members', [])
-        group_id = group_members[0]
-
-        for student_id in group_members:
-            if student_id not in students_db:
-                return jsonify({ 'error': f'ID {student_id} not found' }), 404
-
-            if students_db[student_id]['group_state'] is not None:
-                return jsonify({ 'error': f'ID {student_id} already belongs to group' }), 403
-
-            students_db[student_id]['group_state'] = group_id
-
-        seat_manager.register_group(group_members)
-        seat_manager.id(group_id)
-        return jsonify({ 'message': f' {group_members} register success' }), 200
+        group_id = seat_manager.register_group(group_members)
+        affected = cursor.executemany(
+            "UPDATE students set group_status=? WHERE student_id=? and group_status is null",
+            group_id,
+            group_members
+        )
+        db.commit()
+        return jsonify(
+            { 'message': 'register success', "affected_students_count": affected, "group_id": group_id }), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
 
 
-@bp.route('/index', methods=['POST'])
+@bp.route('/index', methods=['GET'])
 async def group_index():
     try:
-        student_id = int(await request.data)
-        student_group_state = students_db[student_id]['group_state']
+        cursor = db.cursor()
+        # TODO: 쿼리 스트링으로 변경
+        # student_id = int(await request.data)
+        # cursor.execute("SELECT group_status FROM students WHERE student_id=?", student_id)
+        student_group_status = await cursor.fetchone()  # TODO: 데이터 타입 확인
 
-        if student_id not in students_db or student_group_state is None:
-            return jsonify({ 'error': f'ID {student_id} does not belong to any group.' }), 404
-
-        if student_group_state not in seat_manager.group_ids:
-            return jsonify({ 'error': f'ID {student_id} unapplied student' }), 404
-
-        return jsonify({ 'group_index': seat_manager.group_ids.index(student_group_state) }), 200
+        if student_group_status is None:
+            return jsonify({ "index": -1 }), 404
+        else:
+            return jsonify({ "index": student_group_status }), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
@@ -66,7 +70,7 @@ async def group_index_sse():
 
     async def send_events():
         for _ in range(5):  # FIXME: 조건 변경 (클라이언트 그룹의 입장 순서가 다가올 때 까지)
-            data = "Test"  # FIXME: 데이터 소스 지정 (매 그룹 입장 시)
+            data = seat_manager.group.index()  # FIXME: 데이터 소스 지정 (매 그룹 입장 시)
             event = ServerSentEvent(data)
             await asyncio.sleep(3)  # 30초 대기
 
@@ -82,18 +86,20 @@ async def group_index_sse():
     return response
 
 
-@bp.route('/check', methods=['POST'])
+@bp.route('/check', methods=['GET'])
 async def group_check():
     try:
-        data = await request.json
-        group_members = data.get('group_members', [])
+        cursor = db.cursor()
+        data = None  # TODO: 쿼리 스트링으로 변경?
+        group_members = data.get('group_members', [])  # TODO: 쿼리 스트링으로 변경?
+        # 쿼리 스트링 포맷:
+        #   키: student
+        #   값: '-'로 이어진 학번 리스트
+        #   ex) 10000-10001-10002
 
-        duplicate = [student_id for student_id in group_members if student_id in seat_manager.group]
-
-        if duplicate:
-            return jsonify({ 'error': f'Duplicate Student ID : {duplicate}' }), 403
-
-        return jsonify({ 'message': 'No duplicates' }), 200
+        cursor.executemany("SELECT student_id FROM student WHERE student_id=?", group_members)
+        duplicate = cursor.fetchall()
+        return jsonify({ "duplicate_students": duplicate }), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500

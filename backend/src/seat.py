@@ -5,10 +5,11 @@ bp = Blueprint('seat', __name__)
 seat_manager = SeatManager()
 
 students_db = {
-    10001: {'group_state': None},
-    10002: {'group_state': None},
-    10003: {'group_state': None},  # 어떤 그룹에도 속해 있지 않음
+    10001: { 'group_state': None },
+    10002: { 'group_state': None },
+    10003: { 'group_state': None },  # 어떤 그룹에도 속해 있지 않음
 }
+
 
 @bp.route('/enter', methods=['POST'])
 async def seat_enter():
@@ -19,13 +20,14 @@ async def seat_enter():
         non_existing_students = [student_id for student_id in group_members if student_id not in students_db]
 
         if non_existing_students:
-            return jsonify({'error': f'ID {non_existing_students} not found'}), 404
+            return jsonify({ 'error': f'ID {non_existing_students} not found' }), 404
 
-        seat_manager.enter_next_group(group_members)
+        seat_manager.enter_next_group()
         return jsonify(group_members), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({ 'error': str(e) }), 500
+
 
 @bp.route('/exit', methods=['POST'])
 async def seat_exit():
@@ -34,11 +36,12 @@ async def seat_exit():
 
         if student_id in seat_manager.group:
             seat_manager.exit(student_id)
-            return jsonify({"message": "퇴장 처리 완료"}), 200
+            return jsonify({ "message": "퇴장 처리 완료" }), 200
         else:
-            return jsonify({"message": "해당 학생이 그룹에 존재하지 않습니다."}), 404
+            return jsonify({ "message": "해당 학생이 그룹에 존재하지 않습니다." }), 404
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({ "error": str(e) }), 500
+
 
 @bp.route('/remain', methods=['GET'])
 async def seat_remain():
