@@ -41,7 +41,8 @@ async def prior_enter():
             else:
                 return jsonify({'key': auth_key, 'group_members': group_members}), 200
         else:
-            return jsonify("test"), 204  # TODO: 교사일경우 그룹인원수 측정후 전체에서 뺴주는 기능 필요.
+            seat_manager.entered_people -= len(group_members)
+            return jsonify("test"), 204
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

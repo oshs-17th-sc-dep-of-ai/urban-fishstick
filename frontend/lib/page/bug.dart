@@ -35,6 +35,7 @@ class _BugPageWidgetState extends State<BugPageWidget> {
                 decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(20), hintText: '건의사항'),
                 controller: myController,
+                maxLines: null,
               )),
           FloatingActionButton(
               child: const Text("제출"),
