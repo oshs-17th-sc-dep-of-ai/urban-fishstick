@@ -64,6 +64,7 @@ async def group_index():
 
 @bp.route('/index/sse', methods=['GET'])
 async def group_index_sse(student_id):
+    # /index/sse/학번으로 데이터 전달
     if "text/event-stream" not in request.accept_mimetypes:
         return jsonify({ "error": "this route requires event stream" }), 400
 
