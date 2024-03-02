@@ -9,6 +9,7 @@ class BugPageWidget extends StatefulWidget {
 
 class _BugPageWidgetState extends State<BugPageWidget> {
   final myController = TextEditingController();
+  bool isSubmitButtonEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +33,9 @@ class _BugPageWidgetState extends State<BugPageWidget> {
             child: Container(
               width: 80,
               child: ElevatedButton(
-                onPressed: () => _showSubmitDialog(context),
+                onPressed: isSubmitButtonEnabled ? () => _showSubmitDialog(context) : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: isSubmitButtonEnabled ? Colors.blue : Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -78,6 +79,11 @@ class _BugPageWidgetState extends State<BugPageWidget> {
                 ),
                 maxLines: 11,
                 controller: myController,
+                onChanged: (text) {
+                  setState(() {
+                    isSubmitButtonEnabled = text.isNotEmpty;
+                  });
+                },
               ),
             ),
           ],
