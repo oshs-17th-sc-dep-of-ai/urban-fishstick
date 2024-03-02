@@ -60,9 +60,12 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
     );
   }
 
-  IconButton buildApplyButton() {
-    return IconButton(
-      icon: const Icon(Icons.check),
+  FloatingActionButton buildApplyButton() {
+    return FloatingActionButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      backgroundColor: Colors.black,
       onPressed: () {
         showDialog(
           context: context,
@@ -109,6 +112,10 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
           },
         );
       },
+      child: const Icon(
+        Icons.check,
+        color: Colors.white,
+      ),
     );
   }
 }
@@ -173,134 +180,134 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
               onPressed: () {
                 String selectedGroup = "";
 
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      if (groups.keys.isEmpty) {
-                        return AlertDialog(
-                          content: const SizedBox(
-                            width: 300,
-                            height: 75,
-                            child: Center(
-                              child: Text("생성된 그룹이 없습니다."),
-                            ),
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  if (groups.keys.isEmpty) {
+                    return AlertDialog(
+                      content: const SizedBox(
+                        width: 300,
+                        height: 75,
+                        child: Center(
+                          child: Text("생성된 그룹이 없습니다."),
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text("확인"),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return StatefulBuilder(builder: (context, setState) {
+                      return AlertDialog(
+                        title: Text(
+                            "선택된 그룹: ${selectedGroup.isEmpty ? "없음" : selectedGroup}"),
+                        titleTextStyle: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 17.0,
+                        ),
+                        content: SizedBox(
+                          width: 300,
+                          height: 200,
+                          child: ListView(
+                            children: groups.keys
+                                .map((key) => ListTile(
+                              title: Text(key),
+                              onTap: () {
+                                setState(() {
+                                  selectedGroup = key;
+                                });
+                              },
+                            ))
+                                .toList(),
                           ),
-                          actions: [
-                            TextButton(
-                              child: const Text("확인"),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return StatefulBuilder(builder: (context, setState) {
-                          return AlertDialog(
-                            title: Text(
-                                "선택된 그룹: ${selectedGroup.isEmpty ? "없음" : selectedGroup}"),
-                            titleTextStyle: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 17.0,
-                            ),
-                            content: SizedBox(
-                              width: 300,
-                              height: 200,
-                              child: ListView(
-                                children: groups.keys
-                                    .map((key) => ListTile(
-                                          title: Text(key),
-                                          onTap: () {
-                                            setState(() {
-                                              selectedGroup = key;
-                                            });
-                                          },
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                child: const Text("취소"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    currentMemberList = groups[selectedGroup];
-                                  });
-                                  Navigator.pop(context);
-                                  update();
-                                },
-                                child: const Text("불러오기"),
-                              )
-                            ],
-                          );
-                        });
-                      }
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Text("취소"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                currentMemberList = groups[selectedGroup];
+                              });
+                              Navigator.pop(context);
+                              update();
+                            },
+                            child: const Text("불러오기"),
+                          )
+                        ],
+                      );
                     });
-              },
-            );
-          } else {
-            return const Text("그룹 정보를 불러오는 중입니다...");
-          }
-        });
+                  }
+                });
+            },
+          );
+        } else {
+          return const Text("그룹 정보를 불러오는 중입니다...");
+        }
+      });
   }
 
   TextButton buildStudentIDInput(BuildContext context) {
     return TextButton(
-        child: const Text("학번 추가"),
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                TextEditingController textController = TextEditingController();
+      child: const Text("학번 추가"),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            TextEditingController textController = TextEditingController();
 
-                return AlertDialog(
-                  content: SizedBox(
-                    width: 300,
-                    height: 75,
-                    child: Center(
-                        child: TextField(
-                      controller: textController,
-                    )),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("취소"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if (textController.text.isNotEmpty) {
-                          setState(() {
-                            currentMemberList
-                                .add(int.parse(textController.text));
-                            Navigator.pop(context);
-                          });
-                        }
-                      },
-                      child: const Text("추가"),
-                    ),
-                  ],
-                );
-              });
-        });
+            return AlertDialog(
+              content: SizedBox(
+                width: 300,
+                height: 75,
+                child: Center(
+                  child: TextField(
+                    controller: textController,
+                  )),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("취소"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (textController.text.isNotEmpty) {
+                      setState(() {
+                        currentMemberList
+                            .add(int.parse(textController.text));
+                        Navigator.pop(context);
+                      });
+                    }
+                  },
+                  child: const Text("추가"),
+                ),
+              ],
+            );
+          });
+      });
   }
 
   List<ListTile> buildMemberList() {
     return currentMemberList
         .map((e) => ListTile(
-              title: Text(e.toString()),
-              trailing: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  setState(() {
-                    currentMemberList.remove(e);
-                  });
-                },
-              ),
-            ))
+      title: Text(e.toString()),
+      trailing: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          setState(() {
+            currentMemberList.remove(e);
+          });
+        },
+      ),
+    ))
         .toList();
   }
 }
