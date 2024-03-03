@@ -120,15 +120,27 @@ class _MainPageWidgetState extends State<MainPageWidget>
 
                           // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
 
-                          return ListView(
-                            shrinkWrap: true,
-                            children: [
-                              ...dietInfo!["diet"]
-                                  .map((e) => ListTile(
-                                        title: Text(e),
-                                      ))
-                                  .toList()
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.grey
+                              ),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: [
+                                ...dietInfo!["diet"]
+                                    .map((e) => ListTile(
+                                  title: Container(
+                                    child: Text(e),
+                                  ),
+                              ))
+                                    .toList()
                             ],
+                          ),
                           );
                         } else {
                           return const Placeholder();
