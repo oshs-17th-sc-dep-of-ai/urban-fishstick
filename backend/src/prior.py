@@ -6,14 +6,16 @@ seat_manager = SeatManager()
 
 teacher_ids = { "tid1", "tid2" }
 
+
 @bp.route('/exit', methods=['POST'])
 async def prior_exit():
     try:
         seat_manager.seat_remain += 1
-        return jsonify({'message': 'Prior group exited successfully'}), 200
+        return jsonify({ 'message': 'Prior group exited successfully' }), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({ 'error': str(e) }), 500
+
 
 @bp.route('/check', methods=['GET'])
 async def prior_check():
@@ -25,7 +27,8 @@ async def prior_check():
             return '', 404
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({ 'error': str(e) }), 500
+
 
 @bp.route('/enter', methods=['POST'])
 async def prior_enter():
@@ -37,12 +40,12 @@ async def prior_enter():
         key = "some"
         if auth_key in data:
             if auth_key != key:
-                return jsonify({'error': 'Incorrect authentication key'}), 403
+                return jsonify({ 'error': 'Incorrect authentication key' }), 403
             else:
-                return jsonify({'key': auth_key, 'group_members': group_members}), 200
+                return jsonify({ 'key': auth_key, 'group_members': group_members }), 200
         else:
             seat_manager.entered_people -= len(group_members)
             return jsonify("test"), 204
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({ 'error': str(e) }), 500

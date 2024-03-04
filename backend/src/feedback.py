@@ -1,12 +1,13 @@
-from flask import Flask, Blueprint, request, jsonify
+from quart import Blueprint, request, jsonify
+from util.json_util import read_json
 import os
 
-app = Flask(__name__)
-
 bp = Blueprint("feedback", __name__)
+__server_config = read_json("../config/server.json")
 
 # 건의사항 폴더 경로
-folder = " "  # 경로는 나중에 추가
+folder = __server_config["feedback_data_dir"]  # 경로는 나중에 추가
+
 
 # 건의사항 추가
 @bp.route("/add", methods=["POST"])
@@ -25,10 +26,11 @@ def add_feedback():
         with open(filepath, "w") as file:
             file.write(text)
 
-        return jsonify({"message": "건의사항이 추가되었습니다."}), 201
+        return jsonify({ "message": "건의사항이 추가되었습니다." }), 201
 
     except FileNotFoundError:
-        return jsonify({"message": "해당 파일을 찾을 수 없습니다."}), 404
+        return jsonify({ "message": "해당 파일을 찾을 수 없습니다." }), 404
+
 
 # 건의사항 확인
 @bp.route("/get/<filename>", methods=["GET"])
@@ -39,10 +41,10 @@ def get_feedback(filename):
         with open(filepath, "r") as file:
             text = file.read()
 
-        return jsonify({"feedback": text})
+        return jsonify({ "feedback": text })
 
     except FileNotFoundError:
-        return jsonify({"message": "해당 파일을 찾을 수 없습니다."}), 404
+        return jsonify({ "message": "해당 파일을 찾을 수 없습니다." }), 404
 
 
 app.register_blueprint(bp)
