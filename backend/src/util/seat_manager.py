@@ -1,42 +1,37 @@
 from dataclasses import dataclass
-
+from typing import List
 
 @dataclass
 class Group:
-    members: list
+    """
+    * members: 5자리 정수로 이루어진 학번 리스트
+    * id: 그룹의 ID, 자동으로 부여됨
+    """
+    members: List[int]
     id: int
 
 
 class SeatManager:
     def __init__(self) -> None:
-        self.seat_remain = 10  # 남은 좌석 수
-        self.group = []  # 그룹 리스트
-        self.entered_students = []  # 입장한 학생
-
-    def enter_next_group(self) -> None:
-        """
-        다음 그룹 입장, 만약 자리가 충분하지 않다면 충분할때까지 대기
-        """
-        while self.seat_remain < len(self.group[0].members):  # 테스트 필요
-            # 남은 자리보다 그룹 인원이 적다면 자리가 충분할 때 까지 대기
-            pass
-        self.group.pop(0)
+        self.seat_remain: int = 10  # 남은 좌석 수
+        self.group: List[Group] = []  # 그룹 리스트
+        self.entered_students: List[int] = []  # 입장한 학생
 
     def register_group(self, r_group: list) -> Group:
         """
         신청 목록에 그룹 추가\n
         `r_group`: 신청 그룹, 학번으로 구성된 리스트
         """
-        group = Group(r_group, hash(tuple(r_group)))
+        group: Group = Group(r_group, hash(tuple(r_group)))
         self.group.append(group)
         return group
 
-    def enter_student(self, student_id: int) -> None:
+    def enter_next_group(self) -> None:
         """
-        급식실 입장 시 이 함수 이용
+        다음 그룹 입장, 만약 자리가 충분하지 않다면 충분할때까지 대기\n
+        *사용 시 반드시 그룹 인원수 이상의 자리가 남아있는지 확인 후 호출*
         """
-        self.seat_remain -= 1
-        self.entered_students.append(student_id)
+        self.group.pop(0)
 
     def enter_prior_group(self, p_group: list) -> None:
         """
@@ -45,9 +40,15 @@ class SeatManager:
         """
         self.seat_remain -= len(p_group)
 
+    def enter_student(self, student_id: int) -> None:
+        """급식실 입장 시 이 함수 이용"""
+        self.seat_remain -= 1
+        self.entered_students.append(student_id)
+
     def exit(self, student_id: int) -> None:
-        """
-        퇴장
-        """
-        self.seat_remain += 1
-        self.entered_students.remove(student_id)
+        """퇴장"""
+        try:
+            self.entered_students.remove(student_id)
+            self.seat_remain += 1
+        except ValueError:
+            pass

@@ -1,8 +1,7 @@
-from quart import Blueprint, request, jsonify, Quart
-from util.seat_manager import SeatManager  # SeatManager 클래스 import
+from quart import Blueprint, request, jsonify
+from .main import seat_manager
 
 bp = Blueprint('seat', __name__)
-seat_manager = SeatManager()
 
 students_db = {
     10001: { 'group_state': None },
@@ -13,17 +12,21 @@ students_db = {
 
 @bp.route('/enter', methods=['POST'])
 async def seat_enter():
+    """
+    학생 입장 시 이 경로로 POST 요청 전송
+    요청 본문
+
+    * 학생의 학번
+    """
     try:
-        data = await request.json
-        group_members = data.get('group_members', [])
+        student_id: int = await request.json
 
-        non_existing_students = [student_id for student_id in group_members if student_id not in students_db]
+        seat_manager.enter_student(student_id)
 
-        if non_existing_students:
-            return jsonify({ 'error': f'ID {non_existing_students} not found' }), 404
+        if seat_manager.seat_remain >= len(seat_manager.group[0].members):
+            seat_manager.enter_next_group()
 
-        seat_manager.enter_next_group()
-        return jsonify(group_members), 200
+        return jsonify({ "entered": student_id }), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
@@ -31,18 +34,22 @@ async def seat_enter():
 
 @bp.route('/exit', methods=['POST'])
 async def seat_exit():
+    """
+    학생 퇴장 시 이 경로로 POST 요청 전송
+    """
     try:
-        student_id = int(request.data.decode("utf-8"))
+        student_id: int = await request.json
 
-        if student_id in seat_manager.group:
-            seat_manager.exit(student_id)
-            return jsonify({ "message": "퇴장 처리 완료" }), 200
-        else:
-            return jsonify({ "message": "해당 학생이 그룹에 존재하지 않습니다." }), 404
+        seat_manager.exit_student(student_id)
+        return jsonify({ "exited": student_id })
+
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
 
 
 @bp.route('/remain', methods=['GET'])
 async def seat_remain():
-    return jsonify(seat_manager.seat_remain)
+    """
+    현재 남은 좌석 수 반환
+    """
+    return jsonify(seat_manager.seat_remain), 200
