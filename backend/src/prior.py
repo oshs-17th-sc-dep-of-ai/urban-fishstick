@@ -1,13 +1,25 @@
 from quart import Blueprint, request, jsonify
+
+from util.json_util import read_json
+from util.database import DatabaseUtil
 from util.seat_manager import SeatManager
+
+__db_config = read_json("../config/database.json")
 
 prior_bp = Blueprint('prior', __name__)
 seat_manager = SeatManager()
+db_util = DatabaseUtil(
+    host=__db_config['host'],
+    password=__db_config['password']
+)
 
+
+# TODO: 테스트
 
 @prior_bp.route('/exit', methods=['POST'])
 async def prior_exit():
     try:
+
         seat_manager.seat_remain += 1
         return jsonify({ 'message': 'Prior group exited successfully' }), 200
 
@@ -43,18 +55,21 @@ async def prior_check():
 @prior_bp.route('/enter', methods=['POST'])
 async def prior_enter():
     try:
-        data = await request.get_json()
+        data = await request.json
 
-        group_members = data.get('group_members', [])
-        auth_key = data.get('key', None)
-        key = "some"
-        if auth_key in data:
-            if auth_key != key:
-                return jsonify({ 'error': 'Incorrect authentication key' }), 403
-            else:
-                return jsonify({ 'key': auth_key, 'group_members': group_members }), 200
+        student_id = data["student_id"]
+        req_auth_key = data["key"]
+        srv_auth_key_query = db_util.query(
+            "SELECT validation_key FROM prior_students WHERE student_id=%(student_id)s",
+            student_id=student_id
+        )
+
+        print(srv_auth_key_query)
+
+        if not srv_auth_key_query.affected_rows or req_auth_key != srv_auth_key_query.result:
+            return jsonify({ 'error': 'Incorrect authentication key' }), 403
         else:
-            seat_manager.entered_people -= len(group_members)
+            seat_manager.entered_people -= 1
             return jsonify("test"), 204
 
     except Exception as e:

@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from typing import List
 
+from .json_util import read_json
+
+config = read_json("../config/server.json")
+
 
 @dataclass
 class Group:
@@ -16,7 +20,7 @@ class SeatManager:
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, 'instance'):
             cls.instance = super(SeatManager, cls).__new__(cls)
-            cls.seat_remain: int = 10
+            cls.seat_remain: int = config["seat_max_capacity"]
             cls.group: List[Group] = []
             cls.entered_students: List[int] = []
         return cls.instance

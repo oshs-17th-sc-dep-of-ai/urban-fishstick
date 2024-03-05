@@ -19,6 +19,8 @@ db_util = DatabaseUtil(
 )
 
 
+# TODO: 테스트
+
 @group_bp.route('/register', methods=['POST'])
 async def group_register():
     """
@@ -74,9 +76,9 @@ async def group_index():
         print(student_group_status)
 
         if student_group_status is None:
-            return jsonify({ "index": -1 }), 404
+            return jsonify(-1), 404
         else:
-            return jsonify({ "index": student_group_status }), 200
+            return jsonify(student_group_status), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
@@ -114,17 +116,18 @@ async def group_index_sse():
 @group_bp.route('/check', methods=['GET'])
 async def group_check():
     try:
-        cursor = db.cursor()
         group_members: List[int] = list(map(int, request.args.get("student").split()))
         # 쿼리 스트링 포맷:
         #   키: student
         #   값: '-'로 이어진 학번 리스트
         #   ex) 10000-10001-10002
 
-        cursor.execute("SELECT student_id FROM students WHERE student_id IN %(members)s AND group_status IS NOT NULL",
-                       { "members": group_members })
-        duplicate = cursor.fetchall()
-        return jsonify({ "duplicate_students": duplicate }), 200
+        # TODO: 테스트
+        duplicate = db_util.query(
+            "SELECT student_id FROM students WHERE student_id IN %(members)s AND group_status IS NOT NULL",
+            members=group_members
+        )
+        return jsonify(duplicate), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500

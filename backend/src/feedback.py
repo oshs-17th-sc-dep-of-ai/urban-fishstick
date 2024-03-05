@@ -11,9 +11,9 @@ folder = __server_config["feedback_data_dir"]  # 경로는 나중에 추가
 
 # 건의사항 추가
 @feedback_bp.route("/add", methods=["POST"])
-def add_feedback():
+async def add_feedback():
     try:
-        text = request.data.decode("utf-8")
+        text = await request.get_data(as_text=True)
 
         # 폴더가 없으면 폴더 생성
         if not os.path.exists(folder):
@@ -28,20 +28,19 @@ def add_feedback():
 
         return jsonify({ "message": "건의사항이 추가되었습니다." }), 201
 
-    except FileNotFoundError:
-        return jsonify({ "message": "해당 파일을 찾을 수 없습니다." }), 404
+    except OSError:
+        return jsonify({ "error": "Cannot write file" }), 500
 
 
 # 건의사항 확인
 @feedback_bp.route("/get/<filename>", methods=["GET"])
-def get_feedback(filename):
+async def get_feedback(filename):
     try:
         filepath = os.path.join(folder, filename)
 
         with open(filepath, "r") as file:
             text = file.read()
 
-        return jsonify({ "feedback": text })
-
+        return text, 201
     except FileNotFoundError:
-        return jsonify({ "message": "해당 파일을 찾을 수 없습니다." }), 404
+        return jsonify({ "error": "file not found" }), 404

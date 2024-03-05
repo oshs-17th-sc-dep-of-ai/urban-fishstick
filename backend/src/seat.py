@@ -1,10 +1,12 @@
 from quart import Blueprint, request, jsonify
 
-from src.util.seat_manager import SeatManager
+from util.seat_manager import SeatManager
 
 seat_bp = Blueprint('seat', __name__)
 seat_manager = SeatManager()
 
+
+# TODO: 테스트
 
 @seat_bp.route('/enter', methods=['POST'])
 async def seat_enter():
@@ -22,7 +24,7 @@ async def seat_enter():
         if seat_manager.seat_remain >= len(seat_manager.group[0].members):
             seat_manager.enter_next_group()
 
-        return jsonify({ "entered": student_id }), 200
+        return jsonify(student_id), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
@@ -37,7 +39,7 @@ async def seat_exit():
         student_id: int = await request.json
 
         seat_manager.exit_student(student_id)
-        return jsonify({ "exited": student_id })
+        return jsonify(student_id)
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
