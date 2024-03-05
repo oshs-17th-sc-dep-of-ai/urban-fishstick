@@ -1,13 +1,11 @@
 from quart import Blueprint, request, jsonify
 from util.seat_manager import SeatManager
 
-bp = Blueprint('prior', __name__)
+prior_bp = Blueprint('prior', __name__)
 seat_manager = SeatManager()
 
-teacher_ids = { "tid1", "tid2" }
 
-
-@bp.route('/exit', methods=['POST'])
+@prior_bp.route('/exit', methods=['POST'])
 async def prior_exit():
     try:
         seat_manager.seat_remain += 1
@@ -17,20 +15,32 @@ async def prior_exit():
         return jsonify({ 'error': str(e) }), 500
 
 
-@bp.route('/check', methods=['GET'])
+@prior_bp.route('/check', methods=['GET'])
 async def prior_check():
+    """
+    쿼리 스트링 키
+    type: teacher | student 값 중 하나
+    id: type 키 값에 따라 달라짐, 학생의 경우 학번
+    """
+    qs_type = request.args.get('type')
+    qs_id = request.args.get('id')
+
     try:
-        teacher_id = request.args.get('tid')
-        if teacher_id in teacher_ids:
+        if qs_type == "teacher":
+            # teacher process
+            return '', 204
+        elif qs_type == "student":
+            # student process
             return '', 204
         else:
-            return '', 404
+            # if invalid type or id
+            return jsonify({ "error": "query string must contain valid type and id" }), 400
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
 
 
-@bp.route('/enter', methods=['POST'])
+@prior_bp.route('/enter', methods=['POST'])
 async def prior_enter():
     try:
         data = await request.get_json()

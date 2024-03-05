@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class Group:
     """
@@ -12,10 +13,13 @@ class Group:
 
 
 class SeatManager:
-    def __init__(self) -> None:
-        self.seat_remain: int = 10  # 남은 좌석 수
-        self.group: List[Group] = []  # 그룹 리스트
-        self.entered_students: List[int] = []  # 입장한 학생
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(SeatManager, cls).__new__(cls)
+            cls.seat_remain: int = 10
+            cls.group: List[Group] = []
+            cls.entered_students: List[int] = []
+        return cls.instance
 
     def register_group(self, r_group: list) -> Group:
         """

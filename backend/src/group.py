@@ -4,14 +4,22 @@ from quart import Blueprint, request, jsonify, make_response
 
 import asyncio
 
-from main import seat_manager, db_conn as db
+from util.json_util import read_json
 from util.sse_helper import ServerSentEvent
-from util.seat_manager import Group
+from util.seat_manager import Group, SeatManager
+from util.database import DatabaseUtil
 
-bp = Blueprint('group', __name__)
+__db_config = read_json("../config/database.json")
+
+group_bp = Blueprint('group', __name__)
+seat_manager = SeatManager()
+db_util = DatabaseUtil(
+    host=__db_config['host'],
+    password=__db_config['password']
+)
 
 
-@bp.route('/register', methods=['POST'])
+@group_bp.route('/register', methods=['POST'])
 async def group_register():
     """
     그룹을 입장 큐에 추가\n
@@ -30,38 +38,40 @@ async def group_register():
     - error: 서버 오류
     """
     try:
-        with db.cursor() as cursor:
-            data = await request.json
-            group_members = data.get('group_members', [])
-            group_id = seat_manager.register_group(group_members)
-            affected = cursor.executemany(
-                "UPDATE students SET group_status=? WHERE student_id=? AND group_status IS NULL",
-                group_id,
-                group_members
-            )
-            db.commit()
+        data = await request.json
+        group_members = data.get('group_members', [])
+        group_id = seat_manager.register_group(group_members)
+        affected = db_util.query(
+            "UPDATE students SET group_status=%(group_id)s WHERE student_id=%(group_members)s AND group_status IS NULL",
+            group_id=group_id,
+            group_members=group_members
+        ).affected_rows
+        db_util.commit()
 
-            if seat_manager.seat_remain >= len(seat_manager.group[0].members):
-                seat_manager.enter_next_group()
+        if seat_manager.seat_remain >= len(seat_manager.group[0].members):
+            seat_manager.enter_next_group()
 
-            return jsonify({
-                "message": "register success",
-                "affected_students_count": affected,
-                "group_id": group_id
-            }), 200
+        return jsonify({
+            "message": "register success",
+            "affected_students_count": affected,
+            "group_id": group_id
+        }), 200
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
 
 
-@bp.route('/index', methods=['GET'])
+@group_bp.route('/index', methods=['GET'])
 async def group_index():
     try:
-        cursor = db.cursor()
-        # TODO: 쿼리 스트링으로 변경
-        # student_id = int(await request.data)
-        # cursor.execute("SELECT group_status FROM students WHERE student_id=?", student_id)
-        student_group_status = await cursor.fetchone()  # TODO: 데이터 타입 확인
+        student_id = int(request.args.get("id"))
+        student_group_status = db_util.query(
+            "SELECT group_status FROM students WHERE student_id=%(student_id)s",
+            student_id=student_id
+        ).result
+
+        # TODO: 테스트
+        print(student_group_status)
 
         if student_group_status is None:
             return jsonify({ "index": -1 }), 404
@@ -72,7 +82,7 @@ async def group_index():
         return jsonify({ 'error': str(e) }), 500
 
 
-@bp.route('/index/sse', methods=['GET'])
+@group_bp.route('/index/sse', methods=['GET'])
 async def group_index_sse():
     if "text/event-stream" not in request.accept_mimetypes:
         return jsonify({ "error": "this route requires event stream" }), 400
@@ -101,7 +111,7 @@ async def group_index_sse():
     return response
 
 
-@bp.route('/check', methods=['GET'])
+@group_bp.route('/check', methods=['GET'])
 async def group_check():
     try:
         cursor = db.cursor()
