@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:frontend/util/file.dart";
 
 class GroupManagePageWidget extends StatefulWidget {
@@ -10,29 +11,7 @@ class GroupManagePageWidget extends StatefulWidget {
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
   FileUtil fileUtil = const FileUtil("./group.json");
-
-  TextButton createNewGroup(Map<String, dynamic> data) {
-    return TextButton(
-      onPressed: () {
-        setState(() {
-          if (!data.containsKey("새 그룹 ${data.length + 1}")) {
-            data["새 그룹 ${data.length + 1}"] = [];
-          } else {
-            List<String> newGroups = data.keys
-                .where((element) => element.startsWith("새 그룹 "))
-                .toList();
-            newGroups.sort((a, b) => int.parse(a.replaceRange(0, 5, ""))
-                .compareTo(int.parse(b.replaceRange(0, 5, ""))));
-
-            data["새 그룹 ${int.parse(newGroups.last.replaceRange(0, 5, "")) + 1}"] =
-            [];
-          }
-
-          fileUtil.writeFileJSON(data);
-        });
-      },
-      child: const Text("새 그룹 추가"));
-  }
+  late Map<String, dynamic> data;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +45,7 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
               future: fileUtil.readFileJSON(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  Map<String, dynamic> data = snapshot.data;
+                  data = snapshot.data;
 
                   return Center(
                     child: FractionallySizedBox(
@@ -80,7 +59,6 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text("생성된 그룹이 없습니다."),
-                              createNewGroup(data)
                             ],
                           ),
                         )
@@ -88,7 +66,6 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                           shrinkWrap: true,
                           children: [
                             GroupWidget(data: data),
-                            createNewGroup(data),
                           ],
                         ),
                       ),
@@ -99,7 +76,43 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                     child: Text("로딩중..."),
                   );
                 }
-              }),
+              },
+            ),
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          if (!data.containsKey("새 그룹 ${data.length + 1}")) {
+                            data["새 그룹 ${data.length + 1}"] = [];
+                          } else {
+                            List<String> newGroups = data.keys
+                                .where((element) => element.startsWith("새 그룹 "))
+                                .toList();
+                            newGroups.sort((a, b) =>
+                                int.parse(a.replaceRange(0, 5, ""))
+                                    .compareTo(int.parse(b.replaceRange(0, 5, ""))));
+
+                            data["새 그룹 ${int.parse(newGroups.last.replaceRange(0, 5, "")) + 1}"] = [];
+                          }
+
+                          fileUtil.writeFileJSON(data);
+                        });
+                      },
+                      backgroundColor: const Color.fromARGB(255, 0, 120, 215),
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           );
         } else {
           return const Center(
@@ -169,6 +182,10 @@ class _GroupWidgetState extends State<GroupWidget> {
                       height: 75,
                       child: TextField(
                         controller: renameTextController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                       ),
                     ),
                     actions: [
@@ -225,45 +242,50 @@ class _GroupWidgetState extends State<GroupWidget> {
             ))
                 .toList(),
             TextButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    TextEditingController textController =
-                            TextEditingController();
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        TextEditingController textController =
+                        TextEditingController();
 
-                    return AlertDialog(
-                      content: SizedBox(
-                        width: 300,
-                        height: 75,
-                        child: Center(
-                          child: TextField(
-                            controller: textController,
-                          )),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("취소"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            if (textController.text.isNotEmpty) {
-                              setState(() {
-                                widget.data[groupName]
-                                    .add(int.parse(textController.text));
-                                fileUtil.writeFileJSON(widget.data);
-                                Navigator.pop(context);
-                              });
-                            }
-                          },
-                          child: const Text("추가"),
-                        ),
-                      ],
-                    );
-                  });
-              },
-              child: const Text("멤버 추가"))
+                        return AlertDialog(
+                          content: SizedBox(
+                            width: 300,
+                            height: 75,
+                            child: Center(
+                              child: TextField(
+                                controller: textController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("취소"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                if (textController.text.isNotEmpty) {
+                                  setState(() {
+                                    widget.data[groupName]
+                                        .add(int.parse(textController.text));
+                                    fileUtil.writeFileJSON(widget.data);
+                                    Navigator.pop(context);
+                                  });
+                                }
+                              },
+                              child: const Text("추가"),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                child: const Text("멤버 추가"))
           ],
         )
       ],
@@ -272,27 +294,27 @@ class _GroupWidgetState extends State<GroupWidget> {
 
   Future<dynamic> buildRemoveMemberDialog(String groupName, int member) {
     return showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        content: const SizedBox(
-          width: 200,
-          height: 75,
-          child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("취소")),
-          TextButton(
-            onPressed: () => setState(() {
-              // 멤버 제거
-              widget.data[groupName].remove(member);
-              fileUtil.writeFileJSON(widget.data);
-              Navigator.pop(context);
-            }),
-            child: const Text("제거"),
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          content: const SizedBox(
+            width: 200,
+            height: 75,
+            child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
           ),
-        ],
-      ));
-    }
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("취소")),
+            TextButton(
+              onPressed: () => setState(() {
+                // 멤버 제거
+                widget.data[groupName].remove(member);
+                fileUtil.writeFileJSON(widget.data);
+                Navigator.pop(context);
+              }),
+              child: const Text("제거"),
+            ),
+          ],
+        ));
+  }
 }
