@@ -11,29 +11,7 @@ class GroupManagePageWidget extends StatefulWidget {
 
 class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
   FileUtil fileUtil = const FileUtil("./group.json");
-
-  TextButton createNewGroup(Map<String, dynamic> data) {
-    return TextButton(
-        onPressed: () {
-          setState(() {
-            if (!data.containsKey("새 그룹 ${data.length + 1}")) {
-              data["새 그룹 ${data.length + 1}"] = [];
-            } else {
-              List<String> newGroups = data.keys
-                  .where((element) => element.startsWith("새 그룹 "))
-                  .toList();
-              newGroups.sort((a, b) => int.parse(a.replaceRange(0, 5, ""))
-                  .compareTo(int.parse(b.replaceRange(0, 5, ""))));
-
-              data["새 그룹 ${int.parse(newGroups.last.replaceRange(0, 5, "")) + 1}"] =
-                  [];
-            }
-
-            fileUtil.writeFileJSON(data);
-          });
-        },
-        child: const Text("새 그룹 추가"));
-  }
+  late Map<String, dynamic> data;
 
   @override
   Widget build(BuildContext context) {
@@ -64,43 +42,77 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
               ),
             ),
             body: FutureBuilder(
-                future: fileUtil.readFileJSON(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    Map<String, dynamic> data = snapshot.data;
+              future: fileUtil.readFileJSON(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  data = snapshot.data;
 
-                    return Center(
-                      child: FractionallySizedBox(
-                        widthFactor: 1,
-                        heightFactor: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: data.isEmpty
-                              ? Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text("생성된 그룹이 없습니다."),
-                                      createNewGroup(data)
-                                    ],
-                                  ),
-                                )
-                              : ListView(
-                                  shrinkWrap: true,
-                                  children: [
-                                    GroupWidget(data: data),
-                                    createNewGroup(data),
-                                  ],
-                                ),
+                  return Center(
+                    child: FractionallySizedBox(
+                      widthFactor: 1,
+                      heightFactor: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: data.isEmpty
+                            ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("생성된 그룹이 없습니다."),
+                            ],
+                          ),
+                        )
+                            : ListView(
+                          shrinkWrap: true,
+                          children: [
+                            GroupWidget(data: data),
+                          ],
                         ),
                       ),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text("로딩중..."),
-                    );
-                  }
-                }),
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: Text("로딩중..."),
+                  );
+                }
+              },
+            ),
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          if (!data.containsKey("새 그룹 ${data.length + 1}")) {
+                            data["새 그룹 ${data.length + 1}"] = [];
+                          } else {
+                            List<String> newGroups = data.keys
+                                .where((element) => element.startsWith("새 그룹 "))
+                                .toList();
+                            newGroups.sort((a, b) =>
+                                int.parse(a.replaceRange(0, 5, ""))
+                                    .compareTo(int.parse(b.replaceRange(0, 5, ""))));
+
+                            data["새 그룹 ${int.parse(newGroups.last.replaceRange(0, 5, "")) + 1}"] = [];
+                          }
+
+                          fileUtil.writeFileJSON(data);
+                        });
+                      },
+                      backgroundColor: const Color.fromARGB(255, 0, 120, 215),
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           );
         } else {
           return const Center(
@@ -162,7 +174,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                 context: context,
                 builder: (BuildContext context) {
                   TextEditingController renameTextController =
-                      TextEditingController(text: groupName);
+                  TextEditingController(text: groupName);
 
                   return AlertDialog(
                     content: SizedBox(
@@ -188,7 +200,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                         onPressed: () {
                           setState(() {
                             widget.data[renameTextController.text] =
-                                widget.data[groupName];
+                            widget.data[groupName];
                             widget.data.remove(groupName);
 
                             debugPrint("${widget.data}");
@@ -217,17 +229,17 @@ class _GroupWidgetState extends State<GroupWidget> {
           children: [
             ...memberList
                 .map((member) => Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: ListTile(
-                        title: Text(member.toString()),
-                        trailing: IconButton(
-                          onPressed: () {
-                            buildRemoveMemberDialog(groupName, member);
-                          },
-                          icon: const Icon(Icons.close),
-                        ),
-                      ),
-                    ))
+              padding: const EdgeInsets.only(left: 20),
+              child: ListTile(
+                title: Text(member.toString()),
+                trailing: IconButton(
+                  onPressed: () {
+                    buildRemoveMemberDialog(groupName, member);
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+              ),
+            ))
                 .toList(),
             TextButton(
                 onPressed: () {
@@ -235,7 +247,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                       context: context,
                       builder: (BuildContext context) {
                         TextEditingController textController =
-                            TextEditingController();
+                        TextEditingController();
 
                         return AlertDialog(
                           content: SizedBox(
@@ -284,25 +296,25 @@ class _GroupWidgetState extends State<GroupWidget> {
     return showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              content: const SizedBox(
-                width: 200,
-                height: 75,
-                child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("취소")),
-                TextButton(
-                  onPressed: () => setState(() {
-                    // 멤버 제거
-                    widget.data[groupName].remove(member);
-                    fileUtil.writeFileJSON(widget.data);
-                    Navigator.pop(context);
-                  }),
-                  child: const Text("제거"),
-                ),
-              ],
-            ));
+          content: const SizedBox(
+            width: 200,
+            height: 75,
+            child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("취소")),
+            TextButton(
+              onPressed: () => setState(() {
+                // 멤버 제거
+                widget.data[groupName].remove(member);
+                fileUtil.writeFileJSON(widget.data);
+                Navigator.pop(context);
+              }),
+              child: const Text("제거"),
+            ),
+          ],
+        ));
   }
 }
