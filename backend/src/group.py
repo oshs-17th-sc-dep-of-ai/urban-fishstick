@@ -19,8 +19,6 @@ db_util = DatabaseUtil(
 )
 
 
-# TODO: 테스트
-
 @group_bp.route('/register', methods=['POST'])
 async def group_register():
     """
@@ -42,8 +40,6 @@ async def group_register():
     try:
         group_members = await request.json
         group_id = seat_manager.register_group(group_members)
-
-        print(group_members, group_id)
         affected = db_util.query(
             "UPDATE students "
             "SET group_status=SHA1(%(group_id)s) WHERE student_id in %(group_members)s AND group_status IS NULL",
@@ -52,13 +48,14 @@ async def group_register():
         ).affected_rows
         db_util.commit()
 
+        # TODO: 테스트
         if seat_manager.seat_remain >= len(seat_manager.group[0].members):
             seat_manager.enter_next_group()
 
         return jsonify({
             "message": "register success",
             "affected_students_count": affected,
-            "group_id": group_id
+            "group_id": db_util.query("SELECT SHA1(%(group_id)s)", group_id=group_id).result[0][0]
         }), 200
 
     except Exception as e:
@@ -72,13 +69,10 @@ async def group_index():
         student_group_status = db_util.query(
             "SELECT group_status FROM students WHERE student_id=%(student_id)s",
             student_id=student_id
-        ).result
-
-        # TODO: 테스트
-        print(student_group_status)
+        ).result[0][0]
 
         if student_group_status is None:
-            return jsonify(-1), 404
+            return jsonify(None), 404
         else:
             return jsonify(student_group_status), 200
 
@@ -118,18 +112,19 @@ async def group_index_sse():
 @group_bp.route('/check', methods=['GET'])
 async def group_check():
     try:
-        group_members: List[int] = list(map(int, request.args.get("student").split()))
         # 쿼리 스트링 포맷:
-        #   키: student
+        #   키: students
         #   값: '-'로 이어진 학번 리스트
         #   ex) 10000-10001-10002
+        group_members: List[int] = list(map(int, request.args.get("students").split('-')))
 
-        # TODO: 테스트
-        duplicate = db_util.query(
+        query = db_util.query(
             "SELECT student_id FROM students WHERE student_id IN %(members)s AND group_status IS NOT NULL",
             members=group_members
         )
-        return jsonify(duplicate), 200
+        duplicate = [ _e[0] for _e in query.result ]
+        affected = query.affected_rows
+        return jsonify({ "affected_rows": affected, "result": duplicate }), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500

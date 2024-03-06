@@ -1,0 +1,1 @@
+GET http://localhost:8720/group/check?students=10000-10001-10002
