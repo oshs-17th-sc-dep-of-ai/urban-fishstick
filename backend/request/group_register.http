@@ -1,0 +1,4 @@
+POST http://localhost:8720/group/register
+Content-Type: application/json
+
+< group.json

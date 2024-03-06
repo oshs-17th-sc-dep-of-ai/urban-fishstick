@@ -40,12 +40,14 @@ async def group_register():
     - error: 서버 오류
     """
     try:
-        data = await request.json
-        group_members = data.get('group_members', [])
+        group_members = await request.json
         group_id = seat_manager.register_group(group_members)
+
+        print(group_members, group_id)
         affected = db_util.query(
-            "UPDATE students SET group_status=%(group_id)s WHERE student_id=%(group_members)s AND group_status IS NULL",
-            group_id=group_id,
+            "UPDATE students "
+            "SET group_status=SHA1(%(group_id)s) WHERE student_id in %(group_members)s AND group_status IS NULL",
+            group_id=group_id.id,
             group_members=group_members
         ).affected_rows
         db_util.commit()
