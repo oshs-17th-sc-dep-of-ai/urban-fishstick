@@ -30,6 +30,7 @@ async def prior_exit():
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드
 
 
 @prior_bp.route("/check", methods=["GET"])
@@ -57,6 +58,7 @@ async def prior_check():
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드
 
 
 @prior_bp.route("/enter", methods=["POST"])
@@ -81,6 +83,7 @@ async def prior_enter():
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드
 
 
 @prior_bp.route("/register", methods=["POST"])
@@ -89,7 +92,8 @@ async def prior_register():
     req = await request.json
 
     db_util.query_many(
-        "INSERT INTO prior_students VALUES (%(student_id)s, SHA1(%(validation_key)s))",
+        "INSERT INTO prior_students VALUES (%(student_id)s, SHA1(%(validation_key)s), %(author)s)",
         student_id=req["student_id"],
-        validation_key=req["validation_key"]
+        validation_key=req["validation_key"],
+        author=req["author"]
     )

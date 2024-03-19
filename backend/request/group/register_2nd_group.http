@@ -1,4 +1,4 @@
 POST http://localhost:8720/group/register
 Content-Type: application/json
 
-< 2nd_group.json
+< ../post_body/2nd_group.json

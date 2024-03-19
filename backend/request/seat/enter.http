@@ -1,0 +1,4 @@
+POST http://localhost:8720/seat/enter
+Content-Type: application/json
+
+20010

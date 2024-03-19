@@ -1,4 +1,4 @@
-from quart import Blueprint, request, jsonify
+from quart import Blueprint, Response, request, jsonify
 from util.json_util import read_json
 import os
 
@@ -44,3 +44,6 @@ async def get_feedback(filename):
         return text, 201
     except FileNotFoundError:
         return jsonify({ "error": "File not found" }), 404
+    except:
+        return Response(status=500)
+

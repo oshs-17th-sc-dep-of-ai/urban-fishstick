@@ -1,6 +1,6 @@
 from typing import List
 
-from quart import Blueprint, request, jsonify, make_response
+from quart import Blueprint, Response, request, jsonify, make_response
 
 import asyncio
 
@@ -39,6 +39,8 @@ async def group_register():
     """
     try:
         group_members = await request.json
+        # FIXME: 중복 신청 문제
+        # 중복되는 학생 확인
         group_id = seat_manager.register_group(group_members)
         affected = db_util.query(
             "UPDATE students "
@@ -48,13 +50,8 @@ async def group_register():
         ).affected_rows
         db_util.commit()
 
-        print(seat_manager.group, seat_manager.entered_students)
-
-        # TODO: 테스트
         if seat_manager.seat_remain >= len(seat_manager.group[0].members):
             seat_manager.enter_next_group()
-
-        print(seat_manager.group, seat_manager.entered_students)
 
         return jsonify({
             "message": "register success",
@@ -87,35 +84,39 @@ async def group_index():
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드
 
 
 @group_bp.route('/index/sse', methods=['GET'])
 async def group_index_sse():
-    if "text/event-stream" not in request.accept_mimetypes:
-        return jsonify({ "error": "this route requires event stream" }), 400
-    if not request.args.get("sid").isdecimal():
-        return jsonify({ "error": "Invalid student ID" }), 400
+    try:
+        if "text/event-stream" not in request.accept_mimetypes:
+            return jsonify({ "error": "this route requires event stream" }), 400
+        if not request.args.get("sid").isdecimal():
+            return jsonify({ "error": "Invalid student ID" }), 400
 
-    student_id: int = int(request.args.get("sid"))
+        student_id: int = int(request.args.get("sid"))
 
-    async def send_events():
-        search_result: Group = list(filter(lambda g: student_id in g.members, seat_manager.group))[0]
-        _group_index: int = seat_manager.group.index(search_result)
+        async def send_events():
+            search_result: Group = list(filter(lambda g: student_id in g.members, seat_manager.group))[0]
+            _group_index: int = seat_manager.group.index(search_result)
 
-        while _group_index >= 5:
-            event = ServerSentEvent(str(_group_index))
-            await asyncio.sleep(30)
+            while _group_index >= 5:
+                event = ServerSentEvent(str(_group_index))
+                await asyncio.sleep(30)
 
-            yield event.encode()
+                yield event.encode()
 
-    response = await make_response(send_events(), {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        "Transfer-Encoding": "chunked"
-    })
-    response.timeout = None
+        response = await make_response(send_events(), {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            "Transfer-Encoding": "chunked"
+        })
+        response.timeout = None
 
-    return response
+        return response
+    except:
+        return Response(status=500)  # 배포 시 코드
 
 
 @group_bp.route('/check', methods=['GET'])
@@ -137,6 +138,7 @@ async def group_check():
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드
 
 
 @group_bp.route("/check_user", methods=["GET"])
@@ -160,3 +162,4 @@ async def check_user():
         return jsonify({ "error": "query string required: (id, code)" }), 400
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드

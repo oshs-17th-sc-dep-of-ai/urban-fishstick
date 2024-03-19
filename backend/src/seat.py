@@ -26,17 +26,25 @@ async def seat_enter():
     """
     try:
         student_id: int = await request.json
-        entered_user_group_index: int = db_util.query(
-            "SELECT group_status FROM students WHERE student_id=%(student_id)s",
-            student_id=student_id
-        ).result[0][0]
 
         seat_manager.enter_student(student_id)
-        if entered_user_group_index > 2:  # 부정 입장 처리
-            db_util.query(
-                "UPDATE students SET cheat_count=cheat_count+1 WHERE student_id=%(student_id)s",
-                student_id=student_id
-            )
+        try:
+            if student_id not in seat_manager.group[0].members:  # 부정 입장 처리
+                db_util.query(
+                    "UPDATE students SET cheat_count=cheat_count+1 WHERE student_id=%(student_id)s",
+                    student_id=student_id
+                )
+                db_util.query(
+                    "UPDATE students SET group_status=NULL WHERE student_id=%(student_id)s",
+                    student_id=student_id
+                )
+                db_util.commit()
+
+                print("---------------------")
+                print("cheat detected")
+                print("---------------------")
+        except IndexError:
+            pass
 
         if seat_manager.seat_remain >= len(seat_manager.group[0].members):
             seat_manager.enter_next_group()
@@ -45,6 +53,7 @@ async def seat_enter():
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드
 
 
 @seat_bp.route('/exit', methods=['POST'])
@@ -55,11 +64,15 @@ async def seat_exit():
     try:
         student_id: int = await request.json
 
-        seat_manager.exit_student(student_id)
-        return Response(status=204)
+        seat_manager.exit(student_id)
 
+        if seat_manager.seat_remain >= len(seat_manager.group[0].members):
+            seat_manager.enter_next_group()
+
+        return Response(status=204)
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
+        # return Response(status=500)  # 배포 시 코드
 
 
 @seat_bp.route('/remain', methods=['GET'])
@@ -68,3 +81,14 @@ async def seat_remain():
     현재 남은 좌석 수 반환
     """
     return jsonify(seat_manager.seat_remain), 200
+
+
+@seat_bp.route("/debug", methods=['GET'])
+async def seat_debug():
+    # TODO: 베타 시작 시 제거
+    print("--------------------------------")
+    print(f"seat remain: {seat_manager.seat_remain}")
+    print(f"group list : {seat_manager.group}")
+    print(f"entered    : {seat_manager.entered_students}")
+    print("--------------------------------")
+    return Response(status=204)

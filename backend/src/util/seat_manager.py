@@ -24,8 +24,6 @@ class SeatManager:
             cls.group: List[Group] = []
             cls.entered_students: List[int] = []
 
-            print("assign new seat manager")
-        print("return instance")
         return cls.instance
 
     def register_group(self, r_group: list) -> Group:
