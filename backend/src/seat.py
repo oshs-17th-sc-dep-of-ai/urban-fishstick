@@ -1,9 +1,17 @@
-from quart import Blueprint, request, jsonify
+from quart import Blueprint, request, jsonify, Response
 
 from util.seat_manager import SeatManager
+from util.json_util import read_json
+from util.database import DatabaseUtil
 
 seat_bp = Blueprint('seat', __name__)
 seat_manager = SeatManager()
+
+__db_config = read_json("../config/database.json")
+db_util = DatabaseUtil(
+    host=__db_config['host'],
+    password=__db_config['password']
+)
 
 
 # TODO: 테스트
@@ -18,8 +26,17 @@ async def seat_enter():
     """
     try:
         student_id: int = await request.json
+        entered_user_group_index: int = db_util.query(
+            "SELECT group_status FROM students WHERE student_id=%(student_id)s",
+            student_id=student_id
+        ).result[0][0]
 
         seat_manager.enter_student(student_id)
+        if entered_user_group_index > 2:  # 부정 입장 처리
+            db_util.query(
+                "UPDATE students SET cheat_count=cheat_count+1 WHERE student_id=%(student_id)s",
+                student_id=student_id
+            )
 
         if seat_manager.seat_remain >= len(seat_manager.group[0].members):
             seat_manager.enter_next_group()
@@ -39,7 +56,7 @@ async def seat_exit():
         student_id: int = await request.json
 
         seat_manager.exit_student(student_id)
-        return jsonify(student_id)
+        return Response(status=204)
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500

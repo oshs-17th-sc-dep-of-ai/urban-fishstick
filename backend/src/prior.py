@@ -24,7 +24,7 @@ async def prior_exit():
         exists = db_util.query("DELETE FROM prior_students WHERE student_id=%(student_id)s", student_id=student_id)
         if exists:
             seat_manager.seat_remain += 1
-            return jsonify({ "message": "Student exited successfully" }), 200
+            return jsonify({ "message": "OK" }), 200
         else:
             return jsonify({ "message": "Cannot find student in prior group" }), 404
 
@@ -40,16 +40,20 @@ async def prior_check():
     """
     try:
         qs_id = request.args.get("id")
+        qs_key = request.args.get("key")
 
         if not qs_id:
             return jsonify({ "error": "query string must contain valid id" }), 400
 
-        db_util.query(
+        query = db_util.query(
             "SELECT student_id FROM prior_students WHERE student_id=%(student_id)s AND validation_key=%(key)s",
             student_id=qs_id,
-            key=""
+            key=qs_key
         )
-        return "", 204
+        if query.result[0]:
+            return jsonify({ "result": "valid" }), 200
+        else:
+            return jsonify({ "result": "invalid" }), 404
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500

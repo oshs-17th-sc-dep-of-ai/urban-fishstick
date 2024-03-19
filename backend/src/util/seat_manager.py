@@ -23,6 +23,9 @@ class SeatManager:
             cls.seat_remain: int = config["seat_max_capacity"]
             cls.group: List[Group] = []
             cls.entered_students: List[int] = []
+
+            print("assign new seat manager")
+        print("return instance")
         return cls.instance
 
     def register_group(self, r_group: list) -> Group:
@@ -39,7 +42,9 @@ class SeatManager:
         다음 그룹 입장, 만약 자리가 충분하지 않다면 충분할때까지 대기\n
         *사용 시 반드시 그룹 인원수 이상의 자리가 남아있는지 확인 후 호출*
         """
-        self.group.pop(0)
+        next_group = self.group.pop(0)
+        self.entered_students.extend(next_group.members)
+        self.seat_remain -= len(next_group.members)
 
     def enter_prior_group(self, p_group: list) -> None:
         """

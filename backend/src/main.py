@@ -18,4 +18,4 @@ app.register_blueprint(prior_bp, url_prefix="/prior")
 app.register_blueprint(feedback_bp, url_prefix="/feedback")
 
 # * 개발 완료 시 config/server.json에서 debug=False로 변경 필요 *
-app.run(port=__server_config["port"], debug=__server_config["debug"])
+app.run(port=__server_config["port"], debug=__server_config["debug"], use_reloader=False)

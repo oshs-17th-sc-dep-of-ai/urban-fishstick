@@ -48,9 +48,13 @@ async def group_register():
         ).affected_rows
         db_util.commit()
 
+        print(seat_manager.group, seat_manager.entered_students)
+
         # TODO: 테스트
         if seat_manager.seat_remain >= len(seat_manager.group[0].members):
             seat_manager.enter_next_group()
+
+        print(seat_manager.group, seat_manager.entered_students)
 
         return jsonify({
             "message": "register success",
@@ -62,14 +66,19 @@ async def group_register():
         return jsonify({ "error": str(e) }), 500
 
 
+# FIXME: 반환 값 수정 필요
 @group_bp.route('/index', methods=['GET'])
 async def group_index():
     try:
         student_id = int(request.args.get("id"))
-        student_group_status = db_util.query(
-            "SELECT group_status FROM students WHERE student_id=%(student_id)s",
-            student_id=student_id
-        ).result[0][0]
+        # student_group = db_util.query(
+        #     "SELECT group_status FROM students WHERE student_id=%(student_id)s",
+        #     student_id=student_id
+        # ).result[0][0]
+
+        # student_group_status = list(filter(lambda x: x.id == student_group, seat_manager.group))
+        student_group_status = list(filter(lambda x: student_id in x.members, seat_manager.group))
+        print(student_group_status, seat_manager.group, seat_manager.entered_students)
 
         if student_group_status is None:
             return jsonify(None), 404
@@ -122,9 +131,32 @@ async def group_check():
             "SELECT student_id FROM students WHERE student_id IN %(members)s AND group_status IS NOT NULL",
             members=group_members
         )
-        duplicate = [ _e[0] for _e in query.result ]
+        duplicate = [_e[0] for _e in query.result]
         affected = query.affected_rows
         return jsonify({ "affected_rows": affected, "result": duplicate }), 200
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
+
+
+@group_bp.route("/check_user", methods=["GET"])
+async def check_user():
+    """
+    클라이언트에서는 학번과 학생 코드를 같이 입력하도록 해야 하며,
+    결과 값 확인 후 사용할 수 있도록 개발 필요
+    """
+    try:
+        assert request.args.get("code") is not None
+        assert request.args.get("id") is not None
+
+        code = request.args.get("code")
+        query = db_util.query(
+            "SELECT student_code FROM students WHERE student_id=%(student_id)s",
+            student_id=request.args.get("id")
+        ).result[0][0]
+
+        return jsonify({ "result": "correct" if query == code else "incorrect" }), 200
+    except AssertionError:
+        return jsonify({ "error": "query string required: (id, code)" }), 400
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 500

@@ -26,7 +26,7 @@ async def add_feedback():
         with open(filepath, "w") as file:
             file.write(text)
 
-        return jsonify({ "message": "건의사항이 추가되었습니다." }), 201
+        return jsonify({ "message": "OK" }), 201
 
     except OSError:
         return jsonify({ "error": "Cannot write file" }), 500
@@ -43,4 +43,4 @@ async def get_feedback(filename):
 
         return text, 201
     except FileNotFoundError:
-        return jsonify({ "error": "file not found" }), 404
+        return jsonify({ "error": "File not found" }), 404

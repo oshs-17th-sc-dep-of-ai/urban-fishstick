@@ -1,0 +1,1 @@
+GET http://localhost:8720/group/check_user?id=10001&code=abcdefgh
