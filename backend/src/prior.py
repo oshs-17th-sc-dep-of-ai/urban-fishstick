@@ -24,13 +24,12 @@ async def prior_exit():
         exists = db_util.query("DELETE FROM prior_students WHERE student_id=%(student_id)s", student_id=student_id)
         if exists:
             seat_manager.seat_remain += 1
-            return jsonify({ "message": "OK" }), 200
+            return jsonify({ "message": "Student exited successfully" }), 200
         else:
             return jsonify({ "message": "Cannot find student in prior group" }), 404
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
-        # return Response(status=500)  # 배포 시 코드
 
 
 @prior_bp.route("/check", methods=["GET"])
@@ -90,10 +89,14 @@ async def prior_enter():
 async def prior_register():
     # WIP
     req = await request.json
+    sql = ("INSERT INTO prior_students(student_id, validation_key, author) VALUES (%s, SHA1(%s), %s)" +
+           ", (%s, SHA1(%s))" * (len(req) - 2))
 
-    db_util.query_many(
-        "INSERT INTO prior_students VALUES (%(student_id)s, SHA1(%(validation_key)s), %(author)s)",
-        student_id=req["student_id"],
-        validation_key=req["validation_key"],
-        author=req["author"]
-    )
+    print(req, sql)
+
+    # query = db_util.query_many(sql, req)
+    # if query.result:
+    #     return jsonify({ "result": "OK" }), 201
+    # else:
+    #     return jsonify({ "result": "FAILED" }), 403
+    return jsonify("test"), 201

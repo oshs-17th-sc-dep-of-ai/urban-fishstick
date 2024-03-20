@@ -1,3 +1,4 @@
+import quart.logging
 from typing import List
 
 from quart import Blueprint, Response, request, jsonify, make_response
@@ -38,50 +39,58 @@ async def group_register():
     - error: 서버 오류
     """
     try:
-        group_members = await request.json
-        # FIXME: 중복 신청 문제
-        # 중복되는 학생 확인
-        group_id = seat_manager.register_group(group_members)
-        affected = db_util.query(
+        group_members: List[int] = await request.json
+        filtered_students: List[int] = [e[0] for e in db_util.query(
+            "SELECT student_id FROM students WHERE student_id IN %(members)s AND group_status IS NULL",
+            members=group_members
+        ).result]
+        assert bool(filtered_students)
+        group_id: int = hash(tuple(filtered_students))
+        affected: int = db_util.query(
             "UPDATE students "
-            "SET group_status=SHA1(%(group_id)s) WHERE student_id in %(group_members)s AND group_status IS NULL",
-            group_id=group_id.id,
-            group_members=group_members
+            "SET group_status=SHA1(%(group_id)s) WHERE student_id IN %(group_members)s",
+            group_id=group_id,
+            group_members=filtered_students
         ).affected_rows
         db_util.commit()
 
-        if seat_manager.seat_remain >= len(seat_manager.group[0].members):
-            seat_manager.enter_next_group()
+        seat_manager.register_group(filtered_students)
+        try:
+            if seat_manager.seat_remain >= len(seat_manager.group[0].members):
+                seat_manager.enter_next_group()
+        except IndexError:
+            pass
 
         return jsonify({
             "message": "register success",
             "affected_students_count": affected,
-            "group_id": db_util.query("SELECT SHA1(%(group_id)s)", group_id=group_id).result[0][0]
+            "members": filtered_students,
+            "group_id": db_util.query(
+                "SELECT SHA1(%(group_id)s)",
+                group_id=group_id
+            ).result[0][0]
         }), 200
-
+    except AssertionError:
+        return jsonify({
+            "message": "register failed",
+        }), 400
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
 
 
-# FIXME: 반환 값 수정 필요
 @group_bp.route('/index', methods=['GET'])
 async def group_index():
     try:
-        student_id = int(request.args.get("id"))
-        # student_group = db_util.query(
-        #     "SELECT group_status FROM students WHERE student_id=%(student_id)s",
-        #     student_id=student_id
-        # ).result[0][0]
+        if not request.args.get("sid").isdecimal():
+            return jsonify({ "error": "Invalid student ID" }), 400
 
-        # student_group_status = list(filter(lambda x: x.id == student_group, seat_manager.group))
-        student_group_status = list(filter(lambda x: student_id in x.members, seat_manager.group))
-        print(student_group_status, seat_manager.group, seat_manager.entered_students)
+        student_id = int(request.args.get("student_id"))
+        search_result: Group = list(filter(lambda g: student_id in g.members, seat_manager.group))[0]
+        _group_index: int = seat_manager.group.index(search_result)
 
-        if student_group_status is None:
-            return jsonify(None), 404
-        else:
-            return jsonify(student_group_status), 200
-
+        return jsonify(_group_index), 200
+    except IndexError:
+        return jsonify(None), 404
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
         # return Response(status=500)  # 배포 시 코드
@@ -115,6 +124,8 @@ async def group_index_sse():
         response.timeout = None
 
         return response
+    except IndexError:
+        return jsonify(None), 404
     except:
         return Response(status=500)  # 배포 시 코드
 
