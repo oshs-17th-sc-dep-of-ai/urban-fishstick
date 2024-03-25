@@ -67,17 +67,19 @@ async def prior_enter():
         data = await request.json
 
         student_id = data["student_id"]
+        req_auth_key = data["key"]
         srv_auth_key_query = db_util.query(
-            "SELECT student_id FROM prior_students WHERE student_id=%(student_id)s",
+            "SELECT validation_key FROM prior_students WHERE student_id=%(student_id)s",
             student_id=student_id
         )
-        try:
-            srv_auth_key_query.result[0]
-        except IndexError:
-            return jsonify({ "error": "Student not found" }), 404
 
-        seat_manager.entered_students -= 1
-        return jsonify("test"), 204
+        print(srv_auth_key_query)
+
+        if not srv_auth_key_query.affected_rows or req_auth_key != srv_auth_key_query.result:
+            return jsonify({ "error": "Incorrect authentication key" }), 403
+        else:
+            seat_manager.entered_people -= 1
+            return jsonify("test"), 204
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500

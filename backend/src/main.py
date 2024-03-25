@@ -1,4 +1,3 @@
-import pymysql
 from quart import Quart
 
 from seat import seat_bp

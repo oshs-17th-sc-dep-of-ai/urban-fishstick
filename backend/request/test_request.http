@@ -2,6 +2,6 @@ POST http://localhost:8720/group/register
 Content-Type: application/json
 
 [
-    20002,
-    20003
+    10007,
+    10008
 ]
