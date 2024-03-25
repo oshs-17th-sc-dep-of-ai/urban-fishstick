@@ -1,0 +1,7 @@
+POST http://localhost:8720/prior/register
+Content-Type: application/json
+
+[
+    [10001, "some_teacher", "val_key1"],
+    [10002, "another_teacher", "val_key2"]
+]

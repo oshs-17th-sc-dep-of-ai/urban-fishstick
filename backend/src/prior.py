@@ -1,4 +1,4 @@
-from quart import Blueprint, request, jsonify
+from quart import Blueprint, Response, request, jsonify
 
 from util.json_util import read_json
 from util.database import DatabaseUtil
@@ -67,19 +67,17 @@ async def prior_enter():
         data = await request.json
 
         student_id = data["student_id"]
-        req_auth_key = data["key"]
         srv_auth_key_query = db_util.query(
-            "SELECT validation_key FROM prior_students WHERE student_id=%(student_id)s",
+            "SELECT student_id FROM prior_students WHERE student_id=%(student_id)s",
             student_id=student_id
         )
+        try:
+            srv_auth_key_query.result[0]
+        except IndexError:
+            return jsonify({ "error": "Student not found" }), 404
 
-        print(srv_auth_key_query)
-
-        if not srv_auth_key_query.affected_rows or req_auth_key != srv_auth_key_query.result:
-            return jsonify({ "error": "Incorrect authentication key" }), 403
-        else:
-            seat_manager.entered_people -= 1
-            return jsonify("test"), 204
+        seat_manager.entered_students -= 1
+        return jsonify("test"), 204
 
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
@@ -90,10 +88,22 @@ async def prior_enter():
 async def prior_register():
     # WIP
     req = await request.json
+    # sql    = ("INSERT INTO prior_students (student_id, author, validation_key) " +
+    #           "SELECT %s, SHA1(%s), %s" +
+    #           "FROM DUAL WHERE EXISTS (SELECT teacher_id FROM teachers WHERE teacher_id=%s AND validation_key=%s)")
+    # result = db_util.query_many(sql, req)
 
-    db_util.query_many(
-        "INSERT INTO prior_students VALUES (%(student_id)s, SHA1(%(validation_key)s), %(author)s)",
-        student_id=req["student_id"],
-        validation_key=req["validation_key"],
-        author=req["author"]
-    )
+    # SHA-256 이용?
+    # 학번 + 발급 교사 ID + 유효일
+    # SELECT SHA2(CONCAT(%s, %s %s), 256);
+
+    sql = ("UPDATE students "
+           "SET prior_key=%s "
+           "WHERE student_id IN ("
+           "    SELECT * FROM teachers, students "
+           "    WHERE teachers.teacher_id=%s AND "
+           "          teachers.validation_key=%s AND "
+           "          students.student_id=%s"
+           ")")
+
+    return Response(status=204)

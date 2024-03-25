@@ -38,8 +38,8 @@ class DatabaseUtil:
         result = self.cursor.fetchall()
         return QueryResult(affected, result)
 
-    def query_many(self, sql: str, **kwargs) -> QueryResult:
-        affected = self.cursor.executemany(sql, kwargs)
+    def query_many(self, sql: str, *args) -> QueryResult:
+        affected = self.cursor.executemany(sql, args)
         result = self.cursor.fetchall()
         return QueryResult(affected, result)
 
