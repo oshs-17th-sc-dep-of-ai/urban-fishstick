@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, List
 
 import pymysql
 
@@ -38,7 +38,7 @@ class DatabaseUtil:
         result = self.cursor.fetchall()
         return QueryResult(affected, result)
 
-    def query_many(self, sql: str, *args) -> QueryResult:
+    def query_many(self, sql: str, args: List[Any]) -> QueryResult:
         affected = self.cursor.executemany(sql, args)
         result = self.cursor.fetchall()
         return QueryResult(affected, result)

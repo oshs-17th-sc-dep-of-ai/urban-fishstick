@@ -1,0 +1,1 @@
+GET http://localhost:8720/prior/check?student_id=10001

@@ -14,8 +14,6 @@ db_util = DatabaseUtil(
 )
 
 
-# TODO: 테스트
-
 @seat_bp.route('/enter', methods=['POST'])
 async def seat_enter():
     """
@@ -29,20 +27,19 @@ async def seat_enter():
 
         seat_manager.enter_student(student_id)
         try:
-            if student_id not in seat_manager.group[0].members:  # 부정 입장 처리
+            if student_id not in seat_manager.group[0].members:  # 부정 입장, 우선 급식 처리
                 db_util.query(
-                    "UPDATE students SET cheat_count=cheat_count+1 WHERE student_id=%(student_id)s",
+                    "UPDATE students "  # TODO: 테스트 필요
+                    "SET cheat_count=cheat_count+1, group_status=NULL "
+                    "WHERE student_id=%(student_id)s AND prior_key IS NULL",  # 부정 입장 시
                     student_id=student_id
                 )
-                db_util.query(
-                    "UPDATE students SET group_status=NULL WHERE student_id=%(student_id)s",
+                db_util.query(  # TODO: 테스트 필요
+                    "UPDATE students SET prior_key=NULL WHERE student_id=%(student_id)s",  # 사용한 키 삭제
                     student_id=student_id
                 )
                 db_util.commit()
 
-                print("---------------------")
-                print("cheat detected")
-                print("---------------------")
         except IndexError:
             pass
 

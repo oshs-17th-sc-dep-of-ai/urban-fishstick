@@ -2,6 +2,14 @@ POST http://localhost:8720/prior/register
 Content-Type: application/json
 
 [
-    [10001, "some_teacher", "val_key1"],
-    [10002, "another_teacher", "val_key2"]
+    {
+        "student_id": 10001,
+        "teacher_id": "teacher1",
+        "validation_code": "val-key-0"
+    },
+    {
+        "student_id": 10002,
+        "teacher_id": "teacher2",
+        "validation_code": "val-key-1"
+    }
 ]
