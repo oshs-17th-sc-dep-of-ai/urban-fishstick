@@ -40,14 +40,23 @@ async def seat_enter():
                 )
                 db_util.commit()
 
-        except IndexError:
-            pass
+            if seat_manager.seat_remain >= len(seat_manager.group[0].members):
+                seat_manager.enter_next_group()
 
-        if seat_manager.seat_remain >= len(seat_manager.group[0].members):
-            seat_manager.enter_next_group()
+        except IndexError:
+            db_util.query(
+                "UPDATE students "  # TODO: 테스트 필요
+                "SET cheat_count=cheat_count+1, group_status=NULL "
+                "WHERE student_id=%(student_id)s AND prior_key IS NULL",  # 부정 입장 시
+                student_id=student_id
+            )
+            db_util.query(  # TODO: 테스트 필요
+                "UPDATE students SET prior_key=NULL WHERE student_id=%(student_id)s",  # 사용한 키 삭제
+                student_id=student_id
+            )
+            db_util.commit()
 
         return jsonify(student_id), 200
-
     except Exception as e:
         return jsonify({ 'error': str(e) }), 500
         # return Response(status=500)  # 배포 시 코드
