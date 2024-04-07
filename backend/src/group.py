@@ -39,12 +39,17 @@ async def group_register():
     - error: 서버 오류
     """
     try:
+        print(request.headers)
+        print(await request.body)
+
         group_members: List[int] = await request.json
-        filtered_students: List[int] = [e[0] for e in db_util.query(
-            "SELECT student_id FROM students WHERE student_id IN %(members)s AND group_status IS NULL",
-            members=group_members
-        ).result]
+        filtered_students: List[int] = sum(list(map(list, db_util.query(
+            "SELECT student_id FROM students WHERE student_id IN %(group)s AND group_status IS NULL",
+            group=group_members
+        ).result)), [])
+
         assert bool(filtered_students)
+
         group_id: int = hash(tuple(filtered_students))
         affected: int = db_util.query(
             "UPDATE students "
@@ -66,7 +71,7 @@ async def group_register():
             "affected_students_count": affected,
             "members": filtered_students,
             "group_id": db_util.query(
-                "SELECT SHA1(%(group_id)s)",
+                "SELECT SHA1(%(group_id)s) FROM dual",
                 group_id=group_id
             ).result[0][0]
         }), 200
@@ -75,6 +80,7 @@ async def group_register():
             "message": "register failed",
         }), 400
     except Exception as e:
+        print(e)
         return jsonify({ "error": str(e) }), 500
 
 
@@ -96,25 +102,28 @@ async def group_index():
         # return Response(status=500)  # 배포 시 코드
 
 
-@group_bp.route('/index/sse', methods=['GET'])
+@group_bp.route("/index/sse", methods=['GET'])
 async def group_index_sse():
     try:
         if "text/event-stream" not in request.accept_mimetypes:
             return jsonify({ "error": "this route requires event stream" }), 400
-        if not request.args.get("sid").isdecimal():
+        if request.args.get("sid") is None or not request.args.get("sid").isdecimal():
             return jsonify({ "error": "Invalid student ID" }), 400
 
         student_id: int = int(request.args.get("sid"))
 
         async def send_events():
-            search_result: Group = list(filter(lambda g: student_id in g.members, seat_manager.group))[0]
-            _group_index: int = seat_manager.group.index(search_result)
+            try:
+                search_result: Group = list(filter(lambda g: student_id in g.members, seat_manager.group))[0]
+                _group_index: int = seat_manager.group.index(search_result)
 
-            while _group_index >= 5:
-                event = ServerSentEvent(str(_group_index))
-                await asyncio.sleep(30)
+                while _group_index >= 5:
+                    event = ServerSentEvent(str(_group_index))
+                    await asyncio.sleep(30)
 
-                yield event.encode()
+                    yield event.encode()
+            except IndexError:
+                yield ServerSentEvent("0").encode()
 
         response = await make_response(send_events(), {
             "Content-Type": "text/event-stream",
@@ -126,7 +135,8 @@ async def group_index_sse():
         return response
     except IndexError:
         return jsonify(None), 404
-    except:
+    except Exception as E:
+        print(E)
         return Response(status=500)  # 배포 시 코드
 
 
