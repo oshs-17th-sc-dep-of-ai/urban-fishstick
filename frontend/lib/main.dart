@@ -1,14 +1,21 @@
+import "dart:isolate";
+
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+
 import 'package:frontend/page/apply.dart';
 import 'package:frontend/page/group_manage.dart';
 import 'package:frontend/page/main.dart';
 import 'package:frontend/page/settings.dart';
 
-int currentPageIndex = 0;
+import 'package:frontend/util/notification.dart';
 
-void main() {
+int currentPageIndex = 0;
+RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FNotification.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((v) => runApp(const MyApp()));
 }

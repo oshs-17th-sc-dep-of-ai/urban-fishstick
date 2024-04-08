@@ -103,7 +103,7 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                         });
                       },
                       backgroundColor: const Color.fromARGB(255, 0, 120, 215),
-                      child: Icon(
+                      child: const Icon(
                         Icons.add,
                         color: Colors.white,
                       ),

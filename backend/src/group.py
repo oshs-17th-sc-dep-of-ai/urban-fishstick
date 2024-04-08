@@ -87,10 +87,11 @@ async def group_register():
 @group_bp.route('/index', methods=['GET'])
 async def group_index():
     try:
+        print(request.args)
         if not request.args.get("sid").isdecimal():
             return jsonify({ "error": "Invalid student ID" }), 400
 
-        student_id = int(request.args.get("student_id"))
+        student_id = int(request.args.get("sid"))
         search_result: Group = list(filter(lambda g: student_id in g.members, seat_manager.group))[0]
         _group_index: int = seat_manager.group.index(search_result)
 
@@ -98,6 +99,7 @@ async def group_index():
     except IndexError:
         return jsonify(None), 404
     except Exception as e:
+        print(e)
         return jsonify({ 'error': str(e) }), 500
         # return Response(status=500)  # 배포 시 코드
 

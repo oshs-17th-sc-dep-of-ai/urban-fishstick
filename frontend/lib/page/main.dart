@@ -4,7 +4,6 @@ import "package:frontend/util/diet.dart";
 import "package:frontend/util/file.dart";
 
 Map? dietInfo;
-List<bool>? allergy;
 
 class MainPageWidget extends StatefulWidget {
   const MainPageWidget({super.key});
@@ -104,7 +103,7 @@ class _MainPageWidgetState extends State<MainPageWidget>
         if (snapshot.connectionState == ConnectionState.done) {
           dietInfo = snapshot.data;
 
-          debugPrint("$dietInfo");
+          debugPrint("diet: $dietInfo");
 
           return Padding(
               padding: const EdgeInsets.all(20),
@@ -113,19 +112,18 @@ class _MainPageWidgetState extends State<MainPageWidget>
                   : FutureBuilder(
                       future: Future(() async => await fileUtil.exists()
                           ? await fileUtil.readFileJSON()
-                          : List.filled(19, false)),
+                          // : List.filled(19, false)),
+                          : 0x00000), // 0b0000 0000 0000 0000 0000
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                          debugPrint("${snapshot.data}");
+                          debugPrint("allergy: ${snapshot.data}");
 
                           // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
+                          final allergyInfo = snapshot.data;
 
                           return Container(
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.grey
-                              ),
+                              border: Border.all(width: 1, color: Colors.grey),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -134,13 +132,40 @@ class _MainPageWidgetState extends State<MainPageWidget>
                               children: [
                                 ...dietInfo!["diet"]
                                     .map((e) => ListTile(
-                                  title: Container(
-                                    child: Text(e),
-                                  ),
-                              ))
+                                          title: Text(e),
+                                          leading: IconButton(
+                                            icon:
+                                                const Icon(Icons.info_outline),
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      content: SizedBox(
+                                                          child: ListView(
+                                                        children: const [
+                                                          Text("테스트")
+                                                        ],
+                                                      )),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {},
+                                                          child:
+                                                              const Text("확인"),
+                                                        )
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            color: checkAllergy()
+                                                ? Colors.red
+                                                : Colors.black38,
+                                          ),
+                                        ))
                                     .toList()
-                            ],
-                          ),
+                              ],
+                            ),
                           );
                         } else {
                           return const Placeholder();
@@ -153,6 +178,18 @@ class _MainPageWidgetState extends State<MainPageWidget>
         }
       },
     );
+  }
+
+  bool checkAllergy() {
+    int c = 0x00000;
+
+    // debugPrint("${dietInfo!["allergy"].map((e) => int.parse(e))}");
+
+    for (int al in dietInfo!["allergy"]) {
+      c = c | (0x01 << al);
+    }
+
+    return c > 0;
   }
 
   Padding buildHorizontalDivider() {

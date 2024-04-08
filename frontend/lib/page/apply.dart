@@ -1,12 +1,18 @@
+import "dart:convert";
+import "dart:isolate";
+
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter_client_sse/constants/sse_request_type_enum.dart";
+
+import "package:frontend/main.dart";
 import "package:frontend/util/file.dart";
 import "package:frontend/util/network.dart";
+import "package:frontend/util/queue_updater.dart";
+import "package:frontend/util/beacon.dart";
 import "package:frontend/util/notification.dart";
-import "package:flutter_client_sse/flutter_client_sse.dart";
 
 List currentMemberList = [];
+Isolate? queueUpdater;
 
 class ApplyPageWidget extends StatefulWidget {
   const ApplyPageWidget({super.key});
@@ -16,6 +22,8 @@ class ApplyPageWidget extends StatefulWidget {
 }
 
 class ApplyPageWidgetState extends State<ApplyPageWidget> {
+  final receivePort = ReceivePort();
+
   @override
   Widget build(BuildContext context) {
     const fileUtil = FileUtil("./group.json");
@@ -71,8 +79,6 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            String message = "";
-
             return AlertDialog(
               content: const SizedBox(
                 width: 200,
@@ -82,28 +88,7 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
                 ),
               ),
               actions: [
-                TextButton(
-                    onPressed: () async {
-                      // await httpPost("", currentMemberList.toString());
-                      // Connection Refused 발생 시 adb reverse tcp:8720 tcp:8720 실행
-
-                      SSEClient.subscribeToSSE(
-                        method: SSERequestType.GET,
-                        url: "http://localhost:8720/group/index/sse",
-                        header: {
-                          "Accept": "text/event-stream",
-                          "Cache-Control": "no-cache"
-                        },
-                      ).listen((event) {
-                        debugPrint("id: ${event.id}");
-                        debugPrint("event: ${event.event}");
-                        debugPrint("data: ${event.data}");
-                      });
-                      if (context.mounted) {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: const Text("예")),
+                applyButtonFunction(context),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text("취소"),
@@ -118,6 +103,32 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
         color: Colors.white,
       ),
     );
+  }
+
+  TextButton applyButtonFunction(BuildContext context) {
+    return TextButton(
+        onPressed: () async {
+          // Connection Refused 발생 시 adb reverse tcp:8720 tcp:8720 실행
+          final registerResponse = await httpPost(
+              "http://localhost:8720/group/register",
+              jsonEncode(currentMemberList));
+
+          if (registerResponse != 200) {
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
+            FNotification.showNotification("신청 결과", "신청에 실패했습니다.");
+            return;
+          }
+          queueUpdater = await Isolate.spawn(checkQueuePositionWithPolling,
+              {"token": rootIsolateToken, "student_id": 10009});  // TODO: 하드코딩된 값(10009) 변경
+          BeaconUtil().scan("", "");
+
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
+        },
+        child: const Text("예"));
   }
 }
 
@@ -140,6 +151,7 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
       height: deviceSize.height,
       child: currentMemberList.isEmpty
           ? Center(
+              // 멤버 리스트가 비어있을 경우
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -155,6 +167,7 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
               ),
             )
           : ListView(
+              // 멤버 리스트가 비어있지 않을 경우
               shrinkWrap: true,
               padding: const EdgeInsets.all(8),
               children: [

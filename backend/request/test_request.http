@@ -2,6 +2,12 @@ POST http://localhost:8720/group/register
 Content-Type: application/json
 
 [
-    10007,
     10008
 ]
+
+
+###
+POST http://localhost:8720/group/debug_pop
+
+###
+GET http://localhost:8720/seat/debug

@@ -5,8 +5,8 @@ Future<Map<String, List>> getDiet(String apiKey) async {
   // 8140246 학교 코드
   // 97deea74959e4608a2c9d7255beb71c0 API 키
 
-  // final date = DateTime.now();
-  final date = DateTime(2023, 11, 15);
+  final date = DateTime.now();
+  // final date = DateTime(2023, 11, 15);
   final dateString = date.toString().split(' ')[0].split('-').join('');
 
   Map diet = await httpGet(
@@ -21,7 +21,9 @@ Future<Map<String, List>> getDiet(String apiKey) async {
       "diet": dietData.map((e) => e.split(' ')[0]).toList(),
       "allergy": dietData.map((e) {
         final a = e.split(' ')[1];
-        return a.isNotEmpty ? a.substring(1, a.length - 1).split('.') : [];
+
+        // return a.isNotEmpty ? a.substring(1, a.length - 1).split('.') : ["-1"];
+        return a.isNotEmpty ? a.substring(1, a.length-1).split(".").map((e) => int.parse(e)).toList() : -1;
       }).toList()
     };
   } catch (err) {

@@ -70,10 +70,15 @@ async def seat_exit():
     try:
         student_id: int = await request.json
 
+        db_util.query("UPDATE students SET group_status=NULL, had_lunch=TRUE WHERE student_id=%(student_id)s",
+                      student_id=student_id)
         seat_manager.exit(student_id)
 
-        if seat_manager.seat_remain >= len(seat_manager.group[0].members):
-            seat_manager.enter_next_group()
+        try:
+            if seat_manager.seat_remain >= len(seat_manager.group[0].members):
+                seat_manager.enter_next_group()
+        except IndexError:
+            pass
 
         return Response(status=204)
     except Exception as e:

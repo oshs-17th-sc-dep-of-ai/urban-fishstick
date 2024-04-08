@@ -45,4 +45,10 @@ class BeaconUtil {
       }
     });
   }
+
+  void stopScan() {
+    if (ranging != null) {
+      ranging!.cancel();
+    }
+  }
 }
