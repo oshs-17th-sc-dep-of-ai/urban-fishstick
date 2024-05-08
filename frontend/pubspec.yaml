@@ -37,6 +37,11 @@ dependencies:
   flutter_local_notifications: ^16.3.2
   permission_handler: ^11.0.1
   flutter_client_sse: ^2.0.1
+  change_app_package_name: ^1.1.0
+  flutter_dotenv: ^5.1.0
+  shared_preferences: ^2.2.3
+  flutter_background: ^1.2.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -54,7 +59,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  # assets:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

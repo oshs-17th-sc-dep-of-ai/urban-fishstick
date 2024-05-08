@@ -1,16 +1,15 @@
 import "package:frontend/util/network.dart";
+import "package:intl/intl.dart";
 
 Future<Map<String, List>> getDiet(String apiKey) async {
   // N10 교육청 코드
   // 8140246 학교 코드
   // 97deea74959e4608a2c9d7255beb71c0 API 키
 
-  final date = DateTime.now();
   // final date = DateTime(2023, 11, 15);
-  final dateString = date.toString().split(' ')[0].split('-').join('');
-
+  final date = DateFormat("yyyymmdd").format(DateTime.now());
   Map diet = await httpGet(
-      "https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=$apiKey&Type=json&ATPT_OFCDC_SC_CODE=N10&SD_SCHUL_CODE=8140246&MLSV_YMD=$dateString"); // 날짜 수정 필요
+      "https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=$apiKey&Type=json&ATPT_OFCDC_SC_CODE=N10&SD_SCHUL_CODE=8140246&MLSV_YMD=$date"); // 날짜 수정 필요
 
   List<String> dietData;
   try {
