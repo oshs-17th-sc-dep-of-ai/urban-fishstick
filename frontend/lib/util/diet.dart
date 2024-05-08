@@ -7,7 +7,7 @@ Future<Map<String, List>> getDiet(String apiKey) async {
   // 97deea74959e4608a2c9d7255beb71c0 API 키
 
   // final date = DateTime(2023, 11, 15);
-  final date = DateFormat("yyyymmdd").format(DateTime.now());
+  final date = DateFormat("yyyyMMdd").format(DateTime.now());
   Map diet = await httpGet(
       "https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=$apiKey&Type=json&ATPT_OFCDC_SC_CODE=N10&SD_SCHUL_CODE=8140246&MLSV_YMD=$date"); // 날짜 수정 필요
 
