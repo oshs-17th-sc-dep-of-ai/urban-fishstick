@@ -1,12 +1,7 @@
 import "package:flutter/material.dart";
-import "package:flutter_background/flutter_background.dart";
 
 import "package:frontend/util/diet.dart";
 import "package:frontend/util/file.dart";
-import "package:frontend/util/beacon.dart";
-
-import "package:flutter_dotenv/flutter_dotenv.dart";
-import "package:shared_preferences/shared_preferences.dart";
 
 Map? dietInfo;
 
@@ -108,7 +103,7 @@ class _MainPageWidgetState extends State<MainPageWidget>
         if (snapshot.connectionState == ConnectionState.done) {
           dietInfo = snapshot.data;
 
-          debugPrint("diet: $dietInfo");
+          debugPrint("$dietInfo");
 
           return Padding(
               padding: const EdgeInsets.all(20),
@@ -117,14 +112,13 @@ class _MainPageWidgetState extends State<MainPageWidget>
                   : FutureBuilder(
                       future: Future(() async => await fileUtil.exists()
                           ? await fileUtil.readFileJSON()
-                          // : List.filled(19, false)),
-                          : 0x00000), // 0b0000 0000 0000 0000 0000
+                          : List.filled(19, false)),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                          debugPrint("allergy: ${snapshot.data}");
+                          debugPrint("${snapshot.data}");
 
                           // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
-                          final allergyInfo = snapshot.data;
+                          //final allergyInfo = snapshot.data;
 
                           return Container(
                             decoration: BoxDecoration(
@@ -180,8 +174,22 @@ class _MainPageWidgetState extends State<MainPageWidget>
   }
 
   bool checkAllergy() {
-    return 0 > 0;
-  }
+    /*int c = 0x00000;
+
+    // debugPrint("${dietInfo!["allergy"].map((e) => int.parse(e))}");
+
+    for (int al in dietInfo!["allergy"]) {
+      c = c | (0x01 << al);
+    }
+
+    return c > 0; */
+    if (dietInfo!["diet"].contains(dietInfo!["allergy"])) {
+      debugPrint("알레르기 음식 포함됨");
+    } else {
+      debugPrint("알레르기 음식 미포함");
+    }
+    return dietInfo!["diet"].contains(dietInfo!["allergy"]);
+  } //TODO : 알레르기 검사 기능 구현 필요
 
   Padding buildHorizontalDivider() {
     return const Padding(
@@ -199,19 +207,12 @@ class _MainPageWidgetState extends State<MainPageWidget>
   Widget buildHeader() {
     // 순번 업데이트 함수 백그라운드에서 실행? 호출 위치 미정, 이 함수 아닐수도 있음.
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              '남은 대기 인원 : ',
-              style: const TextStyle(fontSize: 20),
-            ),
-          ),
-        ),
-      ],
+    return Container(
+      color: Colors.green,
+      child: const Text(
+        '남은 대기 인원 :',
+        style: TextStyle(fontSize: 20),
+      ),
     );
   }
 }
