@@ -36,6 +36,8 @@ class _BeaconTestPageWidgetState extends State<BeaconTestPageWidget> {
                   await Permission.bluetoothScan.request();
                   await Permission.bluetoothConnect.request();
                   await Permission.nearbyWifiDevices.request();
+                  await Permission.backgroundRefresh.request();
+                  await Permission.ignoreBatteryOptimizations.request();
 
                   try {
                     await scanner.initialize(true);

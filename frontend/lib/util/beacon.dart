@@ -6,6 +6,10 @@ bool enterBeaconDetected = false;
 bool exitBeaconDetected = false;
 
 class BeaconUtil {
+  /*
+   * 다른 앱으로 전환할 때 비콘 감지 불가능
+   * 백그라운드 사용 방법 찾을 필요 있음.
+   */
   static final BeaconUtil _instance = BeaconUtil._constructor();
 
   BeaconUtil._constructor();
@@ -20,6 +24,7 @@ class BeaconUtil {
 
   void init() async {
     await beaconScanner.initialize(true);
+
     region.add(const Region(
       identifier: "CCE00BED-E080-04C4-1A91-1A1A29B64111",
     ));

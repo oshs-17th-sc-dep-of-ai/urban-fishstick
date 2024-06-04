@@ -1,7 +1,12 @@
 import "package:flutter/material.dart";
+import "package:flutter_background/flutter_background.dart";
 
 import "package:frontend/util/diet.dart";
 import "package:frontend/util/file.dart";
+import "package:frontend/util/beacon.dart";
+
+import "package:flutter_dotenv/flutter_dotenv.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 Map? dietInfo;
 
@@ -129,42 +134,19 @@ class _MainPageWidgetState extends State<MainPageWidget>
                             ),
                             child: ListView(
                               shrinkWrap: true,
-                              children: [
-                                ...dietInfo!["diet"]
-                                    .map((e) => ListTile(
-                                          title: Text(e),
-                                          leading: IconButton(
-                                            icon:
-                                                const Icon(Icons.info_outline),
-                                            onPressed: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      content: SizedBox(
-                                                          child: ListView(
-                                                        children: const [
-                                                          Text("테스트")
-                                                        ],
-                                                      )),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () {},
-                                                          child:
-                                                              const Text("확인"),
-                                                        )
-                                                      ],
-                                                    );
-                                                  });
-                                            },
-                                            color: checkAllergy()
-                                                ? Colors.red
-                                                : Colors.black38,
-                                          ),
-                                        ))
-                                    .toList()
-                              ],
+                              children: dietInfo!["diet"]
+                                  .map((e) => ListTile(
+                                        title: Text(e),
+                                        leading: IconButton(
+                                          icon: const Icon(Icons.info_outline),
+                                          onPressed: () =>
+                                              buildAllergyInfoDialog(context),
+                                          color: checkAllergy()
+                                              ? Colors.red
+                                              : Colors.black38,
+                                        ),
+                                      ))
+                                  .toList(),
                             ),
                           );
                         } else {
@@ -180,16 +162,25 @@ class _MainPageWidgetState extends State<MainPageWidget>
     );
   }
 
+  Future<dynamic> buildAllergyInfoDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              content: SizedBox(
+                  child: ListView(
+                children: const [Text("테스트")],
+              )),
+              actions: [
+                TextButton(
+                  onPressed: () {},
+                  child: const Text("확인"),
+                )
+              ],
+            ));
+  }
+
   bool checkAllergy() {
-    int c = 0x00000;
-
-    // debugPrint("${dietInfo!["allergy"].map((e) => int.parse(e))}");
-
-    for (int al in dietInfo!["allergy"]) {
-      c = c | (0x01 << al);
-    }
-
-    return c > 0;
+    return 0 > 0;
   }
 
   Padding buildHorizontalDivider() {
@@ -208,15 +199,15 @@ class _MainPageWidgetState extends State<MainPageWidget>
   Widget buildHeader() {
     // 순번 업데이트 함수 백그라운드에서 실행? 호출 위치 미정, 이 함수 아닐수도 있음.
 
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Text(
-              '남은 대기 인원 :',
-              style: TextStyle(fontSize: 20),
+              '남은 대기 인원 : ',
+              style: const TextStyle(fontSize: 20),
             ),
           ),
         ),
