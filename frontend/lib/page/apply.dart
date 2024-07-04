@@ -108,9 +108,9 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
   TextButton applyButtonFunction(BuildContext context) {
     return TextButton(
         onPressed: () async {
-          // Connection Refused 발생 시 adb reverse tcp:8720 tcp:8720 실행
+          // Connection Refused 발생 시 서버 실행 확인 후 adb reverse tcp:8720 tcp:8720 실행
           final registerResponse = await httpPost(
-              "http://localhost:8720/group/register",
+              "http://localhost:8720/group/register", // TODO: 서버 주소 변경
               jsonEncode(currentMemberList));
 
           if (registerResponse != 200) {
@@ -121,8 +121,8 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
             return;
           }
           queueUpdater = await Isolate.spawn(checkQueuePositionWithPolling,
-              {"token": rootIsolateToken, "student_id": 10009});  // TODO: 하드코딩된 값(10009) 변경
-          BeaconUtil().scan("", "");
+              {"token": rootIsolateToken, "student_id": 10009});  // FIXME: 하드코딩된 값(10009) 변경
+          BeaconUtil().startScan();
 
           if (context.mounted) {
             Navigator.pop(context);

@@ -7,13 +7,17 @@ import android.os.IBinder
 import android.app.Service
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import io.flutter.plugin.common.BasicMessageChannel
 import org.altbeacon.beacon.*
 
-class BeaconService : Service(), RangeNotifier {
+
+class BeaconService(private val messageChannel: BasicMessageChannel<String>) : Service(), RangeNotifier {
     private val TAG = "BeaconService"
     private val iBeaconLayout = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"
-    private val enterBeacon = Region("CCE99BED-E080-04C4-1A91-1A1A29B64112", null, null, null)
-    private val exitBeacon = Region("CCE99BED-E080-04C4-1A91-1A1A29B64113", null, null, null)
+    private val enterBeacon =
+        Region("CCE99BED-E080-04C4-1A91-1A1A29B64112", null, null, null)  // 10163, BA
+    private val exitBeacon =
+        Region("CCE99BED-E080-04C4-1A91-1A1A29B64112", null, null, null)  // 10162, C1
 
     override fun onCreate() {
         super.onCreate()
@@ -37,6 +41,7 @@ class BeaconService : Service(), RangeNotifier {
         beaconManager.backgroundScanPeriod = 1500L
         beaconManager.foregroundBetweenScanPeriod = 1500L
         beaconManager.backgroundBetweenScanPeriod = 1500L
+        beaconManager.updateScanPeriods()
 
         startForeground(8720, foregroundNotification)
 
@@ -44,7 +49,6 @@ class BeaconService : Service(), RangeNotifier {
         beaconManager.addRangeNotifier(this)
         beaconManager.startRangingBeacons(enterBeacon)
         beaconManager.startRangingBeacons(exitBeacon)
-
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -60,10 +64,11 @@ class BeaconService : Service(), RangeNotifier {
         for (beacon: Beacon in beacons) {
             Log.d(TAG, beacon.toString())
             if (beacon.id2.toInt() == 10162) {
+                messageChannel.send("enterBeaconDetected")
                 Log.d(TAG, "enterBeacon found: ${beacon.rssi}")
-            } else if (beacon.id2.toInt() == 10163) {
-                Log.d(TAG, "exitBeacon found: ${beacon.rssi}")
-            }
+            } else if (beacon.id2.toInt() == 10163)
+                messageChannel.send("exitBeaconDetected")
+            Log.d(TAG, "exitBeacon found: ${beacon.rssi}")
         }
     }
 }

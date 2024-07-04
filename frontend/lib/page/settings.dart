@@ -3,7 +3,6 @@ import "package:frontend/page/allergy.dart";
 import "package:frontend/page/license.dart";
 import "package:frontend/page/bug.dart";
 import "package:frontend/page/beacon_test.dart";
-import "package:frontend/page/background_test.dart";
 
 class SettingsPageWidget extends StatelessWidget {
   const SettingsPageWidget({super.key});
@@ -34,7 +33,7 @@ class SettingsPageWidget extends StatelessWidget {
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch, //우찬아 힘?내
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               buildSettingMenuButton(
                   "알레르기", const AllergyPageWidget(), context),
@@ -43,8 +42,6 @@ class SettingsPageWidget extends StatelessWidget {
                   "라이센스", const LicensePageWidget(), context),
               buildSettingMenuButton(
                   "비콘 테스트", const BeaconTestPageWidget(), context),
-              buildSettingMenuButton(
-                  "백그라운드 테스트", const BackgroundTestWidget(), context),
             ],
           ),
         ),

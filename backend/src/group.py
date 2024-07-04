@@ -1,9 +1,7 @@
-import quart.logging
+import asyncio
 from typing import List
 
 from quart import Blueprint, Response, request, jsonify, make_response
-
-import asyncio
 
 from util.json_util import read_json
 from util.sse_helper import ServerSentEvent
