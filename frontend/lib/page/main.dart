@@ -220,9 +220,10 @@ class _MainPageWidgetState extends State<MainPageWidget>
   }
 
   Widget buildHeader() {
-    // 순번 업데이트 함수 백그라운드에서 실행? 호출 위치 미정, 이 함수 아닐수도 있음.
+    //TODO :  순번 업데이트 함수 백그라운드에서 실행? 호출 위치 미정, 이 함수 아닐수도 있음.
 
     return Container(
+      margin: const EdgeInsets.all(20),
       color: Colors.green,
       child: const Text(
         '남은 대기 인원 :',
