@@ -1,13 +1,14 @@
-import "dart:isolate";
-
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+
+import "package:flutter_background/flutter_background.dart";
 
 import 'package:frontend/page/apply.dart';
 import 'package:frontend/page/group_manage.dart';
 import 'package:frontend/page/main.dart';
 import 'package:frontend/page/settings.dart';
 
+import "package:frontend/util/beacon.dart";
 import 'package:frontend/util/notification.dart';
 
 int currentPageIndex = 0;
@@ -28,6 +29,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     MediaQuery.of(context).viewInsets.bottom;

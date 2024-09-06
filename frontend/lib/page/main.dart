@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 import "package:frontend/util/diet.dart";
 import "package:frontend/util/file.dart";
-import "package:intl/intl.dart";
 
 Map? dietInfo;
 
@@ -16,14 +15,6 @@ class MainPageWidget extends StatefulWidget {
 class _MainPageWidgetState extends State<MainPageWidget>
     with TickerProviderStateMixin {
   late AnimationController _controller;
-
-  //var now = DateTime.now();
-
-  /*checkTime(BuildContext context) {
-    var now = DateTime.now();
-    String formatDate = DateFormat('yy/MM/dd - HH:mm:ss').format(now);
-    
-  }*/
 
   @override
   void initState() {
@@ -137,42 +128,19 @@ class _MainPageWidgetState extends State<MainPageWidget>
                             ),
                             child: ListView(
                               shrinkWrap: true,
-                              children: [
-                                ...dietInfo!["diet"]
-                                    .map((e) => ListTile(
-                                          title: Text(e),
-                                          leading: IconButton(
-                                            icon:
-                                                const Icon(Icons.info_outline),
-                                            onPressed: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      content: SizedBox(
-                                                          child: ListView(
-                                                        children: const [
-                                                          Text("테스트")
-                                                        ],
-                                                      )),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () {},
-                                                          child:
-                                                              const Text("확인"),
-                                                        )
-                                                      ],
-                                                    );
-                                                  });
-                                            },
-                                            color: checkAllergy()
-                                                ? Colors.red
-                                                : Colors.black38,
-                                          ),
-                                        ))
-                                    .toList()
-                              ],
+                              children: dietInfo!["diet"]
+                                  .map((e) => ListTile(
+                                        title: Text(e),
+                                        leading: IconButton(
+                                          icon: const Icon(Icons.info_outline),
+                                          onPressed: () =>
+                                              buildAllergyInfoDialog(context),
+                                          color: checkAllergy()
+                                              ? Colors.red
+                                              : Colors.black38,
+                                        ),
+                                      ))
+                                  .toList(),
                             ),
                           );
                         } else {
@@ -186,6 +154,23 @@ class _MainPageWidgetState extends State<MainPageWidget>
         }
       },
     );
+  }
+
+  Future<dynamic> buildAllergyInfoDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              content: SizedBox(
+                  child: ListView(
+                children: const [Text("테스트")],
+              )),
+              actions: [
+                TextButton(
+                  onPressed: () {},
+                  child: const Text("확인"),
+                )
+              ],
+            ));
   }
 
   bool checkAllergy() {
