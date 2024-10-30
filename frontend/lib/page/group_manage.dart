@@ -54,20 +54,20 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: data.isEmpty
-                            ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text("생성된 그룹이 없습니다."),
-                            ],
-                          ),
-                        )
+                            ? const Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("생성된 그룹이 없습니다."),
+                                  ],
+                                ),
+                              )
                             : ListView(
-                          shrinkWrap: true,
-                          children: [
-                            GroupWidget(data: data),
-                          ],
-                        ),
+                                shrinkWrap: true,
+                                children: [
+                                  GroupWidget(data: data),
+                                ],
+                              ),
                       ),
                     ),
                   );
@@ -93,10 +93,11 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                                 .where((element) => element.startsWith("새 그룹 "))
                                 .toList();
                             newGroups.sort((a, b) =>
-                                int.parse(a.replaceRange(0, 5, ""))
-                                    .compareTo(int.parse(b.replaceRange(0, 5, ""))));
+                                int.parse(a.replaceRange(0, 5, "")).compareTo(
+                                    int.parse(b.replaceRange(0, 5, ""))));
 
-                            data["새 그룹 ${int.parse(newGroups.last.replaceRange(0, 5, "")) + 1}"] = [];
+                            data["새 그룹 ${int.parse(newGroups.last.replaceRange(0, 5, "")) + 1}"] =
+                                [];
                           }
 
                           fileUtil.writeFileJSON(data);
@@ -112,7 +113,8 @@ class _GroupManagePageWidgetState extends State<GroupManagePageWidget> {
                 ],
               ),
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
           );
         } else {
           return const Center(
@@ -174,7 +176,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                 context: context,
                 builder: (BuildContext context) {
                   TextEditingController renameTextController =
-                  TextEditingController(text: groupName);
+                      TextEditingController(text: groupName);
 
                   return AlertDialog(
                     content: SizedBox(
@@ -200,7 +202,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                         onPressed: () {
                           setState(() {
                             widget.data[renameTextController.text] =
-                            widget.data[groupName];
+                                widget.data[groupName];
                             widget.data.remove(groupName);
 
                             debugPrint("${widget.data}");
@@ -229,17 +231,17 @@ class _GroupWidgetState extends State<GroupWidget> {
           children: [
             ...memberList
                 .map((member) => Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: ListTile(
-                title: Text(member.toString()),
-                trailing: IconButton(
-                  onPressed: () {
-                    buildRemoveMemberDialog(groupName, member);
-                  },
-                  icon: const Icon(Icons.close),
-                ),
-              ),
-            ))
+                      padding: const EdgeInsets.only(left: 20),
+                      child: ListTile(
+                        title: Text(member.toString()),
+                        trailing: IconButton(
+                          onPressed: () {
+                            buildRemoveMemberDialog(groupName, member);
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                    ))
                 .toList(),
             TextButton(
                 onPressed: () {
@@ -247,7 +249,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                       context: context,
                       builder: (BuildContext context) {
                         TextEditingController textController =
-                        TextEditingController();
+                            TextEditingController();
 
                         return AlertDialog(
                           content: SizedBox(
@@ -296,25 +298,25 @@ class _GroupWidgetState extends State<GroupWidget> {
     return showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          content: const SizedBox(
-            width: 200,
-            height: 75,
-            child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("취소")),
-            TextButton(
-              onPressed: () => setState(() {
-                // 멤버 제거
-                widget.data[groupName].remove(member);
-                fileUtil.writeFileJSON(widget.data);
-                Navigator.pop(context);
-              }),
-              child: const Text("제거"),
-            ),
-          ],
-        ));
+              content: const SizedBox(
+                width: 200,
+                height: 75,
+                child: Center(child: Text("이 멤버를 제거하시겠습니까?")),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("취소")),
+                TextButton(
+                  onPressed: () => setState(() {
+                    // 멤버 제거
+                    widget.data[groupName].remove(member);
+                    fileUtil.writeFileJSON(widget.data);
+                    Navigator.pop(context);
+                  }),
+                  child: const Text("제거"),
+                ),
+              ],
+            ));
   }
 }

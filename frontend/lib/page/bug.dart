@@ -30,17 +30,20 @@ class _BugPageWidgetState extends State<BugPageWidget> {
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
+            child: SizedBox(
               width: 80,
               child: ElevatedButton(
-                onPressed: isSubmitButtonEnabled ? () => _showSubmitDialog(context) : null,
+                onPressed: isSubmitButtonEnabled
+                    ? () => _showSubmitDialog(context)
+                    : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isSubmitButtonEnabled ? Colors.blue : Colors.grey,
+                  backgroundColor:
+                      isSubmitButtonEnabled ? Colors.blue : Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   '등록',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -49,27 +52,28 @@ class _BugPageWidgetState extends State<BugPageWidget> {
           ),
         ],
       ),
-      body: Container(
+      body: SizedBox(
         height: 440,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               '문의하기',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 40),
               child: TextFormField(
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
                   hintText: '건의사항',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(
@@ -108,4 +112,6 @@ class _BugPageWidgetState extends State<BugPageWidget> {
       },
     );
   }
+
+  void sendbug() {}
 }
