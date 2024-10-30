@@ -283,6 +283,7 @@ class _ApplyPageWidgetBodyState extends State<ApplyPageWidgetBody> {
                     height: 75,
                     child: Center(
                       child: TextField(
+                        autofocus: true,
                         controller: textController,
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[

@@ -183,6 +183,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                       width: 300,
                       height: 75,
                       child: TextField(
+                        autofocus: true,
                         controller: renameTextController,
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
@@ -257,6 +258,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                             height: 75,
                             child: Center(
                               child: TextField(
+                                autofocus: true,
                                 controller: textController,
                                 keyboardType: TextInputType.number,
                                 inputFormatters: <TextInputFormatter>[

@@ -103,7 +103,8 @@ class _MainPageWidgetState extends State<MainPageWidget>
         if (snapshot.connectionState == ConnectionState.done) {
           dietInfo = snapshot.data;
 
-          debugPrint("$dietInfo");
+          debugPrint("future : "+"$dietInfo");
+          debugPrint(dietInfo.runtimeType.toString());
 
           return Padding(
               padding: const EdgeInsets.all(20),
@@ -115,11 +116,11 @@ class _MainPageWidgetState extends State<MainPageWidget>
                           : List.filled(19, false)),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                          debugPrint("${snapshot.data}");
+                          debugPrint("child future : ${snapshot.data}");
 
                           // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
                           //final allergyInfo = snapshot.data;
-
+                          debugPrint(dietInfo!["diet"].runtimeType.toString());
                           return Container(
                             decoration: BoxDecoration(
                               border: Border.all(width: 1, color: Colors.grey),
@@ -128,19 +129,20 @@ class _MainPageWidgetState extends State<MainPageWidget>
                             ),
                             child: ListView(
                               shrinkWrap: true,
-                              children: dietInfo!["diet"]
-                                  .map((e) => ListTile(
-                                        title: Text(e),
-                                        leading: IconButton(
-                                          icon: const Icon(Icons.info_outline),
-                                          onPressed: () =>
-                                              buildAllergyInfoDialog(context),
-                                          color: checkAllergy()
-                                              ? Colors.red
-                                              : Colors.black38,
-                                        ),
-                                      ))
-                                  .toList(),
+                              children : [
+                                for(String str in dietInfo!["diet"])
+                                  ListTile(
+                                    title: Text(str),
+                                    leading: IconButton(
+                                      icon: const Icon(Icons.info_outline),
+                                      onPressed: () =>
+                                          buildAllergyInfoDialog(context),
+                                      color: checkAllergy()
+                                          ? Colors.red
+                                          : Colors.black38,
+                                    ),
+                                  )
+                              ]
                             ),
                           );
                         } else {
