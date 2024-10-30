@@ -103,7 +103,7 @@ class _MainPageWidgetState extends State<MainPageWidget>
         if (snapshot.connectionState == ConnectionState.done) {
           dietInfo = snapshot.data;
 
-          debugPrint("future : "+"$dietInfo");
+          debugPrint("future : " + "$dietInfo");
           debugPrint(dietInfo.runtimeType.toString());
 
           return Padding(
@@ -127,23 +127,12 @@ class _MainPageWidgetState extends State<MainPageWidget>
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: ListView(
-                              shrinkWrap: true,
-                              children : [
-                                for(String str in dietInfo!["diet"])
-                                  ListTile(
-                                    title: Text(str),
-                                    leading: IconButton(
-                                      icon: const Icon(Icons.info_outline),
-                                      onPressed: () =>
-                                          buildAllergyInfoDialog(context),
-                                      color: checkAllergy()
-                                          ? Colors.red
-                                          : Colors.black38,
-                                    ),
-                                  )
-                              ]
-                            ),
+                            child: ListView(shrinkWrap: true, children: [
+                              for (String str in dietInfo!["diet"])
+                                ListTile(
+                                  title: Text(str),
+                                )
+                            ]),
                           );
                         } else {
                           return const Placeholder();
