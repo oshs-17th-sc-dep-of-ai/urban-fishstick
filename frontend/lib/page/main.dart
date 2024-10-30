@@ -119,20 +119,46 @@ class _MainPageWidgetState extends State<MainPageWidget>
                           debugPrint("child future : ${snapshot.data}");
 
                           // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
-                          //final allergyInfo = snapshot.data;
+                          final allergyInfo = snapshot.data;
                           debugPrint(dietInfo!["diet"].runtimeType.toString());
+                          debugPrint(dietInfo?["allergy_Info"].toString());
                           return Container(
                             decoration: BoxDecoration(
                               border: Border.all(width: 1, color: Colors.grey),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: ListView(shrinkWrap: true, children: [
-                              for (String str in dietInfo!["diet"])
-                                ListTile(
-                                  title: Text(str),
-                                )
-                            ]),
+                            child: ListView(
+                                padding: const EdgeInsets.all(0),
+                                shrinkWrap: true,
+                                children: [
+                                  for (String str in dietInfo!["diet"] ?? [])
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4, horizontal: 8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            str,
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            dietInfo?["allergy_Info"]?[str] ??
+                                                "알레르기 정보 없음",
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 10,
+                                              height: 0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                ]),
                           );
                         } else {
                           return const Placeholder();
@@ -145,6 +171,14 @@ class _MainPageWidgetState extends State<MainPageWidget>
         }
       },
     );
+  }
+
+  String getAllergyInfoText(List<int> allergyInfo) {
+    if (allergyInfo.isEmpty) {
+      return "알레르기 정보 없음";
+    }
+
+    return "알레르기: ${allergyInfo.join(", ")}";
   }
 
   Future<dynamic> buildAllergyInfoDialog(BuildContext context) {
