@@ -136,7 +136,7 @@ class _MyWidgetState extends State<AllergyPageWidget> {
             Expanded(
               child: FloatingActionButton(
                 onPressed: () {
-                  // 이후 추가 예정
+                  fileUtil.writeFileJSON(allergy);
                 },
                 backgroundColor: const Color.fromARGB(255, 0, 120, 215),
                 child: const Text(
@@ -153,12 +153,6 @@ class _MyWidgetState extends State<AllergyPageWidget> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    fileUtil.writeFileJSON(allergy);
   }
 
   Future<List> allergyListInitilize() async {
