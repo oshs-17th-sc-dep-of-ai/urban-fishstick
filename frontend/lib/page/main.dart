@@ -109,52 +109,64 @@ class _MainPageWidgetState extends State<MainPageWidget>
                     future: Future(() async => await fileUtil.exists()
                         ? await fileUtil.readFileJSON()
                         : List.filled(19, false)),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
-                        final List<String> dietList = dietInfo!["diet"] ?? [];
-                        final List<List<int>> allergyList =
-                            dietInfo!["allergy"] ?? [];
-
+                    builder:
+                        (BuildContext context, AsyncSnapshot allergySnapshot) {
+                      if (allergySnapshot.connectionState ==
+                          ConnectionState.done) {
+                        final userAllergies =
+                            allergySnapshot.data ?? List.filled(19, false);
                         return Container(
                           decoration: BoxDecoration(
                             border: Border.all(width: 1, color: Colors.grey),
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: ListView.builder(
+                          child: ListView(
                             padding: const EdgeInsets.all(0),
                             shrinkWrap: true,
-                            itemCount: dietList.length,
-                            itemBuilder: (context, index) {
-                              final dietItem = dietList[index];
-                              final allergyItem = allergyList[index];
-                              final allergyText =
-                                  getAllergyInfoText(allergyItem);
-
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      dietItem,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      allergyText,
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 10,
-                                        height: 1.2,
+                            children: [
+                              for (int i = 0;
+                                  i < (dietInfo!["diet"] as List).length;
+                                  i++)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        dietInfo!["diet"][i],
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: (dietInfo!["allergy"][i]
+                                                      as List<int>)
+                                                  .any((allergen) =>
+                                                      userAllergies[
+                                                          allergen - 1] ==
+                                                      true)
+                                              ? Colors.red
+                                              : Colors.black,
+                                        ),
                                       ),
-                                    )
-                                  ],
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        (dietInfo!["allergy"][i] as List<int>)
+                                                    .isNotEmpty &&
+                                                dietInfo!["allergy"][i][0] != -1
+                                            ? (dietInfo!["allergy"][i]
+                                                    as List<int>)
+                                                .join(", ")
+                                            : "",
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
+                            ],
                           ),
                         );
                       } else {
@@ -195,24 +207,6 @@ class _MainPageWidgetState extends State<MainPageWidget>
               ],
             ));
   }
-
-  bool checkAllergy() {
-    /*int c = 0x00000;
-
-    // debugPrint("${dietInfo!["allergy"].map((e) => int.parse(e))}");
-
-    for (int al in dietInfo!["allergy"]) {
-      c = c | (0x01 << al);
-    }
-
-    return c > 0; */
-    if (dietInfo!["diet"].contains(dietInfo!["allergy"])) {
-      debugPrint("알레르기 음식 포함됨");
-    } else {
-      debugPrint("알레르기 음식 미포함");
-    }
-    return dietInfo!["diet"].contains(dietInfo!["allergy"]);
-  } //TODO : 알레르기 검사 기능 구현 필요
 
   Padding buildHorizontalDivider() {
     return const Padding(
