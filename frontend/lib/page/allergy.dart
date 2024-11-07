@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:frontend/page/settings.dart";
 import "package:frontend/util/file.dart";
 
 class AllergyPageWidget extends StatefulWidget {
