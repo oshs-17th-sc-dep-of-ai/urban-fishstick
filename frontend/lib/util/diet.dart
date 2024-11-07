@@ -22,7 +22,13 @@ Future<Map<String, List>> getDiet(String apiKey) async {
         final a = e.split(' ')[1];
 
         // return a.isNotEmpty ? a.substring(1, a.length - 1).split('.') : ["-1"];
-        return a.isNotEmpty ? a.substring(1, a.length-1).split(".").map((e) => int.parse(e)).toList() : -1;
+        return a.isNotEmpty
+            ? a
+                .substring(1, a.length - 1)
+                .split(".")
+                .map((e) => int.parse(e))
+                .toList()
+            : [-1];
       }).toList()
     };
   } catch (err) {

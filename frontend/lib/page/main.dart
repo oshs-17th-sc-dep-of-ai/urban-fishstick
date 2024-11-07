@@ -103,67 +103,69 @@ class _MainPageWidgetState extends State<MainPageWidget>
         if (snapshot.connectionState == ConnectionState.done) {
           dietInfo = snapshot.data;
 
-          debugPrint("future : " + "$dietInfo");
+          debugPrint("future : $dietInfo");
           debugPrint(dietInfo.runtimeType.toString());
 
           return Padding(
-              padding: const EdgeInsets.all(20),
-              child: dietInfo == null
-                  ? const Center(child: Text("중식이 제공되지 않습니다."))
-                  : FutureBuilder(
-                      future: Future(() async => await fileUtil.exists()
-                          ? await fileUtil.readFileJSON()
-                          : List.filled(19, false)),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          debugPrint("child future : ${snapshot.data}");
+            padding: const EdgeInsets.all(20),
+            child: dietInfo == null
+                ? const Center(child: Text("중식이 제공되지 않습니다."))
+                : FutureBuilder(
+                    future: Future(() async => await fileUtil.exists()
+                        ? await fileUtil.readFileJSON()
+                        : List.filled(19, false)),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        debugPrint("child future : ${snapshot.data}");
 
-                          // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
-                          final allergyInfo = snapshot.data;
-                          debugPrint(dietInfo!["diet"].runtimeType.toString());
-                          debugPrint(dietInfo?["allergy_Info"].toString());
-                          return Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: Colors.grey),
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: ListView(
-                                padding: const EdgeInsets.all(0),
-                                shrinkWrap: true,
-                                children: [
-                                  for (String str in dietInfo!["diet"] ?? [])
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4, horizontal: 8),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            str,
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            dietInfo?["allergy_Info"]?[str] ??
-                                                "알레르기 정보 없음",
-                                            style: const TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 10,
-                                              height: 0,
-                                            ),
-                                          ),
-                                        ],
+                        // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
+                        final allergyInfo = snapshot.data;
+                        debugPrint(dietInfo!["diet"].runtimeType.toString());
+                        debugPrint(allergyInfo.toString());
+                        return Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.grey),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ListView(
+                            padding: const EdgeInsets.all(0),
+                            shrinkWrap: true,
+                            children: [
+                              for (String str in dietInfo!["diet"] ?? [])
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        str,
+                                        style: const TextStyle(fontSize: 14),
                                       ),
-                                    ),
-                                ]),
-                          );
-                        } else {
-                          return const Placeholder();
-                        }
-                      }));
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        dietInfo?["allergyInfo"]?[str] ??
+                                            "알레르기 정보 없음",
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 10,
+                                          height: 0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return const Placeholder();
+                      }
+                    },
+                  ),
+          );
         } else {
           return const Center(
             child: Text("받는 중..."),
