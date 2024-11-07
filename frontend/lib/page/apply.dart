@@ -113,16 +113,17 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
               "http://localhost:8720/group/register", // TODO: 서버 주소 변경
               jsonEncode(currentMemberList));
 
-          if (registerResponse != 200) {
-            if (context.mounted) {
-              Navigator.pop(context);
-            }
-            FNotification.showNotification("신청 결과", "신청에 실패했습니다.");
-            return;
+          if (registerResponse == 200) {
+            queueUpdater = await Isolate.spawn(checkQueuePositionWithPolling, {
+              "token": rootIsolateToken,
+              "student_id": 10009 // FIXME: 하드코딩된 값(10009) 변경
+            });
+
+            BeaconUtil().startScan();
+            FNotification.showNotification("신청 결과", "신청이 완료되었습니다.");
+          } else {
+            FNotification.showNotification("신청 결과", '신청에 실패했습니다.');
           }
-          queueUpdater = await Isolate.spawn(checkQueuePositionWithPolling,
-              {"token": rootIsolateToken, "student_id": 10009});  // FIXME: 하드코딩된 값(10009) 변경
-          BeaconUtil().startScan();
 
           if (context.mounted) {
             Navigator.pop(context);
