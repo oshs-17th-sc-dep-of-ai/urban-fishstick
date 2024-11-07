@@ -117,47 +117,54 @@ class _MainPageWidgetState extends State<MainPageWidget>
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         debugPrint("child future : ${snapshot.data}");
-
                         // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
                         final allergyInfo = snapshot.data;
+                        final List<String> dietList = dietInfo!["diet"] ?? [];
+                        final List<List<int>> allergyList =
+                            dietInfo!["allergy"] ?? [];
+
                         debugPrint(dietInfo!["diet"].runtimeType.toString());
                         debugPrint(allergyInfo.toString());
+
                         return Container(
                           decoration: BoxDecoration(
                             border: Border.all(width: 1, color: Colors.grey),
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: ListView(
+                          child: ListView.builder(
                             padding: const EdgeInsets.all(0),
                             shrinkWrap: true,
-                            children: [
-                              for (String str in dietInfo!["diet"] ?? [])
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 8),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        str,
-                                        style: const TextStyle(fontSize: 14),
+                            itemCount: dietList.length,
+                            itemBuilder: (context, index) {
+                              final dietItem = dietList[index];
+                              final allergyItem = allergyList[index];
+                              final allergyText =
+                                  getAllergyInfoText(allergyItem);
+
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      dietItem,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      allergyText,
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 10,
+                                        height: 1.2,
                                       ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        dietInfo?["allergyInfo"]?[str] ??
-                                            "알레르기 정보 없음",
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 10,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
-                            ],
+                              );
+                            },
                           ),
                         );
                       } else {
@@ -176,11 +183,10 @@ class _MainPageWidgetState extends State<MainPageWidget>
   }
 
   String getAllergyInfoText(List<int> allergyInfo) {
-    if (allergyInfo.isEmpty) {
+    if (allergyInfo.isEmpty || allergyInfo.contains(-1)) {
       return "알레르기 정보 없음";
     }
-
-    return "알레르기: ${allergyInfo.join(", ")}";
+    return allergyInfo.join(", ");
   }
 
   Future<dynamic> buildAllergyInfoDialog(BuildContext context) {
