@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class BugPageWidget extends StatefulWidget {
   const BugPageWidget({super.key});
@@ -10,6 +11,20 @@ class BugPageWidget extends StatefulWidget {
 class _BugPageWidgetState extends State<BugPageWidget> {
   final myController = TextEditingController();
   bool isSubmitButtonEnabled = false;
+
+  //사용자 입력은 서버로 보내는 함수
+  Future<void> sendFeedback(String content) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:8720/feedback/add'),
+      body: content,
+    );
+
+    if (response.statusCode == 201) {
+      _showSubmitDialog(context);
+    } else {
+      print('전송실패');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +49,10 @@ class _BugPageWidgetState extends State<BugPageWidget> {
               width: 80,
               child: ElevatedButton(
                 onPressed: isSubmitButtonEnabled
-                    ? () => _showSubmitDialog(context)
+                    ? () {
+                        String content = myController.text;
+                        sendFeedback(content);
+                      }
                     : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
@@ -112,6 +130,4 @@ class _BugPageWidgetState extends State<BugPageWidget> {
       },
     );
   }
-
-  void sendbug() {}
 }
