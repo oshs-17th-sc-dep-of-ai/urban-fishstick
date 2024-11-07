@@ -93,8 +93,6 @@ class _MainPageWidgetState extends State<MainPageWidget>
   FutureBuilder buildDietPanel(Size deviceSize) {
     const fileUtil = FileUtil("./allergy.json");
 
-    debugPrint("$dietInfo");
-
     return FutureBuilder(
       future: dietInfo == null
           ? getDiet("97deea74959e4608a2c9d7255beb71c0")
@@ -102,9 +100,6 @@ class _MainPageWidgetState extends State<MainPageWidget>
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           dietInfo = snapshot.data;
-
-          debugPrint("future : $dietInfo");
-          debugPrint(dietInfo.runtimeType.toString());
 
           return Padding(
             padding: const EdgeInsets.all(20),
@@ -116,15 +111,10 @@ class _MainPageWidgetState extends State<MainPageWidget>
                         : List.filled(19, false)),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
-                        debugPrint("child future : ${snapshot.data}");
                         // (snapshot.data as List<bool>).forEach((element) { allergy?[element-1] });
-                        final allergyInfo = snapshot.data;
                         final List<String> dietList = dietInfo!["diet"] ?? [];
                         final List<List<int>> allergyList =
                             dietInfo!["allergy"] ?? [];
-
-                        debugPrint(dietInfo!["diet"].runtimeType.toString());
-                        debugPrint(allergyInfo.toString());
 
                         return Container(
                           decoration: BoxDecoration(
