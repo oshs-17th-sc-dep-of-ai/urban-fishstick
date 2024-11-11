@@ -34,7 +34,7 @@ dependencies:
   http: ^1.1.0
   path_provider: ^2.1.0
   beacon_scanner: ^0.0.4
-  flutter_local_notifications: ^16.3.2
+  flutter_local_notifications: ^17.2.1+2
   permission_handler: ^11.0.1
   flutter_client_sse: ^2.0.1
   change_app_package_name: ^1.1.0
