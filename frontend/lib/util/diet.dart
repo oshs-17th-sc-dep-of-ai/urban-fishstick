@@ -26,9 +26,13 @@ Future<Map<String, List>> getDiet(String apiKey) async {
             ? a
                 .substring(1, a.length - 1)
                 .split(".")
-                .map((e) => int.parse(e))
+                .map((e) {
+                  final value = int.parse(e);
+                  return value >= 0 ? value : null; //음수값은 필터링 하여 null로 반환
+                })
+                .where((element) => element != null)
                 .toList()
-            : [-1];
+            : [];
       }).toList()
     };
   } catch (err) {
