@@ -185,10 +185,6 @@ class _GroupWidgetState extends State<GroupWidget> {
                       child: TextField(
                         autofocus: true,
                         controller: renameTextController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
                       ),
                     ),
                     actions: [
