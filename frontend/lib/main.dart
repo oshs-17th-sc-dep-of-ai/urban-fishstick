@@ -10,12 +10,14 @@ import 'package:frontend/page/settings.dart';
 
 import "package:frontend/util/beacon.dart";
 import 'package:frontend/util/notification.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 int currentPageIndex = 0;
 RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   await FNotification.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((v) => runApp(const MyApp()));
@@ -29,7 +31,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     MediaQuery.of(context).viewInsets.bottom;
