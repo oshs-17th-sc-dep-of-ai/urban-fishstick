@@ -37,7 +37,7 @@ class _MainPageWidgetState extends State<MainPageWidget>
     });
 
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      //updateWaitingCount();
+      updateWaitingCount();
     });
   }
 
@@ -51,17 +51,24 @@ class _MainPageWidgetState extends State<MainPageWidget>
   //TODO : 대기 인원 구현
   Future<void> updateWaitingCount() async {
     try {
-      final response = await httpGet("http://localhost:8720/queue/status");
+      final response = await httpGet(
+          "http://localhost:8720/group/index/sse?sid=12345"); //sid는 이후 다른 값으로 변경 가능
 
       if (response != null) {
         setState(() {
-          waitingCount = response['waiting_count']; //받아온 대기 인원 수
+          waitingCount =
+              response['waiting_count'] ?? 0; //받아온 대기 인원 수 | 반환 값이 null이면 기본값 0
         });
       } else {
-        print("Error: Null response received");
+        setState(() {
+          waitingCount = 0; //null이면 기본값 0
+        });
       }
     } catch (e) {
       print("Error fetching waiting count: $e");
+      setState(() {
+        waitingCount = 0;
+      });
     }
   }
 
