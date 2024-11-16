@@ -20,7 +20,7 @@ class BeaconUtil {
     )
   ];
 
-  factory BeaconUtil() {
+  factory BeaconUtil() {  
     return _instance;
   }
 

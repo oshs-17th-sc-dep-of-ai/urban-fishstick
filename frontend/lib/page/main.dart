@@ -1,10 +1,7 @@
 import "package:flutter/material.dart";
-import "dart:async";
 
 import "package:frontend/util/diet.dart";
 import "package:frontend/util/file.dart";
-import "package:frontend/util/network.dart";
-import "package:http/http.dart";
 
 Map? dietInfo;
 
@@ -18,8 +15,6 @@ class MainPageWidget extends StatefulWidget {
 class _MainPageWidgetState extends State<MainPageWidget>
     with TickerProviderStateMixin {
   late AnimationController _controller;
-  Timer? _timer; // _timer를 null로 초기화
-  int waitingCount = 0;
 
   @override
   void initState() {
@@ -35,41 +30,12 @@ class _MainPageWidgetState extends State<MainPageWidget>
         _controller.reset();
       }
     });
-
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      updateWaitingCount();
-    });
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
     _controller.dispose();
     super.dispose();
-  }
-
-  //TODO : 대기 인원 구현
-  Future<void> updateWaitingCount() async {
-    try {
-      final response = await httpGet(
-          "http://localhost:8720/group/index/sse?sid=12345"); //sid는 이후 다른 값으로 변경 가능
-
-      if (response != null) {
-        setState(() {
-          waitingCount =
-              response['waiting_count'] ?? 0; //받아온 대기 인원 수 | 반환 값이 null이면 기본값 0
-        });
-      } else {
-        setState(() {
-          waitingCount = 0; //null이면 기본값 0
-        });
-      }
-    } catch (e) {
-      print("Error fetching waiting count: $e");
-      setState(() {
-        waitingCount = 0;
-      });
-    }
   }
 
   @override
@@ -261,9 +227,9 @@ class _MainPageWidgetState extends State<MainPageWidget>
     return Container(
       margin: const EdgeInsets.all(20),
       color: Colors.green,
-      child: Text(
-        '남은 대기 인원 : $waitingCount',
-        style: const TextStyle(fontSize: 20),
+      child: const Text(
+        '남은 대기 인원 :',
+        style: TextStyle(fontSize: 20),
       ),
     );
   }
