@@ -39,7 +39,7 @@ class SSEClientManager {
     try {
       SSEClient.subscribeToSSE(
         method: SSERequestType.GET,
-        url: "http://localhost:8720/group/index/sse?sid=20002",
+        url: "http://223.130.151.247:8720/group/index/sse?sid=20002",
         header: {"Accept": "text/event-stream", "Cache-Control": "no-cache"},
       ).listen((event) {
         streamController.sink.add(event.data);

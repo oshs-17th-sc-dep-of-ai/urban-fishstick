@@ -8,7 +8,8 @@ class BeaconUtil {
   BeaconUtil._();
 
   static final BeaconUtil _instance = BeaconUtil._();
-  static const _messageChannel = BasicMessageChannel("org.oshssc.oslunch/message", StringCodec());
+  static const _messageChannel =
+      BasicMessageChannel("org.oshssc.oslunch/message", StringCodec());
 
   bool enterBeaconDetected = false;
   bool exitBeaconDetected = false;
@@ -24,20 +25,25 @@ class BeaconUtil {
 
     _messageChannel.setMessageHandler((String? message) async {
       switch (message) {
-        case "enterBeaconDetected": {
-          enterBeaconDetected = true;
-          await httpPost("http://localhost:8720/seat/enter", jsonEncode(studentID));  // TODO: 주소 변경
-          log("test");
-          return message!;
-        }
-        case "exitBeaconDetected": {
-          exitBeaconDetected = enterBeaconDetected;
-          await httpPost("http://localhost:8720/seat/exit", jsonEncode(studentID));  // TODO: 주소 변경
-          return message!;
-        }
-        case _: {
-          return "";
-        }
+        case "enterBeaconDetected":
+          {
+            enterBeaconDetected = true;
+            await httpPost("http://223.130.151.247:8720/seat/enter",
+                jsonEncode(studentID)); // TODO: 주소 변경
+            log("test");
+            return message!;
+          }
+        case "exitBeaconDetected":
+          {
+            exitBeaconDetected = enterBeaconDetected;
+            await httpPost("http://223.130.151.247:8720/seat/exit",
+                jsonEncode(studentID)); // TODO: 주소 변경
+            return message!;
+          }
+        case _:
+          {
+            return "";
+          }
       }
     });
   }

@@ -15,7 +15,7 @@ class _BugPageWidgetState extends State<BugPageWidget> {
   //사용자 입력은 서버로 보내는 함수
   Future<void> sendFeedback(String content) async {
     final response = await http.post(
-      Uri.parse('http://localhost:8720/feedback/add'),
+      Uri.parse('http://223.130.151.247:8720/feedback/add'),
       body: content,
     );
 
