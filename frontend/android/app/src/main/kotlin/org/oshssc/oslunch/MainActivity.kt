@@ -19,7 +19,7 @@ class MainActivity : FlutterActivity() {
             "org.oshssc.oslunch/message",
             StringCodec.INSTANCE
         )
-        beaconService = BeaconService(messageChannel)
+        beaconService = BeaconService()
 
         messageChannel.setMessageHandler { message, reply ->
             Log.d("DEBUG", "Received message: $message")
@@ -38,7 +38,7 @@ class MainActivity : FlutterActivity() {
 
     private fun startScan() {
         val intent = Intent(this, beaconService::class.java)
-        startForegroundService(intent)
+        startService(intent)
         Log.d("FGT", "Foreground Task Started")
     }
 

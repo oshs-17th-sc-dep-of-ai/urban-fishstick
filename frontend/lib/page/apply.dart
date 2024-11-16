@@ -3,13 +3,12 @@ import "dart:isolate";
 
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-
 import "package:frontend/main.dart";
+import "package:frontend/util/beacon.dart";
 import "package:frontend/util/file.dart";
 import "package:frontend/util/network.dart";
-import "package:frontend/util/queue_updater.dart";
-import "package:frontend/util/beacon.dart";
 import "package:frontend/util/notification.dart";
+import "package:frontend/util/queue_updater.dart";
 
 List currentMemberList = [];
 Isolate? queueUpdater;
@@ -116,7 +115,7 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
           if (registerResponse == 200) {
             queueUpdater = await Isolate.spawn(checkQueuePositionWithPolling, {
               "token": rootIsolateToken,
-              "student_id": 10009 // FIXME: 하드코딩된 값(10009) 변경
+              "student_id": currentMemberList[0]
             });
 
             BeaconUtil().startScan();
