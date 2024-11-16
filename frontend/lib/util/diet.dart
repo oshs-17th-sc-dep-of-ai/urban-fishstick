@@ -2,40 +2,33 @@ import "package:frontend/util/network.dart";
 import "package:intl/intl.dart";
 
 Future<Map<String, List>> getDiet(String apiKey) async {
-  // N10 교육청 코드
-  // 8140246 학교 코드
-  // 97deea74959e4608a2c9d7255beb71c0 API 키
-
-  // final date = DateTime(2023, 11, 15);
-  final date = DateFormat("yyyyMMdd").format(DateTime.now());
-  Map diet = await httpGet(
-      "https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=$apiKey&Type=json&ATPT_OFCDC_SC_CODE=N10&SD_SCHUL_CODE=8140246&MLSV_YMD=$date"); // 날짜 수정 필요
-
-  List<String> dietData;
   try {
-    dietData =
+    final date = DateFormat("yyyyMMdd").format(DateTime(2024, 11, 8));
+    final url =
+        "https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=$apiKey&Type=json&ATPT_OFCDC_SC_CODE=N10&SD_SCHUL_CODE=8140246&MLSV_YMD=$date";
+
+    Map diet = await httpGet(url);
+
+    List<String> dietData =
         diet["mealServiceDietInfo"][1]["row"][0]["DDISH_NM"].split("<br/>");
 
     return {
       "diet": dietData.map((e) => e.split(' ')[0]).toList(),
       "allergy": dietData.map((e) {
         final a = e.split(' ')[1];
-
-        // return a.isNotEmpty ? a.substring(1, a.length - 1).split('.') : ["-1"];
         return a.isNotEmpty
             ? a
                 .substring(1, a.length - 1)
                 .split(".")
-                .map((e) {
-                  final value = int.parse(e);
-                  return value >= 0 ? value : null; //음수값은 필터링 하여 null로 반환
-                })
+                .map((e) => int.tryParse(e))
                 .where((element) => element != null)
+                .cast<int>() // 정확한 List<int> 반환
                 .toList()
             : [];
       }).toList()
     };
-  } catch (err) {
+  } catch (e) {
+    print("getDiet 오류: $e");
     return {"diet": [], "allergy": []};
   }
 }
