@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/util/beacon.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-bool beacon1 = false;
-bool beacon2 = false;
+bool enterBeaconDetected = false;
+bool exitBeaconDetected = false;
 
 class BeaconTestPageWidget extends StatefulWidget {
   const BeaconTestPageWidget({super.key});
@@ -24,7 +24,8 @@ class _BeaconTestPageWidgetState extends State<BeaconTestPageWidget> {
             children: [
               TextButton(
                 onPressed: () async {
-                  BeaconUtil().init(12345);
+                  BeaconUtil().init();
+
                   await Permission.location.request();
                   await Permission.locationAlways.request();
                   await Permission.bluetooth.request();
@@ -35,11 +36,16 @@ class _BeaconTestPageWidgetState extends State<BeaconTestPageWidget> {
               ),
               TextButton(
                 onPressed: () async {
-                  if (await Permission.bluetoothScan.isGranted |
-                      await Permission.bluetoothScan.isLimited |
-                      await Permission.bluetoothScan.isProvisional) {
+                  if (await Permission.bluetoothScan.isGranted) {
                     BeaconUtil().startScan();
                   } else {
+                    await Fluttertoast.showToast(
+                        msg: "위치 액세스 권한을 항상 허용으로 변경해주세요",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.SNACKBAR,
+                        timeInSecForIosWeb: 1,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                     await openAppSettings();
                   }
                 },

@@ -1,59 +1,47 @@
-import "dart:convert";
-import "dart:developer";
+import "dart:async";
 
-import "package:flutter/services.dart";
-import "package:frontend/util/network.dart";
+import "package:beacon_scanner/beacon_scanner.dart";
 
 class BeaconUtil {
   BeaconUtil._();
 
   static final BeaconUtil _instance = BeaconUtil._();
-  static const _messageChannel =
-      BasicMessageChannel("org.oshssc.oslunch/message", StringCodec());
+  static final BeaconScanner beaconScanner = BeaconScanner.instance;
+
+  final enterBeaconMACAddress = "00C0B1C044BA";
+  final exitBeaconMACAddress = "00C0B1C044C1";
 
   bool enterBeaconDetected = false;
   bool exitBeaconDetected = false;
-  int? studentID;
+
+  final regions = <Region>[
+    const Region(
+      identifier: "CCE99BED-E080-04C4-1A91-1A1A29B64112",
+    )
+  ];
 
   factory BeaconUtil() {
-    log("init");
     return _instance;
   }
 
-  void init(int studentID) {
-    this.studentID = studentID;
+  void init() async {
+    await beaconScanner.initialize(true);
+  }
 
-    _messageChannel.setMessageHandler((String? message) async {
-      switch (message) {
-        case "enterBeaconDetected":
-          {
-            enterBeaconDetected = true;
-            await httpPost("http://223.130.151.247:8720/seat/enter",
-                jsonEncode(studentID)); // TODO: 주소 변경
-            log("test");
-            return message!;
-          }
-        case "exitBeaconDetected":
-          {
-            exitBeaconDetected = enterBeaconDetected;
-            await httpPost("http://223.130.151.247:8720/seat/exit",
-                jsonEncode(studentID)); // TODO: 주소 변경
-            return message!;
-          }
-        case _:
-          {
-            return "";
-          }
+  Future<StreamSubscription<ScanResult>> startScan() async {
+    return beaconScanner.ranging(regions).listen((ScanResult result) {
+      for (var beacon in result.beacons) {
+        if (beacon.macAddress == BeaconUtil().enterBeaconMACAddress) {
+          BeaconUtil().enterBeaconDetected = true;
+        } else if (BeaconUtil().enterBeaconDetected &&
+            beacon.macAddress == BeaconUtil().exitBeaconMACAddress) {
+          BeaconUtil().exitBeaconDetected = true;
+        }
       }
     });
   }
 
-  void startScan() async {
-    _messageChannel.send("startScan");
-    log("startScan");
-  }
-
   void stopScan() async {
-    _messageChannel.send("stopScan");
+    beaconScanner.close();
   }
 }
