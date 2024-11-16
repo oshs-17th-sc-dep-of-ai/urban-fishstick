@@ -99,7 +99,7 @@ async def group_index():
     except Exception as e:
         print(e)
         return jsonify({ 'error': str(e) }), 500
-        # return Response(status=500)  # 배포 시 코드
+        # return Response(status=500)  # 배포 시 코드f
 
 
 @group_bp.route("/index/sse", methods=['GET'])

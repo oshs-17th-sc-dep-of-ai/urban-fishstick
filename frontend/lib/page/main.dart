@@ -1,7 +1,11 @@
 import "package:flutter/material.dart";
+import "package:flutter_local_notifications/flutter_local_notifications.dart";
+import "dart:async";
 
 import "package:frontend/util/diet.dart";
 import "package:frontend/util/file.dart";
+import "package:frontend/util/network.dart";
+import "package:http/http.dart";
 
 Map? dietInfo;
 
@@ -15,6 +19,8 @@ class MainPageWidget extends StatefulWidget {
 class _MainPageWidgetState extends State<MainPageWidget>
     with TickerProviderStateMixin {
   late AnimationController _controller;
+  //Timer? _timer; //timer을 null로 초기화
+  int waitingCount = 0;
 
   @override
   void initState() {
@@ -30,12 +36,47 @@ class _MainPageWidgetState extends State<MainPageWidget>
         _controller.reset();
       }
     });
+
+    // _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    //   updateWaitingCount();
+    // });
   }
 
   @override
   void dispose() {
+    //_timer?.cancel();
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> updateWaitingCount() async {
+    try {
+      final response = await httpGet("http://223.130.151.247:8720/group/index");
+
+      //final sseClientManager = SSEClientManager();
+
+      //sseClientManager.listen()?.listen((dynamic response) {
+      waitingCount = int.parse(response);
+
+      // try {
+      //   if (waitingCount >= 0) {
+      //     //sseClientManager.close();
+      //   }
+      // } catch (e) {
+      //   ;
+      // }
+      //});
+
+      // try {
+      //   if (waitingCount >= 0) {
+      //     sseClientManager.close();
+      //   }
+      // } catch (e) {
+      //   ;
+      // }
+    } catch (e) {
+      print("error: $e");
+    }
   }
 
   @override
@@ -70,6 +111,7 @@ class _MainPageWidgetState extends State<MainPageWidget>
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // 클릭시 새로고침
+            updateWaitingCount();
             if (_controller.isAnimating) {
               return;
             }
@@ -222,14 +264,12 @@ class _MainPageWidgetState extends State<MainPageWidget>
   }
 
   Widget buildHeader() {
-    //TODO :  순번 업데이트 함수 백그라운드에서 실행? 호출 위치 미정, 이 함수 아닐수도 있음.
-
     return Container(
       margin: const EdgeInsets.all(20),
       color: Colors.green,
-      child: const Text(
-        '남은 대기 인원 :',
-        style: TextStyle(fontSize: 20),
+      child: Text(
+        '남은 대기 인원 : $waitingCount',
+        style: const TextStyle(fontSize: 20),
       ),
     );
   }

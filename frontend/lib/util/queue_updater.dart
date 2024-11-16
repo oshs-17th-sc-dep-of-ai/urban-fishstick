@@ -12,10 +12,10 @@ void checkQueuePositionWithPolling(Map<String, dynamic> M) async {
   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
 
   int queuePosition =
-      await httpGet("http://localhost:8720/group/index?sid=$studentID");
+      await httpGet("http://223.130.151.247:8720/group/index?sid=$studentID");
   while (queuePosition > 5) {
     queuePosition =
-        await httpGet("http://localhost:8720/group/index?sid=$studentID");
+        await httpGet("http://223.130.151.247:8720/group/index?sid=$studentID");
     sleep(const Duration(seconds: 10));
   }
 

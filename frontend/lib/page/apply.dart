@@ -1,5 +1,6 @@
 import "dart:convert";
 import "dart:isolate";
+import "dart:developer" as developer;
 
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
@@ -108,20 +109,31 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
     return TextButton(
         onPressed: () async {
           // Connection Refused 발생 시 서버 실행 확인 후 adb reverse tcp:8720 tcp:8720 실행
-          final registerResponse = await httpPost(
-              "http://223.130.151.247:8720/group/register", // TODO: 서버 주소 변경
-              jsonEncode(currentMemberList));
+          try {
+            if (currentMemberList.isEmpty) {
+              FNotification.showNotification("신청결과", "학번이 없습니다.");
+              return;
+            }
 
-          if (registerResponse == 200) {
-            queueUpdater = await Isolate.spawn(checkQueuePositionWithPolling, {
-              "token": rootIsolateToken,
-              "student_id": currentMemberList[0]
-            });
+            final registerResponse = await httpPost(
+                "http://223.130.151.247:8720/group/register", // TODO: 서버 주소 변경
+                jsonEncode(currentMemberList));
 
-            BeaconUtil().startScan();
-            FNotification.showNotification("신청 결과", "신청이 완료되었습니다.");
-          } else {
-            FNotification.showNotification("신청 결과", '신청에 실패했습니다.');
+            if (registerResponse == 200) {
+              queueUpdater = await Isolate.spawn(
+                  checkQueuePositionWithPolling, {
+                "token": rootIsolateToken,
+                "student_id": currentMemberList[0]
+              });
+
+              BeaconUtil().startScan();
+              FNotification.showNotification("신청 결과", "신청이 완료되었습니다.");
+            } else {
+              FNotification.showNotification("신청 결과", '신청에 실패했습니다.');
+            }
+          } catch (e) {
+            FNotification.showNotification("신청결과", "오류발생: $e");
+            developer.log("error: $e");
           }
 
           if (context.mounted) {
