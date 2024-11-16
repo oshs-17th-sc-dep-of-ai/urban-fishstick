@@ -1,9 +1,9 @@
 import "dart:async";
 import "dart:convert";
 
-import "package:http/http.dart" as http;
-import "package:flutter_client_sse/flutter_client_sse.dart";
 import "package:flutter_client_sse/constants/sse_request_type_enum.dart";
+import "package:flutter_client_sse/flutter_client_sse.dart";
+import "package:http/http.dart" as http;
 
 Future<dynamic> httpGet(String url) async {
   final uri = Uri.parse(url);
@@ -39,7 +39,7 @@ class SSEClientManager {
     try {
       SSEClient.subscribeToSSE(
         method: SSERequestType.GET,
-        url: "http://localhost:8720/group/index/sse?sid=20002",
+        url: "http://223.130.151.247:8720/group/index/sse?sid=20002",
         header: {"Accept": "text/event-stream", "Cache-Control": "no-cache"},
       ).listen((event) {
         streamController.sink.add(event.data);

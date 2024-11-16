@@ -109,7 +109,7 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
         onPressed: () async {
           // Connection Refused 발생 시 서버 실행 확인 후 adb reverse tcp:8720 tcp:8720 실행
           final registerResponse = await httpPost(
-              "http://localhost:8720/group/register", // TODO: 서버 주소 변경
+              "http://223.130.151.247:8720/group/register", // TODO: 서버 주소 변경
               jsonEncode(currentMemberList));
 
           if (registerResponse == 200) {
