@@ -19,7 +19,7 @@ class MainPageWidget extends StatefulWidget {
 class _MainPageWidgetState extends State<MainPageWidget>
     with TickerProviderStateMixin {
   late AnimationController _controller;
-  Timer? _timer; //timer을 null로 초기화
+  //Timer? _timer; //timer을 null로 초기화
   int waitingCount = 0;
 
   @override
@@ -37,46 +37,45 @@ class _MainPageWidgetState extends State<MainPageWidget>
       }
     });
 
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      updateWaitingCount();
-    });
+    // _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    //   updateWaitingCount();
+    // });
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    //_timer?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   Future<void> updateWaitingCount() async {
     try {
-      // final response =
-      //     await httpGet("http://223.130.151.247:8720/group/index");
+      final response = await httpGet("http://223.130.151.247:8720/group/index");
 
-      final sseClientManager = SSEClientManager();
+      //final sseClientManager = SSEClientManager();
 
-      sseClientManager.listen()?.listen((dynamic response) {
-        waitingCount = int.parse(response);
+      //sseClientManager.listen()?.listen((dynamic response) {
+      waitingCount = int.parse(response);
 
-        try {
-          if (waitingCount >= 0) {
-            sseClientManager.close();
-          }
-        } catch (e) {
-          ;
-        }
-      });
+      // try {
+      //   if (waitingCount >= 0) {
+      //     //sseClientManager.close();
+      //   }
+      // } catch (e) {
+      //   ;
+      // }
+      //});
 
-      try {
-        if (waitingCount >= 0) {
-          sseClientManager.close();
-        }
-      } catch (e) {
-        ;
-      }
+      // try {
+      //   if (waitingCount >= 0) {
+      //     sseClientManager.close();
+      //   }
+      // } catch (e) {
+      //   ;
+      // }
     } catch (e) {
-      print("Error fetching waiting count: $e");
+      print("error: $e");
     }
   }
 
@@ -112,6 +111,7 @@ class _MainPageWidgetState extends State<MainPageWidget>
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // 클릭시 새로고침
+            updateWaitingCount();
             if (_controller.isAnimating) {
               return;
             }
@@ -264,8 +264,6 @@ class _MainPageWidgetState extends State<MainPageWidget>
   }
 
   Widget buildHeader() {
-    //TODO :  순번 업데이트 함수 백그라운드에서 실행? 호출 위치 미정, 이 함수 아닐수도 있음.
-
     return Container(
       margin: const EdgeInsets.all(20),
       color: Colors.green,
