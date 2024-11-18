@@ -12,7 +12,7 @@ Future<dynamic> httpGet(String url) async {
   return jsonDecode(response.body);
 }
 
-Future<int> httpPost(String url, String data) async {
+Future<int> httpPost(String url, String data, Function? func) async {
   // http.post 메소드로 Map이나 List가 들어갈 경우 컨텐츠 타입이 고정되기 때문에 보낼 데이터는 문자열로 변환 후 보내야 함.
   final uri = Uri.parse(url);
   final response = await http.post(
@@ -20,6 +20,8 @@ Future<int> httpPost(String url, String data) async {
     headers: {"Content-Type": "application/json"},
     body: data,
   );
+
+  if (func != null) func(response);
 
   return response.statusCode;
 }
