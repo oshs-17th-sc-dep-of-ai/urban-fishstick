@@ -10,6 +10,7 @@ import "package:frontend/util/file.dart";
 import "package:frontend/util/network.dart";
 import "package:frontend/util/notification.dart";
 import "package:frontend/util/queue_updater.dart";
+import "package:http/http.dart";
 
 List currentMemberList = [];
 Isolate? queueUpdater;
@@ -117,7 +118,11 @@ class ApplyPageWidgetState extends State<ApplyPageWidget> {
 
             final registerResponse = await httpPost(
                 "http://223.130.151.247:8720/group/register", // TODO: 서버 주소 변경
-                jsonEncode(currentMemberList));
+                jsonEncode(currentMemberList), (Response resp) {
+              debugPrint("${resp.body}");
+            });
+
+            debugPrint("${registerResponse}");
 
             if (registerResponse == 200) {
               queueUpdater = await Isolate.spawn(
