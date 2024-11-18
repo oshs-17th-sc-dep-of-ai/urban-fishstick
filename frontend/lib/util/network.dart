@@ -1,9 +1,9 @@
 import "dart:async";
 import "dart:convert";
 
-import "package:http/http.dart" as http;
-import "package:flutter_client_sse/flutter_client_sse.dart";
 import "package:flutter_client_sse/constants/sse_request_type_enum.dart";
+import "package:flutter_client_sse/flutter_client_sse.dart";
+import "package:http/http.dart" as http;
 
 Future<dynamic> httpGet(String url) async {
   final uri = Uri.parse(url);
