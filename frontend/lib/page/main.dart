@@ -51,31 +51,12 @@ class _MainPageWidgetState extends State<MainPageWidget>
 
   Future<void> updateWaitingCount() async {
     try {
-      final response = await httpGet("http://223.130.151.247:8720/group/index");
+      final response =
+          await httpGet("http://223.130.151.247:8720/group/index?sid=12345");
 
-      //final sseClientManager = SSEClientManager();
-
-      //sseClientManager.listen()?.listen((dynamic response) {
       waitingCount = int.parse(response);
-
-      // try {
-      //   if (waitingCount >= 0) {
-      //     //sseClientManager.close();
-      //   }
-      // } catch (e) {
-      //   ;
-      // }
-      //});
-
-      // try {
-      //   if (waitingCount >= 0) {
-      //     sseClientManager.close();
-      //   }
-      // } catch (e) {
-      //   ;
-      // }
     } catch (e) {
-      print("error: $e");
+      debugPrint("error: $e");
     }
   }
 
@@ -111,7 +92,8 @@ class _MainPageWidgetState extends State<MainPageWidget>
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // 클릭시 새로고침
-            updateWaitingCount();
+            //updateWaitingCount();
+            waitingCount = 1;
             if (_controller.isAnimating) {
               return;
             }
